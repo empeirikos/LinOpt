@@ -1,0 +1,2112 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\usepackage{ifdraft}
+\usepackage{asymptote}
+\usepackage{nccmath}
+
+\usepackage{listings}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible
+}
+
+\newcommand{\code}[1]{\lstinline!#1!}
+\newcommand{\codebg}[2]{\setlength{\fboxsep}{0pt}\colorbox{#1}{\lstinline!#2!}}
+\newcommand{\subno}[1]{\par\noindent\textbf{#1}}
+
+\ifoptiondraft
+{
+    \usepackage{showkeys}
+    \geometry{paperheight=25cm,paperwidth=29cm,top=1.5cm,bottom=1.cm,left=7cm,right=7cm}
+}
+{
+    \geometry{paperheight=25cm,paperwidth=17cm,top=1.5cm,bottom=1.cm,left=1cm,right=1cm}
+}
+
+\usepackage{mlmodern}
+\usepackage[T1]{fontenc}
+
+\usepackage{dsfont}
+\usepackage{bbm}
+
+\usepackage{tikz}
+\usetikzlibrary{matrix,fit,decorations.text,positioning,arrows.meta,patterns}
+
+\tikzset{mystyle/.style={draw,circle,label={[fill=yellow]0:#1}}}
+
+\usepackage{fancyvrb}
+
+\usepackage{physics}
+\usepackage{tensor}
+\usepackage{accents}
+
+\usepackage[shortlabels]{enumitem}
+
+\usepackage{titlesec}
+
+\titleformat{\section}{\sffamily\Large\bfseries}{\thesection}{0.5em}{}
+\titlespacing*{\section}
+  {0pt}   % left indent
+  {0.5ex} % space before title
+  {0.5ex} % space after title  <-- reduce this
+\titleformat{\subsection}[runin]
+  {\sffamily\bfseries}   % bold+sans serif title
+  {}                     % no number
+  {0em}                  % space between number and title
+  {}                     % code before title
+  [.]                    % code after title
+\titlespacing*{\subsection}
+  {0pt}    % left
+  {1.5ex}  % vertical space before heading
+  {0.3em}  % horizontal space after heading  <-- reduce this
+
+\usepackage{fancyhdr}
+\fancypagestyle{main}{
+    \fancyhf{}
+    \addtolength{\topmargin}{-3.18243pt}
+    \setlength{\headsep}{3pt}
+    \fancyhead[R]{  
+    \bfseries\footnotesize\thepage
+    }  
+}
+
+\renewcommand{\footrulewidth}{0pt}% default is 0pt
+\renewcommand{\headrulewidth}{0pt}% default is 0pt
+
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\headheight}{23.5pt}
+
+%This is for hypertext references
+\usepackage{url}%this line and the next are related to hyperlinks
+\usepackage[colorlinks=true, pdfstartview=FitV, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+
+\usepackage{cleveref}
+\usepackage{natbib}
+
+\newcommand{\vd}{%
+  \mathrel{%
+    \tikz[baseline=(current bounding box.center)]{
+    \fill[black] (0,0) circle [radius=.8pt];
+    \fill[black] (0,.2) circle [radius=.8pt];
+    \fill[black] (0,-.2) circle [radius=.8pt];
+    }
+  }%
+}%
+
+\newcommand{\rdd}{%
+  \mathrel{%
+    \tikz[baseline=(current bounding box.center)]{
+    \fill[black] (0,0) circle [radius=.8pt];
+    \fill[black] (-.2,.2) circle [radius=.8pt];
+    \fill[black] (.2,-.2) circle [radius=.8pt];
+    }
+  }%
+}%
+
+\newcommand{\hd}{%
+  \mathrel{%
+    \tikz[baseline=(current bounding box.center)]{
+    \fill[black] (0,0) circle [radius=.8pt];
+    \fill[black] (-.2,0) circle [radius=.8pt];
+    \fill[black] (.2,0) circle [radius=.8pt];
+    }
+  }%
+}%
+
+\newcommand{\Out}{\mathsf{O}}
+\newcommand{\T}{\mathsf{T}}
+\newcommand{\Q}{\mathsf{Q}}
+\newcommand{\K}{\mathsf{K}}
+\newcommand{\V}{\mathsf{V}}
+
+\newcommand{\vc}{\symbf{c}}
+\newcommand{\vw}{\symbf{w}}
+
+\NewDocumentCommand{\ubar}{m}{%
+  \underaccent{\bar}{#1}%
+}
+
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\g}{g}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newtheoremstyle{pprop}
+                {\topsep} % space above
+                {\topsep} % space below
+                {\normalshape} % body font
+                {0pt} % indent amount
+                {\bfseries} % head font
+                {:} % punctuation after head
+                {\newline } % space after theorem head
+                {} % theorem head spec
+                
+\theoremstyle{pprop}
+\newtheorem{problem}{Problem}[section]
+\setcounter{section}{2}
+\begin{document}
+\pagestyle{main}
+\begin{center}
+    \sffamily\LARGE\bfseries Linear Algebra and Optimization 
+\end{center}
+The answers here are for the problems in \citep{gallier2020linear}. 
+They reflect my effort to answer them and in no way should be 
+construed as the approved solutions for this book. 
+\section*{Chapter 2}
+\begin{problem}
+\noindent\textbf{1.} To prove that $(H,\cdot)$ is a group we must show that the following properties hold:
+\begin{enumerate}[(1)]
+  \item \textbf{Closure}:  if $A,B \in {H}$ then $A \cdot B \in {H}$. To show this note that any upper triangular 
+  matrix $A$ has the property
+  \[
+  \begin{bmatrix}
+1 & a & b \\
+0 & 1 & c \\
+0 & 0 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & a & b \\
+d & 1 & c \\
+e & f & 1
+\end{bmatrix}
+\odot
+\begin{bmatrix}
+1 & 1 & 1 \\
+0 & 1 & 1 \\
+0 & 0 & 1
+\end{bmatrix}
+  \]
+  where $\odot$ denotes the \textbf{Hadamard} product of two matrices and the first matrix is non-singular. In index notation we write this as 
+  \[
+  A_{ij} = a_{ij} \mathbbm{1}_{j \geq i}
+  \]
+  where $\mathbbm{1}_{\text{statement}}=1$ if the statement is true and zero otherwise. Then
+\begin{align*}
+(A \cdot B)_{ij}&=\sum_{k=1}^n A_{ik}B_{kj}=\sum_{k=1}^n a_{ik}b_{kj}
+\mathbbm{1}_{k \geq i}\mathbbm{1}_{j \geq k} \\
+& =\sum_{k=1}^n a_{ik}b_{kj}\mathbbm{1}_{j \geq i}
+=(a \cdot b)_{ij}\mathbbm{1}_{j \geq i}
+\end{align*}
+and so, $A \cdot B \in {H}$.
+\item Since $H$ is a subspace of the vector space of $3 \times 3$ matrices it inherits associativity and the identity element.
+\item The inverse $A^{-1}$ of $A \in  H$ must have the property 
+\[
+A \cdot A^{-1} = A^{-1} \cdot A = I, \quad A^{-1} \in  H.
+\]
+We note that, since we can write any uppper-triangular matrix as the Hadamard product of a standard matrix and an upper-triangular 
+matrix of ones, then 
+\[
+(A \cdot A^{-1})_{ij}=\sum_{k=1}^n a_{ik}a^{-1}_{kj}
+\mathbbm{1}_{k \geq i} \mathbbm{1}_{j \geq k} = 
+\sum_{k=1}^n \delta_{ij}\mathbbm{1}_{k \geq i} \mathbbm{1}_{j \geq k}
+=\delta_{ij}
+\]
+where $\delta_{ij}=1$ if $i=j$ and zero otherwise. Therefore the inverse exists and is an element of $H$. The following explicit form 
+of the inverse
+\[
+\begin{bmatrix}
+1 & a' & b' \\
+0 & 1 & c' \\
+0 & 0 & 1
+\end{bmatrix}
+\] 
+satisfies the diagonal and lower triangular conditions. For the upper triangular elements we must have  
+\begin{align*}
+a'+a & = 0 \\
+b'+ac'+b & = 0 \\
+c'+c & = 0
+\end{align*}
+and so 
+\[
+A^{-1}=\left[\begin{matrix}1 & - a & a c - b\\0 & 1 & - c\\0 & 0 & 1\end{matrix}\right].
+\]
+If $({ H},\cdot)$ is abelian then $A \cdot B = B \cdot A$ or 
+\begin{align*}
+(A\cdot B)_{ij} & =
+\sum_{k=1}^n a_{ik} b_{kj} \mathbbm{1}_{k \geq i} \mathbbm{1}_{j \geq k} =
+\mathbbm{1}_{j \geq i}\sum_{k=1}^n a_{ik} b_{kj} = \mathbbm{1}_{j \geq i}
+(a \cdot b)_{ij},\\
+(B \cdot A)_{ij} & = \sum_{k=1}^n b_{ik} a_{kj}  \mathbbm{1}_{k \geq i} \mathbbm{1}_{j \geq k} = 
+\mathbbm{1}_{j \geq i}\sum_{k=1}^n b_{ik} a_{kj} 
+=\mathbbm{1}_{j \geq i} (b \cdot a).
+\end{align*}
+Since $a \cdot b \neq b \cdot a$ we conclude that $H$ is not abelian.
+\end{enumerate}
+\noindent\textbf{2.} If $a \in G_1$ then from the definition of $e_1$
+\[
+\phi(a e_1 )=\phi(a) \in G_2
+\]
+and since $\phi$ is a homomorphism 
+\[
+\phi(a e_1)=\phi(a) \phi(e_1).
+\]
+Hence
+\[
+\phi(a) \phi(e_1)=\phi(a)
+\]
+and we conclude that $\phi(e_1)=e_2$.
+
+Since $a a^{-1} = e_1$
+$$
+\phi(a a^{-1})=\phi(a) \phi(a^{-1})=\phi(e_1).
+$$
+We have already shown that $\phi(e_1)=e_2$. Therefore  $\phi(a^{-1})=\phi(a)^{-1}$.
+\par\noindent\textbf{3.} For any $A \in H$, elements $a, b , c \in \mathbb{R}$. Since if $b \in \mathbb{R}$, $e^{ib}$ 
+generates all elements of $S^1$ we conclude that $\phi$ is surjective.
+
+To prove that $(G,\cdot)$ first note that closure is a consequence of the closure of $\mathbb{R}$ w.r.t. addition and multiplication 
+and the fact that if $u_1,u_2 \in S^1$ then, since $e^{ix_1y_2} \in S_1$, $e^{ix_1y_2}u_1 u_2 \in S_1$ (closure of $S^1$ under 
+multiplication). To prove associativity write
+\begin{align*}
+& ((x_1,y_1,u_1)\cdot(x_2,y_2,u_2))\cdot(x_3,y_3,u_3)=\\
+& \kern3ex=   (x_1+x_2,y_1+y_2,e^{ix_1y_2}u_1u_2)\cdot(x_3,y_3,u_3)=\\
+& \kern3ex= (x_1+x_2+x_3,y_1+y_2+y_3,e^{i(x_1+x_2)y_3}e^{ix_1y_2}u_1u_2u_3)=\\
+& \kern3ex=
+(x_1+(x_2+x_3),y_1+(y_2+y_3),e^{ix_1(y_2+y_3)}u_1(e^{ix_2y_3}u_2u_3))=\\
+& \kern3ex=
+(x_1,y_1,u_1)\cdot(x_2+x_3,y_2+y_3,e^{ix_2y_3}u_2u_3)=\\
+& \kern3ex=
+(x_1,y_1,u_1)\cdot((x_2,y_2,u_2)\cdot(x_3,y_3,u_3)).
+\end{align*}
+The identity element of $G$, $(0,0,1)$ borrows the identity elements of$(\mathbb{R},+)$ and $(S^1,\cdot)$. 
+The inverse of $(x,y,u)$ must have the property 
+$$
+(x,y,u)\cdot(x',y',u')=(x+x',y+y',e^{ixy'}uu')=(0,0,1)
+$$
+and so $x'=-x,\ y'=-y, \ u'=e^{ixy}u^{-1}$. $\phi$ is a homomorphism if for $A,B \in H$
+$$
+\phi(A \cdot B) = \phi(A) \cdot \phi(B).
+$$
+Since
+$$
+\begin{bmatrix}
+1 & a & b \\
+0 & 1 & c \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & d & e \\
+0 & 1 & f \\
+0 & 0 & 1
+\end{bmatrix}=
+\begin{bmatrix}
+1& a+ d & af +b + e \\
+0 & 1 & c+ f \\
+0 & 0 & 1
+\end{bmatrix},
+$$
+we have
+\begin{align*}
+\phi(A \cdot B) & =(a+d, c+f,e^{i(af+b+e)}) \\
+& =(a,c,e^{ib}) \cdot (d,f,e^{ie}) \\
+& = \phi(A) \cdot \phi(B).
+\end{align*}
+\par\noindent\textbf{4.} We are looking for a set of matrices $A \in  H$ such that 
+$$
+\phi(A)=(0,0,1)
+$$
+the identity element in $G$. From the definition of $\phi$ we must have
+$$
+a=0, c=0, b =2\pi n
+$$
+where $n \in \mathbb{Z}$. For any $A \in \ker\phi$ we can write $A=I + 2\pi n E_{13}$. Closure follows since if $A,B\in\ker\phi$ 
+\begin{align*}
+A \cdot B & = (I + 2 \pi E_{13})\cdot(I + 2\pi m E_{13})\\
+& = I +2 \pi (n+m) E_{13} + (2\pi)^2nm E_{13}^2\\  
+& =I +2 \pi (n+m) E_{13}  \in \ker\phi.
+\end{align*}
+Associativity is inherited; the identity element is $I$ ($n=0$) while the inverse of $A=I + 2\pi n E_{13}$ is 
+$A^{-1}=I - 2\pi n E_{13}$. Hence $\ker\phi$ is a subgroup of $ H$.
+\end{problem}
+\begin{problem}
+  To check that $m\mathbb{Z}=\{mk \vert k\in \mathbb{Z}\}$ is an abelian subgroup of $\mathbb{Z}$ first note that 
+  $mk_1+mk_2=m(k_1+k_2)$ (closure). Addition is commutative/associative in $\mathbb{Z}$ and $m\mathbb{Z}$ inherits these 
+  properties. It also inherits the identity element ($k=0$) and the inverse ($k^{-1}=-k$).
+  \par\noindent\textbf{1.} $\phi(mk):=k$; this is an homomorphism since 
+$$
+\phi(mk_1+mk_2)=\phi(m(k_1+k_2))=k_1+k_2=\phi(mk_1)+\phi(mk_2).
+$$
+Since $\ker\phi=\{0\}$ it is also an isomorphism.
+\par\noindent\textbf{2.} If $i(mk):=mk$ then
+$$
+i(mk_1+mk_2)=i(m(k_1+k_2))=m(k_1+k_2)=\\mk_1+mk_2=
+i(mk_1)+i(mk_2)
+$$
+hence the inclusion map is a group homomorphism. If $p:\mathbb{Z} \to m\mathbb{Z}$ is a homomorphism then
+$$
+p (l_1+l_2)=p(l_1)+p(l_2)=mk_1+m k_2
+$$
+where $l_1,l_2,k_1,k_2 \in \mathbb{Z}$ (for example $k=\lfloor l/m  \rfloor$). If $p \circ i={\rm id}$ then $p$ is the 
+left inverse of $i$. By Proposition 2.16, $i$ must be an isomorphism. However, unless $m=1$, $i$ is not an isomorphism since 
+it is not surjective.
+\end{problem}
+\begin{problem}
+  As defined $E$ is an abelian group w.r.t. $+$.
+From the definition of $\cdot$ we have 
+\begin{align*}
+\lambda\cdot((x_1,y_1)+(x_2,y_2)) & =\lambda\cdot(x_1+x_2,y_1+y_2) 
+=(\lambda(x_1+x_2),y_1+y_2)=(\lambda x_1+\lambda x_2,y_1+y_2)\\
+& =(\lambda x_1,y_1)+(\lambda x_2,y_2)=\lambda\cdot(x_1,y_1)+\lambda\cdot(x_2,y_2)
+\end{align*}
+so axiom $\text{(V1)}$ holds. 
+\begin{align*}
+(\lambda + \mu) \cdot (x,y) & =((\lambda+\mu)x,y)=(\lambda x + \mu x,y) =(\lambda x,y)+(\mu x,0) \\
+& =\lambda\cdot(x,y)+\mu\cdot(x,0)\neq\lambda\cdot(x,y)+\mu\cdot(x,y)
+\end{align*}
+so axiom $\text{(V2)}$ fails.
+$$
+(\lambda \mu)\cdot(x,y)=((\lambda\mu)x,y)=(\lambda(\mu x),y)\\=\lambda\cdot(\mu x,y)=\lambda\cdot(\mu\cdot(x,y))
+$$
+so axiom $\text{(V3)}$ holds.
+$$
+1\cdot(x,y)=(1*x,y)=(x,y)
+$$
+so axiom $\text{(V4)}$ holds.
+\end{problem}
+\begin{problem}
+\noindent\textbf{1.} Below we (mostly) omit steps that use the properties of a field. 
+\begin{align*}
+\alpha\cdot 0&=\alpha\cdot(u-u), & \text{\footnotesize any vector $u$ has an additive inverse} \\
+&=\alpha \cdot u - \alpha \cdot u, & \text{\footnotesize (V1)} \\
+& =0, & \text{\footnotesize the additive inverse of $\alpha \cdot u$ is $-\alpha \cdot u$}
+\end{align*}   
+\begin{align*}
+0 \cdot v &= (\alpha - \alpha) \cdot v, & \text{\footnotesize$K$ is a field} \\
+& = \alpha \cdot v - \alpha \cdot v, & \text{\footnotesize (V2)} \\
+& =0, & \text{\footnotesize the additive inverse of $\alpha \cdot v$ is $-\alpha \cdot v$}
+\end{align*}
+\begin{align*}
+\alpha \cdot (-v) & = \alpha \cdot (-1 \cdot v) & \\
+& = (\alpha * -1) \cdot v, & \text{\footnotesize (V3)} \\
+& = - (\alpha \cdot v)  & 
+\end{align*}
+\begin{align*}
+(-\alpha) \cdot v & = (-1 *\alpha) \cdot v & \\
+& = -1\cdot (\alpha\cdot v), & \text{\footnotesize (V3)} \\
+& = - (\alpha \cdot v), & \text{\footnotesize the additive inverse of $\alpha \cdot v$ is $-1\cdot(\alpha \cdot v)$} 
+\end{align*}
+\par\noindent\textbf{2.} Axiom $\text{(V2)}$ states that 
+$$
+\alpha\cdot(u+v)=\alpha\cdot u + \alpha \cdot v
+$$
+where $u,v$ are vectors and $\alpha$ is a scalar. Then 
+\begin{align*}
+\alpha \cdot x &= \alpha \cdot (x_1 e_1 + x_2 e_2 + \cdots + x_n e_n) \\
+& = \alpha \cdot (x_1 e_1 + ( x_2 e_2 + \cdots + x_n e_n)) \\
+& = \alpha \cdot (x_1 e_1)+ \alpha \cdot (x_2 e_2 + \cdots + x_n e_n) \\
+& \kern15ex \vdots \\
+& = \alpha \cdot (x_1 e_1)+\cdots + \alpha \cdot (x_{n-2} e_{n-2})+
+\alpha \cdot(x_{n-1}e_{n-1}+ x_n e_n) \\
+& = \alpha\cdot (x_1 e_1)+ \cdots + \alpha\cdot(x_n e_n).
+\end{align*}
+Since for any $i=1,2,\ldots,n$, 
+$$
+\alpha\cdot(x_i e_i)=\alpha\cdot(x_i\cdot e_i)=(\alpha * x_i) \cdot e_i \\
+=(x_i * \alpha) \cdot e_i=x_i\cdot(\alpha\cdot e_i)
+$$
+given $\{\alpha \cdot e_i\}_{i=1}^n$ we can determine the result of scalar multiplication on any vector by its 
+action on the basis vectors.
+\par\noindent\textbf{3.} Lets work backwards. We want to define scalar multiplication so that 
+$$1 \cdot u \neq u;$$
+if we denote $1\cdot u=\nu(u)$ then if axiom $\text{(V3)}$ holds 
+$$
+(1*1)\cdot u=1\cdot(1 \cdot u)=1\cdot \nu(u)=\nu^2(u).
+$$
+Since $1*1=1$ we conclude that $\nu(u)=\nu^2(u)$ and so, in this setting, scalar multiplication must be a projection. One example is 
+$$
+\alpha \cdot x=(\alpha x_1,\ldots,\alpha x_{n-1},0)
+$$
+which for $\alpha=1$ gives the desired result. All other axioms follow; for example
+\begin{align*}
+\alpha\cdot(x+y)&=(\alpha(x_1+y_1),\ldots,\alpha(x_{n-1}+y_{n-1}),0) \\
+& =(\alpha x_1 ,\alpha x_{n-1},0)+(\alpha y_1,\ldots,\alpha y_{n-1},0) \\
+& = \alpha \cdot x + \alpha \cdot y.
+\end{align*}
+\par\noindent\textbf{4.} If $n \in \mathbb{N}$ then according to $\text{(V2)}$
+\begin{align*}
+n\cdot x & = (1+ \cdots + 1) \cdot x \\
+& = 1 \cdot x + \cdots + 1 \cdot x \\ 
+& = (y_1,\ldots,y_n)+ \cdots+(y_1,\ldots,y_n)\\
+& = (n y_1,\ldots, n y_n)=n(y_1,\ldots,y_n)\\
+&= n(1 \cdot x).
+\end{align*}
+Next use $\text{(V3)}$:
+$$
+1\cdot x =\left( \frac{1}{n}* n\right)\cdot x=n\cdot\left(\frac{1}{n} \cdot x\right)=(1+\cdots+1)\cdot \left(\frac{1}{n}\cdot x\right). 
+$$
+If $\frac{1}{n}\cdot x=(y_1',\ldots,y_n')$ then since $1\cdot x=(y_1,\ldots,y_n)$ we must have
+$$
+(y_1,\ldots,y_n)=(ny_1',\ldots,n y_n').
+$$
+This is possible only if $y_i'=y_i/n$ for $i=1,\ldots,n$ and so we find that
+$$
+\frac{1}{n}\cdot x=\frac{1}{n}(1 \cdot x).
+$$
+
+A rational number $r=m/n$ where $m,n \in \mathbb{N}$; then
+\begin{align*}
+\frac{m}{n}\cdot x & = \left( m * \frac{1}{n} \right) \cdot x =m \cdot \left(  \frac{1}{n} \cdot x\right)=m \cdot \left(\frac{1}{n} (1\cdot x)  \right) \\
+& =\frac{1}{n}\left(m \cdot (1 \cdot x)\right)=\frac{1}{n}\left(1 \cdot (m \cdot x)\right)=\frac{1}{n}\left( 1 \cdot m (1\cdot x) \right)\\
+& =\frac{m}{n}(1\cdot(1\cdot x))=r((1*1)\cdot x)=r(1 \cdot x).
+\end{align*}
+Any vector $x$ has the following expansion given a basis $\{e_1,\ldots,e_n\}$:
+$$
+x= x_1 e_1 + \cdots + x_n e_n.
+$$
+Given $1\cdot x =y$ and 
+$$
+y=y_1 e_1 + \cdots + y_n e_n
+$$
+we have 
+$$
+1\cdot x = x_1 (1\cdot e_1)+\cdots+x_n (1\cdot e_n).
+$$
+Define $1 \cdot e_i = \sum_{j=1}^n \nu_{ji} e_j$ where $\nu_{ji}$ are scalars. Then 
+$$
+y_i = \sum_{j=1}^n \nu_{ji}x_i.
+$$
+So, given any vector $x$, and the coefficients $\nu$ that determine the action of 1 on a basis of $\mathbb{R}^n$ we 
+can determine $1 \cdot x$.  Then since $r \cdot x=r y$ we can determine the action of any scalar multiplication.
+\end{problem}
+\begin{problem}
+Linear independence requires that 
+$$
+a\begin{pmatrix}2\\1\\-3 \end{pmatrix}
++
+b\begin{pmatrix}3\\2\\-5 \end{pmatrix}
++
+c\begin{pmatrix}1\\-1\\1 \end{pmatrix}=0
+\Rightarrow a=b=c=0.
+$$
+Starting from 
+\begin{align*}
+2a+3b+c & = 0 \\
+-3a-5b+c &=0
+\end{align*}
+we obtain
+$$
+5a-8b=0.
+$$
+Then from
+\begin{align*}
+2a+3b+c & = 0 \\
+a+2b-c &=0
+\end{align*}
+we have
+$$
+3a+5b=0.
+$$
+The only solution to this system of equations is $a=b=0$ since
+$$
+3(5a-8b)-5(3a+5b)=-b=0
+$$
+and then $5a=0$. Substitute $a=b=0$ in any of the three equations to obtain $c=0$.
+The basis expansion of $x=(6,2,-7)$ in terms of these three independent vectors requires that
+$$
+a\begin{pmatrix}2\\1\\-3 \end{pmatrix}
++
+b\begin{pmatrix}3\\2\\-5 \end{pmatrix}
++
+c\begin{pmatrix}1\\-1\\1 \end{pmatrix}=
+\begin{pmatrix}6\\2\\-7 \end{pmatrix}.
+$$
+It is easy to show that $a=b=c=1$.
+\end{problem}
+\begin{problem}
+We want to show that
+$$
+\begin{pmatrix}
+1 \\ 3 \\ -1 \\ 0
+\end{pmatrix}=
+a
+\begin{pmatrix}
+1 \\ 2 \\ -1 \\ -2
+\end{pmatrix}
++b
+\begin{pmatrix}
+2 \\ 3 \\ 0 \\ -1
+\end{pmatrix}
++c
+\begin{pmatrix}
+1 \\ 2 \\ 1 \\ 3
+\end{pmatrix}
+$$ 
+for at least one of $a,b,c$ different from zero. Since we must have   
+$$
+-a+c=-1, \quad -2a-b+3c=0
+$$
+we can write $a=1+c$,  $b=c-2$. We are now left with 
+\begin{align*}
+a+2b+c&=1, \quad c+1+2(c-2)+c=1, \quad 4c=4 \\
+2a+3b+2c&=3, \quad 2(c+1)+3(c-2)+2c=3, \quad 7c=7
+\end{align*}
+both of which have solution $c=1$. Then $a=2,\ b=-1$.
+
+It is easy to show that the first three columns are independent. Hence the columns of $A$ span a subspace of $\mathbb{R}^4$. 
+Therefore it is possible that the vector given cannot be expressed as a linear combination of the columns of $A$. 
+After some rather tedious calculations that's what we find.
+\end{problem}
+\begin{problem}
+Linear independence requires that 
+$$
+a\begin{pmatrix} 1 \\ 1 \\ 1\end{pmatrix}
++
+b\begin{pmatrix} 1 \\ 1 \\ 2\end{pmatrix}
++
+c\begin{pmatrix} 1 \\ 2 \\ 3\end{pmatrix}=0 \Rightarrow a=b=c=0.
+$$  
+From the first equation we have $c=-(a+b)$; then, for the other two equations,
+\begin{align*}
+a&=2b ,\qquad a=3b
+\end{align*}
+which only has a solution if $a=b=0$. It follows that $c=0$. Next 
+$$
+x_1\begin{pmatrix} 1 \\ 1 \\ 1\end{pmatrix}
++x_2\begin{pmatrix} 1 \\ 1 \\ 2\end{pmatrix}
++x_3\begin{pmatrix} 1 \\ 2 \\ 3\end{pmatrix}=\begin{pmatrix} 6 \\ 9 \\ 14\end{pmatrix}
+$$
+is solved for $x_1=1,x_2=2,x_3=3$.
+\end{problem}
+\begin{problem}
+Linear independence requires  
+$$
+a\begin{pmatrix}1 \\ 2 \\-1\\-2\end{pmatrix}
++
+b\begin{pmatrix}2 \\ 3 \\0\\-1\end{pmatrix}
++
+c\begin{pmatrix}1 \\ 2 \\1\\4\end{pmatrix}
++d\begin{pmatrix}1 \\ 3 \\-1\\0\end{pmatrix}=0
+\Rightarrow a=b=c=d=0.
+$$  
+Use
+\begin{align*}
+2(a+2b+c+d)-(2a+3b+2c+3d)=0\Rightarrow b=d
+\end{align*}
+to rewrite the condition as
+$$
+a\begin{pmatrix}1 \\ 2 \\-1\\-2\end{pmatrix}
++
+b\begin{pmatrix}3 \\ 6 \\-1\\-1\end{pmatrix}
++
+c\begin{pmatrix}1 \\ 2 \\1\\4\end{pmatrix}
+=0
+$$
+Next
+$$
+(a+3b+c)+(-a-b+c)=0\Rightarrow b=-c
+$$
+and 
+$$
+a\begin{pmatrix}1 \\ 2 \\-1\\-2\end{pmatrix}
++
+b\begin{pmatrix}2 \\ 4 \\-2\\-5\end{pmatrix}
+=0
+$$
+It is clear that $(1,2,-1,-2)$ and $(2,4,-2,-5)$ are independent.
+Hence $a=b=0$ and, from the last two equations $c=d=0$.
+
+The coordinates of $x$ are $(0,2,1,2)$
+\end{problem}
+\begin{problem}
+The hint given uses the fact that if two vectors are orthogonal then they are independent. Since the rows of $H^{\sf T}$ contain the 
+columns of $H$, independence requires that $H^{\sf T}H$ is a diagonal matrix:  
+$$
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+1 & 1 & -1 & -1 \\
+1 & -1 & 0 & 0 \\
+0 & 0 & 1 & -1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 1 & 1 & 0 \\
+1 & 1 & -1 & 0 \\
+1 & -1 & 0 & 1 \\
+1 & -1 & 0 & -1
+\end{bmatrix}=
+\begin{bmatrix}
+4 & 0 & 0 & 0 \\
+0 & 4 & 0 & 0 \\
+0 & 0 & 2 & 0 \\
+0 & 0 & 0 & 2
+\end{bmatrix}
+$$ 
+\end{problem}
+\begin{problem}
+As with Problem 2.9.
+$$
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+1 & -1 & 1 & -1 \\
+1 & 1 & -1 & -1 \\
+1 & -1 & -1 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+1 & -1 & 1 & -1 \\
+1 & 1 & -1 & -1 \\
+1 & -1 & -1 & 1
+\end{bmatrix}=
+\begin{bmatrix}
+4 & 0 & 0 & 0 \\
+0 & 4 & 0 & 0 \\
+0 & 0 & 4 & 0 \\
+0 & 0 & 0 & 4
+\end{bmatrix}
+$$  
+\end{problem}
+\begin{problem}
+\noindent\textbf{1.} The condition for linear independence is
+$$
+b_1v_1+\cdots+b_mv_m=0\Rightarrow b_1=\cdots=b_n=0.
+$$
+Rewrite the linear combination as
+$$
+\sum_{i=1}^m b_i v_i =\sum_{i=1}^m b_i \sum_{j=1}^m a_{ij} u_j=0
+$$   
+Next, interchange the order of summation, and use the linear independence of $u$ vectors to produce the following set of conditions:
+\begin{equation}
+ \sum_{i=1}^m b_i a_{ij}=0, \quad j=1,\ldots,m. \tag{$\ast$}
+\end{equation}
+Each column of $A$ is a vector $a_{j}$; then given $j$ the above sum is the inner product of a vector $b$ with $a_j$. 
+Since the inner product of vector $b$ with all columns of $A$ is zero, $b \notin \operatorname*{span}(a_1,\ldots,a_m)$.
+If vectors $a_1,\ldots,a_m$ are independent then 
+$$
+c_1 a_1 + \cdots + c_m a_m =0 \Rightarrow c_1=\cdots=c_m=0.
+$$ 
+Note that since $A$ is upper triangular we can write this as 
+$$
+\begin{bmatrix}
+	a_{11} & a_{12} & \cdots & a_{1m} \\
+	0 & a_{22} & \cdots & a_{2m} \\
+	\vdots & \vdots & \ddots & \vdots \\
+	0 & 0 & \cdots & a_{mm} 
+\end{bmatrix}
+\begin{pmatrix}
+c_1 \\ c_2 \\ \vdots \\ c_m
+\end{pmatrix}=
+\begin{pmatrix}
+0 \\ 0 \\ \vdots \\ 0
+\end{pmatrix}.
+$$
+It is clear that $c_m=0$; then we have 
+$$
+c_{m-1}a_{m-1,m-1}+c_m a_{m-1,m}=0, \Rightarrow c_{m-1}=0.
+$$
+Continuing in this fashion we find that $c_1 =\cdots=c_m=0$ and so the columns of $A$ are independent vectors. 
+There are $m$ of them so they span the whole vector space. So it is not possible for vector $b$ to be orthogonal to 
+all $a$ vectors. Hence we conclude that $(\ast)$ only holds if $b=0$ and vectors $v_1,\cdots,v_m$ are independent.
+\par\noindent\textbf{2.} We have already shown that, if the diagonal entries of $A$ are nonzero, the columns of $A$ are 
+independent vectors. Therefore with the exception of the zero vector there is no vector $x$ such that $Ax=0$. 
+For any vector $y$ there is a unique vector $x$ such that $y=Ax$. Otherwise, if $y=Ax'$ we must have $A(x'-x)=0$ 
+which leads to a contradiction. Therefore the inverse of $A$ exists.
+Given $Ax=y$ then there is a simple recursive formula for the solutions of this system of equations:
+\begin{align*}
+x_m &= \frac{1}{a_{m,m}}y_m \\
+x_{m-1} & =\frac{1}{a_{m-1,m-1}} \left( y_{m-1}-a_{m-1,m} x_m \right) \\
+& \kern10ex\vdots   \\
+x_{i} &= \frac{1}{a_{i,i}} \left( y_i -  \sum_{k=i+1}^m a_{ik} x_k\right) \tag{$\ast$}
+\end{align*}
+We also have $x=A^{-1}y$ and so
+$$
+x_i = \sum_{k=1}^m a'_{ik} y_k.
+$$
+In $(\ast)$ every $x_k$ is only a function of $y_l$ with $l \geq k$. Therefore $x_i$ is only a function of 
+$y_i, y_{i+1}, \ldots, y_m$ and $a'_{ik}=0$ if $k<i$. Hence the inverse is also upper-triangular. From this we also 
+conclude that if the diagonal elements of $A$ are equal to zero then $A^{-1}$ does not have an inverse.
+\par\noindent\textbf{3.} We have already shown that if $(u_1,\ldots,u_m)$ are linearly independent then $(v_1,\ldots,v_m)$ are 
+linearly independent. Now assume that $(v_1,\ldots,v_m)$ are linearly independent. If 
+$$
+v_i = \sum_{j=1}^m a_{ij} u_j
+$$
+then in matrix form we have 
+$$
+\left[
+\begin{array}{c|c|c|c} 
+v_1 & v_2 & \cdots & v_m
+\end{array}
+\right]=
+\left[
+\begin{array}{c|c|c|c} 
+u_1 & u_2 & \cdots & u_m
+\end{array}
+\right]
+\begin{bmatrix}
+a_{11} & a_{21} & \cdots & a_{m1} \\
+a_{12} & a_{22} & \cdots & a_{m2}\\
+\vdots & \vdots & \ddots & \vdots\\
+a_{1m} & a_{2m} & \cdots & a_{mm}
+\end{bmatrix}
+$$
+or, in shorthand,
+$$
+V = U A^{\sf T}.
+$$
+Since $A$ has an inverse 
+$$
+U = V (A^{-1})^{\sf T}.
+$$
+Therefore we can write 
+$$
+u_i = a'_{i1} v_1 + \cdots + a'_{im} v_m
+$$
+where $a'_{ij}$ are the elements of $A^{-1}$. From this point follow the steps in (1) to show that the $u$ vectors are 
+linearly independent given that the $v$ vectors are independent.
+\end{problem}
+\begin{problem}
+\noindent\textbf{1.} We have a simple system of recursive equations with the following solution:
+ \begin{align*}
+ x_n &= b_n \\
+ x_{n-1} & = b_{n-1}-2x_n=b_{n-1}-2b_n \\
+ \vdots & \kern15ex \vdots \\
+ x_i & = b_{i}-2x_{i+1}=b_{i}-2b_{i+1}+4b_{i+2}+\cdots+(-2)^{n-i}b_n
+ \end{align*}   
+\par\noindent\textbf{2.} From the solution above it is clear that if $b=0$ then $x=0$ and so since $\ker A=\{0\}$ it has an inverse. The inverse is an upper-triangular matrix:
+$$
+A^{-1}=\begin{bmatrix}
+1 & -2 & \cdots & (-2)^{n-2} & (-2)^{n-1} \\
+0 & 1 & \cdots & (-2)^{n-3} & (-2)^{n-2} \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & \cdots & 1 & -2 \\
+0 & 0 & \cdots & 0 & 1 \\
+\end{bmatrix}.
+$$
+If $n \geq 300$ then the largest coefficient is greater or equal to $2^{300}$. As a comparison with the number of atoms in the universe, 
+$10 \approx 2^3$ so $2^{300}\approx 10^{100}$.
+\subno{3.} Starting with 
+$$
+A(x+\Delta x)=b+\Delta b
+$$
+since $Ax=b$
+we have 
+$$
+\Delta x =A^{-1} \Delta b.
+$$
+If $b=(0,0,\ldots,0,\epsilon)$ then, using the recursive formula, 
+$$
+(\Delta x)_1=(-2)^{n-1} \epsilon
+$$
+and
+$$
+\vert(\Delta x)_1\vert=(2)^{n-1} \vert\epsilon\vert.
+$$
+\subno{4.}
+\subno{shorthand:} if $e_i$ is a basis vector in $\mathbb{R}^n$ with all zero elements except from 1 at the $i$th element then 
+the basis vectors of $M_{n,n}$ can be written as the outer product of two basis vectors (e.g. $E_{13}=e_1 e_3^{\sf T}$). From this 
+we obtain the simple rule 
+$$
+E_{ij}E_{jk}=e_i e_j^{\sf T} e_j e_k^{\sf T}=e_i e_k^{\sf T}=E_{ik}
+$$
+and $E_{ij}E_{kl}=O$ when $j \neq k$. 
+\begin{align*}
+A-I & = 2E_{12}+2E_{23}+ \cdots + 2 E_{n-2,n-1}+ 2 E_{n-1,n} \\
+(A-I)^2 &=4 E_{13}+4E_{24}+ \cdots + 4E_{n-3,n-1}+ 4 E_{n-2,n} \\
+\vdots \\
+(A-I)^{n-1} & =2^{n-1} E_{1,n} \\
+(A-I)^n & =(2E_{12}+2E_{23}+ \cdots + 2 E_{n-2,n-1}+ 2 E_{n-1,n})E_{1,n}=O
+\end{align*}
+\subno{longhand:}
+\begin{align*}
+A-I &=
+\begin{bmatrix}
+0 & 2 & 0 & 0 & \cdots &0 & 0 & 0 \\
+0 & 0 & 2 & 0 & \cdots & 0& 0 & 0 \\
+0 & 0 & 0 & 2 & \cdots & 0& 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots &\vdots & \vdots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 0 & 2 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 2 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 0 \\
+\end{bmatrix} \\ 
+(A-I)^2&=
+\begin{bmatrix}
+0 & 0 & 2^2 & 0 & \cdots &0 & 0 & 0 \\
+0 & 0 & 0 & 2^2 & \cdots & 0& 0 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0& 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots &\vdots & \vdots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 2^2 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 0 \\
+\end{bmatrix} \\ 
+&\kern20ex\vdots \\
+(A-I)^{n-1}&=
+\begin{bmatrix}
+0 & 0 & 0 & 0 & \cdots &0 & 0 & 2^{n-1} \\
+0 & 0 & 0 & 0 & \cdots & 0& 0 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0& 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots &\vdots & \vdots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 0 \\
+\end{bmatrix}\\
+(A-I)^n & = O  
+\end{align*}
+\end{problem}
+\begin{problem}
+\subno{1.} First note that in the same way that
+$$
+a^r - b^r =(a-b)(a^{r-1}+ a^{r-2} b + \cdots + a b^{r-2}+ b^{r-1})
+$$
+where $a,b \in K$, it is also the case that 
+$$
+I^r - N^r = (I-N)(I^{r-1}+I^{r-1} N  + \cdots + I N^{r-2} + N^{r-1} ).
+$$
+Since $N^r=O$ and all powers of $I$ are equal to $I$ we have 
+$$
+I = (I-N)(I+ N +  \cdots +  N^{r-2} + N^{r-1} )
+$$
+Since
+$$
+(I-N)(I-N)^{-1}=I
+$$
+we conclude that
+$$
+(I-N)^{-1}=I+ N +  \cdots +  N^{r-2} + N^{r-1} .
+$$  
+\subno{2.}
+$$
+\begin{bmatrix}
+1 & 2 & 3 & 4 & 5 \\
+0 & 1 & 2 & 3 & 4 \\
+0 & 0 & 1 & 2 & 3 \\
+0 & 0 & 0 & 1 & 2 \\
+0 & 0 & 0 & 0 & 1 \\
+\end{bmatrix}=
+\begin{bmatrix}
+1 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 1 \\
+\end{bmatrix}
++
+\begin{bmatrix}
+0 & 2 & 3 & 4 & 5 \\
+0 & 0 & 2 & 3 & 4 \\
+0 & 0 & 0 & 2 & 3 \\
+0 & 0 & 0 & 0 & 2 \\
+0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix}
+$$
+or $A=I+N$.
+\begin{align*}
+N^2&=
+\begin{bmatrix}
+0 & 0 & 4 & 12 & 25 \\
+0 & 0 & 0 & 4 & 12 \\
+0 & 0 & 0 & 0 & 4 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix} \\
+N^3&=
+\begin{bmatrix}
+0 & 0 & 0 & 8 & 36 \\
+0 & 0 & 0 & 0 & 8 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix} \\
+N^4&=
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 16 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix} \\
+N^5&=O \Rightarrow r=5
+\end{align*}
+Therefore
+\begin{align*}
+A^{-1}=(I+N)^{-1}&=I-N+N^2-N^3+N^4\\
+&=
+\begin{bmatrix}
+1 & -2 & 1 & 0 & 0 \\
+0 & 1 & -2 & 1 & 0 \\
+0 & 0 & 1 & -2 & 1 \\
+0 & 0 & 0 & 1 & -2\\
+0 & 0 & 0 & 0 & 1 \\
+\end{bmatrix} \\
+\end{align*}
+\end{problem}
+\begin{problem}
+\subno{1.} If a matrix $A$ is invertible then for every $y$ there is a unique $x$ such that $y=Ax$. Now assume that for a vector 
+$x' \neq 0$, we have $Ax'=0$. Then $y=Ax+0=Ax+Ax'=A(x+x')$. Since there is no unique $x$ such that $y=Ax$ this matrix is not 
+invertible. Only if $Ax=0 \Rightarrow x=0$ the matrix is invertible.  
+\subno{2.} $I_m-AB$ is invertible if 
+$$
+(I_m - AB)y=0 \Rightarrow y=0.
+$$ 
+We are given that 
+$$
+(I_n-BA)x=0 \Rightarrow x=0.
+$$
+Multiply both sides with $A$ (this is allowed since $A \in M_{m,n}$):
+$$
+A(I_n-BA)x=0, Ax-(AB)(Ax)=0, (I_m-AB)(Ax)=0.
+$$  
+Since $x=0$, $Ax=0$ and so $I_m-AB$ is invertible.
+\end{problem}
+\begin{problem}
+\subno{1.} For 
+$$
+(n-3)b_1 - (b_2 + \cdots+b_n)
+$$
+the first element of the resulting vector is
+$$
+(n-3)\cdot1-(n-1)\cdot(-1)=2n-4=2(n-2).
+$$
+For all other elements we have 
+$$
+(n-3)\cdot1-(n-2)\cdot 1 -(-1)=(n-3)-(n-3)=0.
+$$
+For $b_1-b_i$ we always have the first element equal to
+$$
+1-(-1)-2
+$$
+while for all elements, except from the $i$th element,
+$$
+1-(1)=0.
+$$
+For the $i$the element we have
+$$
+1-(-1)=2
+$$
+and so $b_1-b_i=2(e_1+e_i)$.   
+\subno{2.} The equations in (1) can be written in matrix form:
+$$
+B 
+\begin{bmatrix}
+n-3 & 1 & 1 & \cdots & 1 & 1 & 1 \\
+-1 & -1 & 0 & \cdots & 0 & 0 & 0 \\
+-1 & 0 & -1 & \cdots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+-1 & 0 & 0 & \cdots & -1 & 0 & 0 \\
+-1 & 0 & 0 & \cdots & 0 & -1 & 0 \\
+-1 & 0 & 0 & \cdots & 0 & 0 & -1 \\
+\end{bmatrix}=\\
+\begin{bmatrix}
+2(n-2) & 2 & 2 & \cdots & 2 & 2 & 2 \\
+0 & 2 & 0 & \cdots & 0 & 0 & 0 \\
+0 & 0 & 2 & \cdots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 2 & 0 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 2 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 0 & 2 \\
+\end{bmatrix}
+$$
+Remove the factor of $2$ from the r.h.s.:
+\begin{align*}
+B & \frac12
+\begin{bmatrix}
+n-3 & 1 & 1 & \cdots & 1 & 1 & 1 \\
+-1 & -1 & 0 & \cdots & 0 & 0 & 0 \\
+-1 & 0 & -1 & \cdots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+-1 & 0 & 0 & \cdots & -1 & 0 & 0 \\
+-1 & 0 & 0 & \cdots & 0 & -1 & 0 \\
+-1 & 0 & 0 & \cdots & 0 & 0 & -1 \\
+\end{bmatrix}\\
+& = \begin{bmatrix}
+(n-2) & 1 & 1 & \cdots & 1 & 1 & 1 \\
+0 & 1 & 0 & \cdots & 0 & 0 & 0 \\
+0 & 0 & 1 & \cdots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 1 & 0 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 1 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 0 & 1 \\
+\end{bmatrix}
+\end{align*}
+The matrix in the r.h.s. can be written in block form as 
+$$
+\left[
+\begin{array}{cc}
+(n-2) & e^{\sf T} \\
+0 & I_{n-1}
+\end{array}
+\right]
+$$
+where $e^{\sf T}=(1,1,\ldots,1)$ ($0$ is a vector of $n-1$ zeros). It is easy to check that 
+$$
+\left[
+\begin{array}{cc}
+(n-2) & e^{\sf T} \\
+0 & I_{n-1}
+\end{array}
+\right]
+\left[
+\begin{array}{cc}
+\frac{1}{(n-2)} & -\frac{1}{n-2}e^{\sf T} \\
+0 & I_{n-1}
+\end{array}
+\right]=
+\left[
+\begin{array}{cc}
+1 & 0^{\sf T} \\
+0 & I_{n-1}
+\end{array}
+\right].
+$$
+Therefore 
+$$
+\begin{bmatrix}
+\frac{1}{(n-2)} & -\frac{1}{(n-2)} & -\frac{1}{(n-2)} & \cdots & -\frac{1}{(n-2)} & -\frac{1}{(n-2)} & -\frac{1}{(n-2)} \\
+0 & 1 & 0 & \cdots & 0 & 0 & 0 \\
+0 & 0 & 1 & \cdots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 1 & 0 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 1 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 0 & 1 \\
+\end{bmatrix}
+$$
+is the inverse of the matrix in the r.h.s. The inverse of $B$ is equal to the following product:
+$$
+\frac12
+\begin{bmatrix}
+n-3 & 1 & 1 & \cdots & 1 & 1 & 1 \\
+-1 & -1 & 0 & \cdots & 0 & 0 & 0 \\
+-1 & 0 & -1 & \cdots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+-1 & 0 & 0 & \cdots & -1 & 0 & 0 \\
+-1 & 0 & 0 & \cdots & 0 & -1 & 0 \\
+-1 & 0 & 0 & \cdots & 0 & 0 & -1 \\
+\end{bmatrix} \\
+\begin{bmatrix}
+\frac{1}{(n-2)} & -\frac{1}{(n-2)} & -\frac{1}{(n-2)} & \cdots & -\frac{1}{(n-2)} & -\frac{1}{(n-2)} & -\frac{1}{(n-2)} \\
+0 & 1 & 0 & \cdots & 0 & 0 & 0 \\
+0 & 0 & 1 & \cdots & 0 & 0 & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & \cdots & 1 & 0 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 1 & 0 \\
+0 & 0 & 0 & \cdots & 0 & 0 & 1 \\
+\end{bmatrix}
+$$
+Simplify by writing both matrices in block form
+$$
+\begin{bmatrix}
+\frac{n-3}{2} & \frac12 e^{\sf T} \\
+-\frac12 e & - \frac12 I_{n-1}
+\end{bmatrix}
+\begin{bmatrix}
+\frac{1}{n-2} & -\frac{1}{n-2} e^{\sf T} \\
+0  &  I_{n-1}
+\end{bmatrix}=
+\begin{bmatrix}
+\frac{n-3}{2(n-2)} & -\frac{n-3}{2(n-2)}e^{\sf T}+\frac12 e^{\sf T} \\
+-\frac{1}{2(n-2)}e & \frac{1}{2(n-2)}ee^{\sf T}-\frac12 I_{n-1 }
+\end{bmatrix}
+$$
+Since
+$$
+-\frac{n-3}{2(n-2)}+\frac12=\frac{-(n-3)+(n-2)}{2(n-2)}=\frac{1}{2(n-2)}
+$$
+the off-diagonal elements in the first row are equal to this value. Next, since $ee^{\sf T}$ is a matrix of ones,
+$$
+\frac{1}{2(n-2)}ee^{\sf T}-\frac12 I_{n-1 }
+$$
+is a matrix with off-diagonal elements equal to $1/2(n-2)$ and diagonal elements equal to 
+$$
+\frac{1}{2(n-2)}-\frac12 = \frac{1-(n-2)}{2(n-2)}=-\frac{n-3}{2(n-2)}.
+$$
+\subno{3.} Define $D_i=\operatorname*{diag}(b_i)$ where $\operatorname*{diag}$ converts a vector into a diagonal matrix. 
+First, assume that the columns of $B$ are independent. Then since any $n \times n$ diagonal matrix is $\operatorname*{diag}(x)$ 
+where $x \in \mathbb{R}^n$ we can write 
+$$
+\operatorname*{diag}(x)=
+\operatorname*{diag}(x_1b_1 + \cdots x_n b_n).
+$$
+Since $x_1,\ldots,x_n$ are scalars and diagonal matrices form a vector space we have
+$$
+\operatorname*{diag}(x)=
+x_1\operatorname*{diag}(b_1)
+\cdots +  x_n \operatorname*{diag}(b_n).
+$$
+Hence the diagonal matrices generated using the columns of $B$ can be used as a basis for the vector space of diagonal matrices. 
+Independence of the columns of $B$ follows from the fact that $B$ has an inverse.
+\end{problem}
+\begin{problem}
+$$
+(A^kB_k)_{ij}= a_{ik} b_{kj} 
+$$
+where $a_{ik}$ (resp. $b_{kj}$) are the elements of of $A$ (resp. $B$). Hence
+$$
+\sum_{k=1}^n (A^kB_k)_{ij} = \sum_{k=1}^n a_{ik} b_{kj} .
+$$ 
+From the definition of the matrix product
+$$
+(AB)_{ij}= \sum_{k=1}^n a_{ik} b_{kj} 
+$$
+and so
+$$
+\sum_{k=1}^n (A^kB_k)_{ij} = (AB)_{ij}.
+$$  
+\end{problem}
+\begin{problem}
+From the definition of the inverse
+$$
+f^{-1}f (ax+by)=ax+by
+$$
+where $a,b$ are scalars and $x,y$ are vectors. Since $f$ is a linear map
+$$
+f^{-1}(af(x)+bf(y))=ax+by.
+$$
+If $f^{-1}$ is not linear then 
+$$
+f^{-1}(af(x)+bf(y)) \neq a f^{-1}f(x)+ b f^{-1}f(y)=ax+by.
+$$
+We have arrived at a contradiction and this completes the proof.  
+\end{problem}
+\begin{problem}
+For any $x \in E$,
+$$
+x = x_1 u_1 + \cdots + x_n u_n
+$$
+where $n$ is the dimension of $E$. From the definition of the linear map
+$$
+f(x)=x_1 f(u_1) + \cdots + x_n f(u_n).
+$$
+If $(f(u_i))_{i \in I}$ spans $F$ then if we vary the coordinates $x_1,\ldots,x_n$ we can generate any vector in $F$. 
+Hence $f$ is surjective.  
+\end{problem}
+\begin{problem}
+We can generate an orthonormal basis of $E$ using vectors $v/\lVert v\rVert,e_1,\ldots,e_{n-1}$ ($\lVert v\rVert$ is the norm of vector $v$; vectors $e_1,\ldots,e_{n-1}$ are not the canonical basis vectors). Hence $\dim\ker f=n-1$ since
+$$
+A e_j = u v^{\sf T} e_j=0, \quad \text{for $j=1,\ldots,n$}
+$$
+and
+$$
+A v = u v^{\sf T} \frac{v}{\lVert v \rVert}=\lVert v \rVert u \neq 0.
+$$
+So $f$ has rank 1.  
+\end{problem}
+\begin{problem}
+$$
+\phi_1 -10\phi_2+7\phi_3=0, \quad \text{for all $x,y,z$}
+.$$
+since 
+$$
+\begin{bmatrix}
+2 & 3 & 4 \\ -1 & -5 &-7 \\ 3 & 1 & 1
+\end{bmatrix}
+\begin{pmatrix}
+a \\ b \\ c
+\end{pmatrix}=
+\begin{pmatrix}
+0 \\ 0 \\ 0
+\end{pmatrix}
+$$
+if
+$$
+\begin{pmatrix}
+a \\ b \\ c
+\end{pmatrix}=a
+\begin{pmatrix}
+1 \\ -10 \\ 7
+\end{pmatrix}.
+$$  
+\end{problem}
+\begin{problem}
+$\phi_1,\phi_2,\phi_3$ are linearly independent if 
+$$
+a\phi_1 + b \phi_2 + c \phi_3 = 0 \Rightarrow a=b=c=0.
+$$
+To show this write the following system of equations:
+\begin{align*}
+a+2b+3c &=0 \\
+2a + 3b+7c &=0 \\
+a+3b+c &=0
+\end{align*}
+With $c=-a-3b$ the first two equations are
+\begin{align*}
+-2a-7b &=0 \\
+-5a -18b &=0 \\
+\end{align*}
+The only solution is $a=b=0$; then $c=0$ and the three linear forms are independent.
+It is easy to show that 
+$$
+\phi=-6 \phi_1 +2 \phi_2+\phi_3.
+$$  
+\end{problem}
+\section{Chapter 3}
+\begin{problem}
+\begin{align*}
+& \left[\begin{matrix}1 & 2 & 3\\2 & 3 & 7\\1 & 3 & 1\end{matrix}\right] \xrightarrow{-2R1+R2}
+\left[\begin{matrix}1 & 2 & 3\\0 & -1 & 1\\1 & 3 & 1\end{matrix}\right] \xrightarrow{-R1+R3}
+\left[\begin{matrix}1 & 2 & 3\\0 & -1 & 1\\0 & 1 & -2\end{matrix}\right] \\
+& \xrightarrow{-R2}
+\left[\begin{matrix}1 & 2 & 3\\0 & 1 & -1\\0 & 1 & -2\end{matrix}\right]
+\xrightarrow{-R2+R3}
+\left[\begin{matrix}1 & 2 & 3\\0 & 1 & -1\\0 & 0 & -1\end{matrix}\right]
+\xrightarrow{-R3}
+\left[\begin{matrix}1 & 2 & 3\\0 & 1 & -1\\0 & 0 & 1\end{matrix}\right].  
+\end{align*}  
+Some high school math:
+\begin{align*}
+-27 \begin{bmatrix} 1 \\ 2 \\ 1 \end{bmatrix}
++
+9 \begin{bmatrix} 2 \\ 3 \\ 3 \end{bmatrix}
++
+4 \begin{bmatrix} 3 \\ 7 \\ 1 \end{bmatrix}&=
+\begin{bmatrix} 3 \\ 1 \\ 4 \end{bmatrix}\\
+-61 \begin{bmatrix} 1 \\ 2 \\ 1 \end{bmatrix}
++
+18 \begin{bmatrix} 2 \\ 3 \\ 3 \end{bmatrix}
++
+10 \begin{bmatrix} 3 \\ 7 \\ 1 \end{bmatrix}&=
+\begin{bmatrix} 5 \\ 2 \\ 3 \end{bmatrix}\\
+-41 \begin{bmatrix} 1 \\ 2 \\ 1 \end{bmatrix}
++
+9 \begin{bmatrix} 2 \\ 3 \\ 3 \end{bmatrix}
++
+8 \begin{bmatrix} 3 \\ 7 \\ 1 \end{bmatrix}&=
+\begin{bmatrix} 1 \\ 1 \\ -6 \end{bmatrix}
+\end{align*}
+
+Apply the following operation on $P_1$:
+$$
+\left[\begin{matrix}-27 & -61 & -41\\9 & 18 & 9\\4 & 10 & 8\end{matrix}\right]
+\xrightarrow{-2C1+C2 \to C3}
+\left[\begin{matrix}-27 & -61 & -7\\9 & 18 & 0\\4 & 10 & 2\end{matrix}\right]
+$$
+Now 
+$$
+A_1P_1=
+\left[\begin{matrix}3 & 5 & -1\\1 & 2 & 0\\4 & 3 & -5\end{matrix}\right]
+\neq B_1.
+$$
+It is easy to check that $B_1$ is not invertible since $C3=C2-2C1$.
+\end{problem}
+\begin{problem}
+Proof that $A_2$ is invertible:
+\begin{align*}
+& \begin{bmatrix}
+1 & 1 & 1 & 1 \\
+1 & 2 & 1 & 3 \\
+1 & 1 & 2 & 2 \\
+1 & 1 & 1 & 3
+\end{bmatrix}
+\xrightarrow{-R1+R2}
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+0 & 1 & 0 & 2 \\
+1 & 1 & 2 & 2 \\
+1 & 1 & 1 & 3
+\end{bmatrix} 
+\xrightarrow{-R1+R3}
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+0 & 1 & 0 & 2 \\
+0 & 0 & 1 & 1 \\
+1 & 1 & 1 & 3
+\end{bmatrix} \\
+&\xrightarrow{-R1+R4}
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+0 & 1 & 0 & 2 \\
+0 & 0 & 1 & 1 \\
+0 & 0 & 0 & 2
+\end{bmatrix} 
+\xrightarrow{\frac12R4}
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+0 & 1 & 0 & 2 \\
+0 & 0 & 1 & 1 \\
+0 & 0 & 0 & 1
+\end{bmatrix}.
+\end{align*}  
+Proof that $B_2$ is invertible:
+\begin{align*}
+  &
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & -3 & 2 & -3 \\
+3 & -5 & 5 & -4 \\
+3 & -4 & 4 & -4
+\end{bmatrix}
+\xrightarrow{-3R1+R3}
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & -3 & 2 & -3 \\
+0 & 1 & -1 & 2 \\
+3 & -4 & 4 & -4
+\end{bmatrix}
+\xrightarrow{-3R1+R4}
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & -3 & 2 & -3 \\
+0 & 1 & -1 & 2 \\
+0 & 2 & -2 & 2
+\end{bmatrix} \\
+&\xrightarrow{-\frac13R2}
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & 1 & -\frac23 & 1 \\
+0 & 1 & -1 & 2 \\
+0 & 2 & -2 & 2
+\end{bmatrix} 
+\xrightarrow{-R2+R3}
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & 1 & -\frac23 & 1 \\
+0 & 0 & -\frac13 & 1 \\
+0 & 2 & -2 & 2
+\end{bmatrix} 
+\xrightarrow{-2R2+R4}
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & 1 & -\frac23 & 1 \\
+0 & 0 & -\frac13 & 1 \\
+0 & 0 & -\frac23 & 0
+\end{bmatrix}\\
+& \xrightarrow{-3R3}
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & 1 & -\frac23 & 1 \\
+0 & 0 & 1 & -4 \\
+0 & 0 & -\frac23 & 0
+\end{bmatrix}
+\xrightarrow{\frac23R3+R4}
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & 1 & -\frac23 & 1 \\
+0 & 0 & 1 & -4 \\
+0 & 0 & 0 & 1
+\end{bmatrix}.
+\end{align*}
+
+To prove that the coordinates of the column vectors of matrix $B_2$ over the basis consisting of the column vectors of $A_2$ are the columns of $P_2$ do a check like
+$$
+2
+\begin{pmatrix}
+1 \\ 1 \\ 1 \\ 1
+\end{pmatrix}
+-3
+\begin{pmatrix}
+1 \\ 2 \\ 1 \\ 1
+\end{pmatrix}
++
+\begin{pmatrix}
+1 \\ 1 \\ 2 \\ 1
+\end{pmatrix}
++\begin{pmatrix}
+1 \\ 3 \\ 2 \\ 3
+\end{pmatrix}=
+\begin{pmatrix}
+1 \\ 0 \\ 3 \\ 3
+\end{pmatrix}
+$$
+Repeat the same calculations for all other columns of $B_2$. One takeaway from this calculations is that the individual operations 
+using a column of $P_2$ as the coordinates of a vector over the basis defined by the columns of $A_2$ is equivalent to the matrix 
+multiplication $A_2P_2$. We have already shown that this is equal to $B_2$.
+
+To prove that the value given for $P_2^{-1}$ is correct check that
+$$
+B_2P_2^{-1}=
+\begin{bmatrix}
+1 & -2 & 2 & -2 \\
+0 & -3 & 2 & -3 \\
+3 & -5 & 5 & -4 \\
+3 & -4 & 4 & -4
+\end{bmatrix}
+\begin{bmatrix}
+-1 & -1 & -1 & 1 \\
+2 & 1 & 1 & -2 \\
+2 & 1 & 2 & -3 \\
+-1 & -1 & 0 & -1
+\end{bmatrix}=\\
+\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+1 & 2 & 1 & 3 \\
+1 & 1 & 2 & 2 \\
+1 & 1 & 1 & 3
+\end{bmatrix}.
+$$ 
+
+The mouthfull 
+\begin{quote}
+  the coordinates over the basis consisting of the column vectors of $B_2$ of the vector whose coordinates over the basis 
+  consisting of the column vectors of $A_2$ are $(2,-3, 0, 0)$
+\end{quote}
+can be summarized as 
+$$
+B_2 x =A_2 y 
+$$
+where 
+$$
+y^{\sf T}=\begin{pmatrix} 2 & -3 & 0 &0 \end{pmatrix}.
+$$
+Since $B_2=A_2P_2$ write this as
+$$
+P_2 x = y, \quad x = P_1^{-1} y.
+$$
+We have 
+$$
+x=\begin{bmatrix}
+-1 & -1 & -1 & 1 \\
+2 & 1 & 1 & -2 \\
+2 & 1 & 2 & -3 \\
+-1 & -1 & 0 & -1
+\end{bmatrix}
+\begin{pmatrix}
+2 \\ -3 \\ 0 \\0 
+\end{pmatrix}=
+\begin{pmatrix}
+1 \\ 1 \\1 \\1 
+\end{pmatrix}.
+$$
+\end{problem}
+\begin{problem}
+\subno{1.} To show that
+$$
+\begin{pmatrix}
+B_0^2(t) \\ B_1^2(t) \\ B_2^2(t)
+\end{pmatrix}=
+\begin{bmatrix}
+1 & -2 & 1 \\ 0 & 2 & -2 \\ 0 & 0 & 1
+\end{bmatrix}
+\begin{pmatrix}
+1 \\ t \\ t^2
+\end{pmatrix}
+$$
+is trivial as it only requires polynomial expansion which any high school student should be able to do.
+Since
+$$
+B_0^2(t)+B_1^2(t)+B_2^2(t)=
+\begin{pmatrix} 1 & 1 & 1 \end{pmatrix}
+\begin{pmatrix}
+B_0^2(t) \\ B_1^2(t) \\ B_2^2(t)
+\end{pmatrix}
+$$
+it suffices to show that
+$$
+\begin{pmatrix} 1 & 1 & 1 \end{pmatrix}
+\begin{bmatrix}
+1 & -2 & 1 \\ 0 & 2 & -2 \\ 0 & 0 & 1
+\end{bmatrix}=
+\begin{pmatrix} 1 & 0 & 0 \end{pmatrix}.
+$$   
+\subno{2.}  For the first row of the matrix use the formula for the binomial expansion:
+$$
+(1-t)^3=1-3t+3t^2 -t^3.
+$$
+More high school algebra produces the other rows.
+
+Following the same procedure as in (1) we can show that 
+$$
+\begin{pmatrix} 1 & 1 & 1 & 1 \end{pmatrix}
+\begin{bmatrix}
+1 & -3 & 3 & -1 \\ 0 & 3 & -6 & 3 \\ 0 & 0 & 3 & -3
+\\ 0 & 0 & 0 & 1
+\end{bmatrix}=
+\begin{pmatrix} 1 & 0 & 0 & 0 \end{pmatrix}.
+$$
+\subno{3.} For this proof start with the assertion that $1,t,t^2$ are linearly independent. This means that
+$$
+a_0 + a_1 t + a_2 t^2=0 \quad \text{for all $t$} \quad\Rightarrow a_0=a_1=a_2=0.
+$$ 
+Since $a_0 + a_1 t + a_2 t^2$ is a quadratic equation it can have only two solutions (ignore whether $K=\mathbb{C}$ or $\mathbb{R}$). 
+The condition for linear independence requires that the quadratic must have an infinite number of solutions. 
+This is only possible if $a_0=a_1=a_2=0$ completing the proof.
+
+Since the Bernstein polynomials are linear combinations of the basis, linear independence requires that 
+$$
+\begin{bmatrix}
+1 & -2 & 1 \\ 0 & 2 & -2 \\ 0 & 0 & 1
+\end{bmatrix}
+$$ 
+has an inverse. This is clear since the matrix is upper-triangular with non-zero diagonal elements. The same procedure provides 
+proof for Bernstein polynomials of degree 3.
+\end{problem}
+\begin{problem}
+\subno{1.} Use
+$$
+(1-t)^{m-k}=\sum_{r=0}^{m-k}\binom{m-k}{r} (-t)^{m-k-r}
+$$
+and 
+$$
+\binom{m-k}{r}\binom{m}{k}=
+\binom{m}{k+r}\binom{k+r}{k}
+$$
+together with the change of variable $j=k+r$ to produce $\text{(3.5)}$.    
+
+Following the same procedure as above it is easy to show that $1,t,t^2,\ldots,t^m$ are linearly independent. From $\text{(3.5)}$
+$$
+\begin{pmatrix}
+B_0^m(t) \\ B_1^m(t) \\ \vdots \\ B_{m-1}^m(t) \\ B_{m}^m(t)
+\end{pmatrix}=
+\begin{bmatrix}
+1 & -m & \cdots & (-1)^{m-1}m & (-1)^{m}m\\ 
+0 & m & \cdots &   (-1)^{m-2}m(m-1)&   (-1)^{m-1}m\\
+\vdots & \vdots & \ddots & \vdots & \vdots\\ 
+0  & 0 & \cdots &m &-m\\
+0 & 0 & \cdots & 0 & 1
+\end{bmatrix}
+\begin{pmatrix}
+1 \\ t \\ \vdots \\ t^{m-1}  \\ t^m
+\end{pmatrix}
+$$
+The matrix in the r.h.s. is upper-triangular with non-zero diagonal elements. Hence it is invertible and so the elements of the 
+vector in the l.h.s. also constitute a basis for the vector space of polynomials with degree up to $m$. 
+Therefore $B_0^m(t) , B_1^m(t) , \ldots , B_{m-1}^m(t) , B_{m}^m(t)$ are linearly independent.
+\subno{2.} $$
+B_0^m(t) + B_1^m(t) + \cdots + B_{m-1}^m(t) + B_{m}^m(t)=\\
+\begin{pmatrix} 1 & 1 & \cdots & 1 & 1 \end{pmatrix}
+\begin{pmatrix}
+B_0^m(t) \\ B_1^m(t) \\ \vdots \\ B_{m-1}^m(t) \\ B_{m}^m(t)
+\end{pmatrix}
+$$
+Next note that to resolve
+$$
+\begin{pmatrix} 1 & 1 & \cdots & 1 & 1 \end{pmatrix}
+\begin{bmatrix}
+1 & -m & \cdots & (-1)^{m-1}m & (-1)^{m}m\\ 
+0 & m & \cdots &   (-1)^{m-2}m(m-1)&   (-1)^{m-1}m\\
+\vdots & \vdots & \ddots & \vdots & \vdots\\ 
+0  & 0 & \cdots &m &-m\\
+0 & 0 & \cdots & 0 & 1
+\end{bmatrix}
+$$
+we must evaluate sums like
+$$
+S_j=\sum_{k=0}^m (-1)^{j-k} \binom{m}{j} \binom{j}{k}
+$$
+each keeping $j$ fixed. For $j=0$ it is easy to show that $S_0=1$;
+for all other values of $j$
+$$
+\sum_{k=0}^j (-1)^{j-k} \binom{m}{j} \binom{j}{k}=
+\binom{m}{j}\sum_{k=0}^j (-1)^{j-k}  \binom{j}{k}=\\
+\binom{m}{j}\sum_{k=0}^j (-1)^{j-k} 1^k  \binom{j}{k}=
+\binom{m}{j}(1-1)^j=0.
+$$
+Hence
+$$
+\begin{pmatrix} 1 & 1 & \cdots & 1 & 1 \end{pmatrix}
+\begin{bmatrix}
+1 & -m & \cdots & (-1)^{m-1}m & (-1)^{m}m\\ 
+0 & m & \cdots &   (-1)^{m-2}m(m-1)&   (-1)^{m-1}m\\
+\vdots & \vdots & \ddots & \vdots & \vdots\\ 
+0  & 0 & \cdots &m &-m\\
+0 & 0 & \cdots & 0 & 1
+\end{bmatrix}  \\ 
+=\begin{pmatrix} 1 & 0 & \cdots & 0 & 0 \end{pmatrix}
+$$
+and the proof is complete.
+\subno{3.} We have already shown that this matrix is upper-triangular. The diagonal elements are equal to $\binom{m}{k}$.  
+This matrix is symmetric w.r.t. the anti-diagonal. This is easy to see for the diagonal elements; for all other elements note 
+that element $(k,j)$ is reflected across the anti-diagonal to element $(m-j,m-k)$. Then the value of the reflected element is 
+\begin{align*}
+(-1)^{m-k-(m-j)} \binom{m}{m-k}\binom{m-k}{m-j}& =
+(-1)^{j-k}\frac{m!}{(m-k)!k!}\frac{(m-k)!}{(m-j)!(j-k)!}\\
+&=(-1)^{j-k}\frac{m!}{j!k!}\frac{j!}{(m-j)!(j-k)!}=
+(-1)^{j-k}\frac{m!}{j!(m-j)!}\frac{j!}{k!(j-k)!}\\
+&=(-1)^{j-k}\binom{m}{j}\binom{j}{k}
+\end{align*}
+which is equal to the value of the original element.
+
+We have already shown that, with the exception of column 1, the sum of the elements for all other columns is equal to zero. 
+For the sum of the elements along each row note that for $t=1$ all elements of the basis are equal to 1. Therefore the sum of 
+the elements for row $k$ is equal to $B_k^m(1)=0$; the exception to this rule is row $m$ (using zero indexing) for which the sum equals 1.
+\subno{4.} Using the definition of a Bernstein polynomial
+$$
+\sum_{j=0}^{m-i} t^i B_j^{m-i}(t)=\sum_{j=0}^{m-i} t^i \binom{m-i}{j}
+(1-t)^{m-i-j} t^j=\\ t^i\sum_{j=0}^{m-i}  \binom{m-i}{j}
+(1-t)^{m-i-j} t^j=t^i (1-t+t)^{m-i}=t^i.
+$$ 
+Next
+\begin{align*}
+\binom{m}{i}\binom{m-i}{j} & =\frac{m!}{i!(m-i)!}\frac{(m-i)!}{j!(m-i-j)!}  =
+\frac{m!}{i!(i+j)!}\frac{(i+j)!}{j!(m-i-j)!} \\
+&=\frac{m!}{(m-i-j)!(i+j)!}\frac{(i+j)!}{i!j!}=
+\binom{m}{i+j}\binom{i+j}{i}.
+\end{align*}
+Using these facts
+\begin{align*}
+\sum_{j=0}^{m-i} \frac{\binom{i+j}{i}}{\binom{m}{i}} B_{i+j}^m (t) & =
+\sum_{j=0}^{m-i} \frac{\binom{i+j}{i}}{\binom{m}{i}} \binom{m}{i+j}
+(1-t)^{m-i-j} t^{i+j} \\
+ & =
+\sum_{j=0}^{m-i}  \binom{m-i}{j}
+(1-t)^{m-i-j} t^{i+j} \\
+& =
+\sum_{j=0}^{m-i} t^i \binom{m-i}{j}
+(1-t)^{m-i-j} t^{j} \\
+& =
+\sum_{j=0}^{m-i} t^i B_j^{m-i}(t)=t^i.
+\end{align*}
+We can write
+$$
+\begin{pmatrix}
+1 \\ t \\ \vdots \\ t^{m-1}  \\ t^m
+\end{pmatrix}=
+\begin{bmatrix}
+1 & 1 & \cdots & 1 & 1 \\
+0 & \frac{1}{m} & \cdots & \frac{m-1}{m} & 1 \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & 0 & \cdots & \frac{1}{m} & 1\\
+0 & 0 & \cdots & 0 & 1\\
+\end{bmatrix}
+\begin{pmatrix}
+B_0^m(t) \\ B_1^m(t) \\ \vdots \\ B_{m-1}^m(t) \\ B_{m}^m(t)
+\end{pmatrix}
+$$
+The matrix is upper-triangular with non-zero diagonal elements and so it is invertible. Hence the Bernstein polynomials form a 
+basis of the vector space of polynomials of degree $\leq m$.
+
+From the explicit formulas given in the matrix above it easy to derive its elements for $m=2,3$. 
+\subno{5.} The easiest way to write this is to use the shorthand 
+$$
+x = \alpha^{\sf T} p_{1}, y = \beta^{\sf T} p_{2}
+$$
+where
+$$
+\alpha^{\sf T}=(\alpha_{m_1},\ldots,\alpha_1,\alpha_0), \\
+p_1^{\sf T}=(1,t,\ldots,t^{m_1-1},t^{m_1}),\\
+\beta^{\sf T}=(\beta_{m_2},\ldots,\beta_1,\beta_0), \\
+p_2^{\sf T}=(1,t,\ldots,t^{m_2-1},t^{m_2}).
+$$
+We know that 
+$$
+p_1 = B_1 b
+$$
+where 
+$$
+b^{\sf T}=(B_0^{m},\ldots,B_{m-1}^{m},B_{m}^{m})
+$$
+and $B_1$ is the matrix whose explicit form we derived in (4) (since $m_1\leq m$ it would be a $(m_1+1) \times (m+1)$ submatrix of $B$). In the same way
+$$
+p_2 = B_2 b.
+$$
+where $B_2$ is an $(m_2+1) \times (m+1)$ submatrix of $B$. Hence
+$$
+x = \alpha^{\sf T} B_1 b, \qquad  y = \beta^{\sf T} B_2 b.
+$$
+The coefficients of $x$ (resp. $y$) in terms of the Bernstein polynomials are given by $\alpha^{\sf T}B_1$ (resp. $\beta^{\sf T}B_2$).
+If we denote $(x(t),y(t))$ by $C(t)$ then any point on the curve is
+$$
+C(t)=B_0^m(t)b_0 + B_1^m(t) b_1 + \cdots + B_m^m (t)b_m.
+$$
+$b_0,b_1,\ldots,b_m$ are fixed points. We have already shown that
+$$
+B_0^m(t) + B_1^m(t)  + \cdots + B_m^m(t) =1, \quad \text{for all $t$}.
+$$
+and we know that $B_i^m(t) \geq 0$. Since $C(t)$ is a weighted average $b_0,b_1,\ldots,b_m$ these points are not generally on the curve. 
+The only exception is $b_0$ and $b_m$  since for $t=0$, $B_0^m(0)=1$, $B_k^m(0)=0$ for $k>1$, while for $t=1$, $B_m^m(1)=1$, $B_k^m(0)=0$ for $k<m$.
+\end{problem}
+\begin{problem}
+Write $A$ in block form 
+$$
+A = 
+\begin{bmatrix}  
+\vb{0}^{\sf T} & - a_n \\
+\vb*{I}_{n-1} & -\vb*{a}
+\end{bmatrix}
+$$ 
+where $\vb*{a}^{\sf T}=(a_{n-1},a_{n-2},\ldots,a_2,a_1)$ (we use bold lower case for vector, bold upper case for matrices). 
+We can write $P$ two different ways
+$$
+P = 
+\begin{bmatrix}  
+\vb*{c}^{\sf T} & p_{1n} \\
+\vb*{Q} & \vb*{q}
+\end{bmatrix}
+$$ 
+or
+$$
+P = 
+\begin{bmatrix}  
+\vb*{b} & \vb*{R} \\
+p_{n1} & \vb*{r}^{\sf T}
+\end{bmatrix}.
+$$
+Note that $\vb*{q}, \vb*{r}$ are $(n-1) \times 1$ vectors with a common $n-1$th element. Also $\vb*{Q}, \vb*{R}$ 
+share the central submatrix of $P$ obtained by excluding rows $1,n$ and colums $1,n$.
+We must have
+$$
+P A^{\sf T}=A P 
+$$
+or
+$$
+\begin{bmatrix}  
+\vb*{c}^{\sf T} & p_{1n} \\
+\vb*{Q} & \vb*{q}
+\end{bmatrix}
+\begin{bmatrix}  
+\vb{0} & \vb*{I} \\
+-a_n & -\vb*{a}^{\sf T}
+\end{bmatrix}=
+\begin{bmatrix}  
+\vb{0}^{\sf T} & - a_n \\
+\vb*{I} & -\vb*{a}
+\end{bmatrix}
+\begin{bmatrix}  
+\vb*{b} & \vb*{R} \\
+p_{n1} & \vb*{r}^{\sf T}
+\end{bmatrix}.
+$$
+This can be simplified to
+$$
+\begin{bmatrix}
+-p_{1n}a_n & \vb*{c}^{\sf T}-p_{1n}\vb*{a}^{\sf T} \\
+-a_n \vb*{q} & \vb*{Q}- \vb*{q} \vb*{a}^{\sf T}
+\end{bmatrix}=
+\begin{bmatrix}
+-p_{n1}a_n & -a_n \vb*{r}^{\sf T} \\
+\vb*{b} - p_{n1}\vb*{a} & \vb*{R}- \vb*{a} \vb*{r}^{\sf T}
+\end{bmatrix}
+$$
+We obtain the following conditions:
+\begin{align*}
+-p_{1n}a_n & = -p_{n1}a_n, \quad p_{1n}=p_{n1}\\
+ \vb*{c}^{\sf T}-p_{1n}\vb*{a}^{\sf T} & = -a_n \vb*{r}^{\sf T} \\
+ \vb*{b} - p_{n1}\vb*{a} &= -a_n \vb*{q} \\
+ \vb*{Q}- \vb*{q} \vb*{a}^{\sf T}&=\vb*{R}- \vb*{a} \vb*{r}^{\sf T}
+\end{align*}
+If we write the explicit form for $\vb*{q} \vb*{a}^{\sf T}-\vb*{a} \vb*{r}^{\sf T}$ we obtain
+$$
+\begin{bmatrix}
+(p_{2n}-p_{n2})a_{n-1} & p_{2n}a_{n-2}-a_{n-1}p_{n3} & \cdots & p_{2n}a_2 -a_{n-1}p_{n,n-1} & p_{2n}a_1 - a_{n-1}p_{n,n}\\
+p_3na_{n-1}-a_{n-2}p_{n2} & (p_{3n}-p_{n3})a_{n-2} & \cdots & p_{2n}a_2 - a_{n-2}p_{n,n-1} & p_{3n}a_1 - a_{n-2}p_{n,n}\\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+p_{n-1,n}a_{n-1}-a_2p_{n,2} & p_{n-1,n}a_{n-2}-a_2p_{n,3} & \cdots &
+(p_{n-1,n}-p_{n,n-1})a_2 & p_{n-1,n}a_1-a_2p_{n,n}\\
+p_{n,n}a_{n-1}-a_1p_{n,2} & p_{n,n}a_{n-2}-a_1p_{n,3} & \cdots & p_{n,n}a_2-a_1p_{n,n-1} & 0
+\end{bmatrix}.
+$$
+From the construction of $\vb*{Q},\vb*{R}$ we obtain differences of elements of $P$ whose indices sum to the same total:
+$$
+\begin{bmatrix}
+p_{21}-p_{12} & p_{22}-p_{13} & \cdots & p_{2,n-2}-p_{1,n-1} & p_{2,n-1}-p_{1,n}\\
+p_{31}-p_{22} & p_{32}-p_{23} & \cdots & p_{3,n-2}-p_{2,n-1} & p_{3,n-1}-p_{2,n}\\
+\vdots & \vdots &\ddots & \vdots & \vdots \\
+p_{n-1,1}-p_{n-2,2} & p_{n-1,2}-p_{n-2,3} & \cdots & p_{n-1,n-2}-p_{n-2,n-1} & p_{n-1,n-1}-p_{n-2,n}\\
+p_{n,1}-p_{n-1,2} & p_{n,2}-p_{n-1,3} & \cdots & p_{n,n-2}-p_{n-1,n-1} & p_{n,n-1}-p_{n-1,n}
+\end{bmatrix}.
+$$
+From the equality of $\vb*{Q}-\vb*{R}$ and $\vb*{q} \vb*{a}^{\sf T}-\vb*{a} \vb*{r}^{\sf T}$ we must have $p_{n,n-1}=p_{n-1,n}$. 
+But then the penultimate diagonal element of $\vb*{q} \vb*{a}^{\sf T}-\vb*{a} \vb*{r}^{\sf T}$ must be zero and so we must have 
+$p_{n-1,n-2}=p_{n-2,n-1}$. Following the same procedure we obtain additional symmetric conditions for some elements of $P$.
+To show that all of $P$ is symmetric we sum elements of $\vb*{Q}-\vb*{R}$. For example.
+$$
+p_{n,n-2}-p_{n-1,n-1}+p_{n-1,n-1}-p_{n-2,n}
+$$
+must be equal to
+$$
+p_{n,n}a_2-a_1 p_{n,n-1}+p_{n-1,n}a_1 -a_2 p_{n,n}=0.
+$$
+Therefore we must have $p_{n,n-2}=p_{n-2,n}$. Following the same steps we conclude that $P$ is symmetric.  However, even with this 
+restriction, $$PA^{\sf T}=P^{\sf T}A^{\sf T}=AP$$ does not have a unique solution.  Since $A$ is invertible we can choose any 
+symmetric matrix $S$ and then $P=A^{-1}S$ is a solution.  Also note that since 
+$$ PA^{\sf T}=AP \Rightarrow (bP)A^{\sf T}=A(bP), \quad b \in K$$
+this problem is \textbf{scale invariant}.  
+
+The conditions given are that all elements above the antidiagonal are zero while for $p_{ij}$ where $i+j=n+k$ ($k\geq 0$) all are equal. 
+From this condition $\vb*{Q}-\vb*{R}=\vb*{O}$ where $\vb*{O}$ is the zero matrix. The same is true for all elements of  
+$\vb*{q} \vb*{a}^{\sf T}-\vb*{a} \vb*{r}^{\sf T}$, so from the last row we obtain
+$$
+p_{n,i}=\frac{p_{n,n}a_{n-i+1}}{a_1}, \quad i=2,3,\ldots,n-1.
+$$
+Repeating the same procedure for all other rows we obtain a matrix with the following structure:
+$$
+\begin{bmatrix}
+0 & 0 & \cdots & 0 & \frac{p_{n,n}a_n}{a_1}\\
+0 & 0 & \cdots & \frac{p_{n,n}a_n}{a_1} & \frac{p_{n,n}a_{n-1}}{a_1}\\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & \frac{p_{n,n}a_n}{a_1} & \cdots & \frac{p_{n,n}a_3}{a_1} & \frac{p_{n,n}a_2}{a_1}\\
+ \frac{p_{n,n}a_n}{a_1} &  \frac{p_{n,n}a_{n-1}}{a_1}& \cdots & \frac{p_{n,n}a_2}{a_1} & p_{n,n}
+\end{bmatrix}.
+$$
+If we factor out $p_{n,n}/a_1$ we obtain the simpler form
+$$
+\begin{bmatrix}
+0 & 0 & \cdots & 0 & a_n\\
+0 & 0 & \cdots &a_n & a_{n-1}\\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+0 & a_{n} & \cdots & a_3 & a_2\\
+a_n &  a_{n-1}& \cdots & a_2& a_1
+\end{bmatrix}.
+$$
+It is easy to check that this satisfies the similarity condition. For example if $n=5$,
+\begin{align*}
+ & P A^{\sf T}=\left[\begin{matrix}0 & 0 & 0 & 0 & a_{5}\\0 & 0 & 0 & a_{5} & a_{4}\\0 & 0 & a_{5} & a_{4} & a_{3}\\0 & a_{5} & a_{4} & a_{3} & a_{2}\\a_{5} & a_{4} & a_{3} & a_{2} & a_{1}\end{matrix}\right]
+\left[\begin{matrix}0 & 1 & 0 & 0 & 0\\0 & 0 & 1 & 0 & 0\\0 & 0 & 0 & 1 & 0\\0 & 0 & 0 & 0 & 1\\- a_{5} & - a_{4} & - a_{3} & - a_{2} & - a_{1}\end{matrix}\right] \\
+&=
+\left[\begin{matrix}- a_{5}^{2} & - a_{4} a_{5} & - a_{3} a_{5} & - a_{2} a_{5} & - a_{1} a_{5}\\- a_{4} a_{5} & - a_{4}^{2} & - a_{3} a_{4} & - a_{2} a_{4} & - a_{1} a_{4} + a_{5}\\- a_{3} a_{5} & - a_{3} a_{4} & - a_{3}^{2} & - a_{2} a_{3} + a_{5} & - a_{1} a_{3} + a_{4}\\- a_{2} a_{5} & - a_{2} a_{4} & - a_{2} a_{3} + a_{5} & - a_{2}^{2} + a_{4} & - a_{1} a_{2} + a_{3}\\- a_{1} a_{5} & - a_{1} a_{4} + a_{5} & - a_{1} a_{3} + a_{4} & - a_{1} a_{2} + a_{3} & - a_{1}^{2} + a_{2}\end{matrix}\right]
+\end{align*}
+and
+\begin{align*}
+AP & =
+\left[\begin{matrix}0 & 0 & 0 & 0 & - a_{5}\\1 & 0 & 0 & 0 & - a_{4}\\0 & 1 & 0 & 0 & - a_{3}\\0 & 0 & 1 & 0 & - a_{2}\\0 & 0 & 0 & 1 & - a_{1}\end{matrix}\right]
+\left[\begin{matrix}0 & 0 & 0 & 0 & a_{5}\\0 & 0 & 0 & a_{5} & a_{4}\\0 & 0 & a_{5} & a_{4} & a_{3}\\0 & a_{5} & a_{4} & a_{3} & a_{2}\\a_{5} & a_{4} & a_{3} & a_{2} & a_{1}\end{matrix}\right]\\
+&=\left[\begin{matrix}- a_{5}^{2} & - a_{4} a_{5} & - a_{3} a_{5} & - a_{2} a_{5} & - a_{1} a_{5}\\- a_{4} a_{5} & - a_{4}^{2} & - a_{3} a_{4} & - a_{2} a_{4} & - a_{1} a_{4} + a_{5}\\- a_{3} a_{5} & - a_{3} a_{4} & - a_{3}^{2} & - a_{2} a_{3} + a_{5} & - a_{1} a_{3} + a_{4}\\- a_{2} a_{5} & - a_{2} a_{4} & - a_{2} a_{3} + a_{5} & - a_{2}^{2} + a_{4} & - a_{1} a_{2} + a_{3}\\- a_{1} a_{5} & - a_{1} a_{4} + a_{5} & - a_{1} a_{3} + a_{4} & - a_{1} a_{2} + a_{3} & - a_{1}^{2} + a_{2}\end{matrix}\right].
+\end{align*}
+\subno{2.} Since $P^{-1}P=I$ we want the rows of $P^{-1}$ to form a dual basis to the columns of $P$. Since $P$ has zero elements 
+above the antidiagonal set the elements of $P^{-1}$ below the antidiagonal to zero. The product of the last row of $P^{-1}$ times 
+the last column of $P$ is $p'_{n1}a_n=1$ and so $p'_{n1}=1/a_n$ (the product of the last row o $P^{-1}$ with all other columns 
+of $P$ is zero by construction). Then for the penultimate row of $P^{-1}$ we have the following two conditions:
+$$
+p'_{n-1,2}a_n=1, p'_{n-1,1}a_n+p'_{n-1,2}a_{n-1}=0.
+$$ 
+Hence $p'_{n-1,2}=1/a_n$ and $p'_{n-1,1}=-a_{n-1}/a_n^2$. Continuing in this manner we obtain expressions that involve powers 
+of $a_n$ in the denominator and products of the $a$s. Since $a_n=1$ the inverse contains only integers. An example of the inverse 
+for $n=5$ is shown below:
+$$
+\left[\begin{matrix}\frac{- a_{1} a_{5}^{3} + 2 a_{2} a_{4} a_{5}^{2} + a_{3}^{2} a_{5}^{2} - 3 a_{3} a_{4}^{2} a_{5} + a_{4}^{4}}{a_{5}^{5}} & \frac{- a_{2} a_{5}^{2} + 2 a_{3} a_{4} a_{5} - a_{4}^{3}}{a_{5}^{4}} & \frac{- a_{3} a_{5} + a_{4}^{2}}{a_{5}^{3}} & - \frac{a_{4}}{a_{5}^{2}} & \frac{1}{a_{5}}\\\frac{- a_{2} a_{5}^{2} + 2 a_{3} a_{4} a_{5} - a_{4}^{3}}{a_{5}^{4}} & \frac{- a_{3} a_{5} + a_{4}^{2}}{a_{5}^{3}} & - \frac{a_{4}}{a_{5}^{2}} & \frac{1}{a_{5}} & 0\\\frac{- a_{3} a_{5} + a_{4}^{2}}{a_{5}^{3}} & - \frac{a_{4}}{a_{5}^{2}} & \frac{1}{a_{5}} & 0 & 0\\- \frac{a_{4}}{a_{5}^{2}} & \frac{1}{a_{5}} & 0 & 0 & 0\\\frac{1}{a_{5}} & 0 & 0 & 0 & 0\end{matrix}\right]
+$$
+\end{problem}
+\begin{problem}
+\subno{1.}  
+$$L_A(b_1B_1+b_2B_2)=A(b_1B_1+b_2B_2)\\
+=b_1 AB_1 + b_2 A B_2 =b_1 L_A(B_1)+b_2 L_A(B_2).$$
+$$
+R_A(b_1B_1+b_2B_2)=(b_1B_1+b_2B_2)A\\=
+b_1B_1A+b_2B_2A=b_1R_A(B_1)+b_2R)A(B_2).
+$$
+$$
+L_AR_B(C)=L_A(CB)=ACB, \\
+R_BL_A(C)=R_B(AC)=ACB.
+$$
+\subno{2.} From the definition of the inverse of a linear map
+$$
+L_A^{-1}L_A(B)=B .
+$$
+Therefore 
+$$
+L_A^{-1} AB = B \Rightarrow L_A^{-1}(AB)=A^{-1}(AB)=L_{A^{-1}}(AB).
+$$
+In the same way 
+$$
+R_A^{-1}R_A (B) = B \Rightarrow R_A^{-1} BA = (B A) A^{-1}=R_{A^{-1}}(BA).
+$$
+If $A=PBP^{-1}$ then 
+$$
+L_A(C)=AC=PBP^{-1}C=PB L_{P}^{-1}(C)=PL_BL_{P}^{-1}(C)\\
+=L_PL_BL_{P}^{-1}(C)
+$$
+and so $L_A=L_P \circ L_B \circ L_P^{-1}$. In the same way we can prove the second identity.
+\subno{3.} The ordering given is partial as it only generates an order for some of the matrices. If the first coordinate is fixed 
+then $E_{ij} \prec E_{ik}$ for $n\geq j>k\geq1$. From this we have the following partial orders:
+\[
+\begin{aligned}
+E_{13}\prec E_{12} \prec E_{11}, \quad & E_{23}\prec E_{22},\prec E_{21} \quad & 
+E_{33}\prec E_{32}\prec E_{31}.
+\end{aligned}
+\]
+If the second coordinate is fixed then $E_{ij}\prec E_{hj}$ for $1\leq i<h\leq n$.
+We can write
+\[
+\begin{aligned}
+E_{11}\prec E_{21}\prec E_{31}, \quad & E_{12}\prec E_{22}\prec E_{32}, \quad & 
+E_{13}\prec E_{23}\prec E_{33}.
+\end{aligned}
+\]
+From these we obtain the following Hasse diagram:
+\[
+\begin{tikzpicture}
+                                \node (31) at (0,0) {(31)};
+\node[below left=of 31] (21) {(21)}; \node[below right=of 31] (32) {(32)};
+\node[below left=of 21] (11) {(11)};  \node[below left=of 32] (22) {(22)}; \node[below right=of 32] (33) {(33)}; 
+\node[below left=of 22] (12) {(12)}; \node[below right=of 22] (23) {(23)};
+ \node[below right=of 12] (13) {(13)}; 
+ \path (31) edge (21) edge (32) ;  \path (21) edge (11) edge (22) ;   \path (32) edge (22) edge (33) ;
+  \path (22) edge (12) edge (23) ;
+  \path (11) edge (12)  ;   \path (33) edge (23)  ;
+  \path (12) edge (13)  ;   \path (23) edge (13)  ;
+\end{tikzpicture}
+\]
+This is a partial order diagram since a number of nodes are on the same level (e.g. (21) and (32)).
+
+There are many different total orders that we can derive from this partial order. For example suppose we 
+decide that $E_{21} \succ E_{32}$. Then the last diagram is modified to:
+\[
+\begin{tikzpicture}[node distance=2mm and 2mm]
+                                \node (31) at (0,0) {(31)};
+     \node[below left=5mm and 5mm of 31] (21) {(21)};
+                                                     \node[below right=10mm and 10mm of 31] (32) {(32)};    
+    \node[below left=5mm and 5mm of 21] (11) {(11)};                        
+                                \node[below left=5mm and 5mm of 32] (22) {(22)};  \node[below right=5mm and 5mm of 32] (33) {(33)};
+    \node[below right=10mm and 10mm of 11] (12) {(12)};   \node[below left=5mm and 5mm of 33] (23) {(23)}; 
+    \node[below left=5mm and 5mm of 23] (13) {(13)};
+ \path (31) edge (21) edge (32) ;  \path (21) edge (11) edge (22) ;   \path (32) edge (22) edge (33) ;
+  \path (22) edge (12) edge (23) ;
+  \path (11) edge (12)  ;   \path (33) edge (23)  ;
+  \path (12) edge (13)  ;   \path (23) edge (13)  ;   \path (21) edge (32)  ;
+\end{tikzpicture}
+\]
+Now the partial order has been extended but we still have not arrived at a total order diagram. To do this lets 
+set $E_{22} \succ E_{33}$ and $E_{12} \succ E_{23}$. Now we have
+\[
+\begin{tikzpicture}[node distance=2mm and 2mm]
+                                \node (31) at (0,0) {(31)};
+     \node[below left=5mm and 5mm of 31] (21) {(21)};
+                                                     \node[below right=10mm and 10mm of 31] (32) {(32)};    
+    \node[below left=5mm and 5mm of 21] (11) {(11)};                        
+                                \node[below left=5mm and 5mm of 32] (22) {(22)};  \node[below right=10mm and 10mm of 32] (33) {(33)};
+    \node[below right=10mm and 10mm of 11] (12) {(12)};   \node[below right=10mm and 10mm of 22] (23) {(23)}; 
+    \node[below left=5mm and 5mm of 23] (13) {(13)};
+ \path (31) edge (21) edge (32) ;  \path (21) edge (11) edge (22) ;   \path (32) edge (22) edge (33) ;
+  \path (22) edge (12) edge (23) ;
+  \path (11) edge (12)  ;   \path (33) edge (23)  ;
+  \path (12) edge (13)  ;   \path (23) edge (13)  ;
+  \path (21) edge (32) ;  \path (11) edge (22) ;  \path (22) edge (33) ;
+   \path (12) edge (23) ;
+\end{tikzpicture}
+\]
+which is a total order diagram. A summary of this total order is shown in the following equation 
+\[
+(13),(23),(12),(33),(22),(11),(32),(21),(31).
+\]
+The order given in this exercise is a total order with the following Hasse diagram:
+\[
+\begin{tikzpicture}[node distance=2mm and 2mm]
+                                \node (31) at (0,0) {(31)};
+     \node[below left=10mm and 10mm of 31] (33) {(33)};
+                                                     \node[below right=5mm and 5mm of 31] (32) {(32)}; 
+                             \node[below left=10mm and 10mm of 32] (21) {(21)};
+    \node[below left=10mm and 10mm of 33] (22) {(22)};  
+                                               \node[below left=10mm and 10mm of 21] (23) {(23)};
+     \node[below left=10mm and 10mm of 22] (11) {(11)};                             
+                                                \node[below left=10mm and 10mm of 23] (12) {(12)};
+                    \node[below left=10mm and 10mm of 11] (13) {(13)};    
+  \path (31) edge (32) ;   \path (11) edge (12) ;   \path (22) edge (23) ;   \path (33) edge (21) ;
+  \path (31) edge (33) ;   \path (33) edge (22) ;   \path (22) edge (11) ; 
+  \path (32) edge (21) ;   \path (21) edge (23) ;   \path (23) edge (12) ;   \path (12) edge (13) ; 
+  \path (32) edge (33) ;  \path (21) edge (22) ;  \path (23) edge (11) ;
+  \path (11) edge (13) ;
+  \fill[black!35,opacity=.2] (13.center)--(12.center)--(11.center)--cycle;
+  \fill[black!35,opacity=.2] (23.center)--(22.center)--(21.center)--cycle;
+  \fill[black!35,opacity=.2] (33.center)--(32.center)--(31.center)--cycle;
+  %\draw[thick,gray] (13.center)--(23.center)--(33.center)--cycle;
+\end{tikzpicture}
+\]
+It is easy to check that the partial order given is preserved. For any $i$, $E_{ij} \prec E_{ik}$ if $j>k$.
+These are the three triangles highlighted in the diagram above. Also for any $j$, $E_{ij} \prec E_{hj}$ if 
+$h>i$ as can be easily checked.
+\subno{4.} We have shown that $L_A$ is a linear map from $M_n \to M_n$. Therefore it can be uniquely determined
+by its action on the set of basis matrices $E_{ij}$. From the property $E_{ij}E_{kl}=E_{il}\delta_{jk}$ we have 
+\begin{align*}
+L_A E_{ij} = A E_{ij} & = \qty(\sum_{k,l} a_{kl} E_{kl}) E_{ij} 
+ = \sum_{k,l} a_{kl} E_{kj} \delta_{li} \\
+ & = \sum_k a_{ki} E_{kj}.
+\end{align*}
+Using the representation of linear maps by matrices, each column of the matrix should contain the coefficients 
+of the $E_{kj}$. The complication here that each basis vector (usually) has a single index while here the basis 
+matrices have two indices. Hence the indices of the $E$ matrices do not produce a straightforward  
+order in the same way that the indices of the basis vectors $v_1,v_2,\ldots,v_m$ do. We can overcome this difficulty by using the 
+total order given in the problem. Its (partial) explicit form is shown below: 
+\[
+E_{1n} \prec E_{1n-1} \prec \cdots \prec E_{11} \prec E_{2n} \prec E_{2n-1} \prec \cdots \prec E_{21}
+\cdots  E_{nn} \prec E_{nn-1} \prec \cdots \prec E_{n1}.
+\]
+Using this scheme the transformation matrix has the following structure 
+{\fontsize{6pt}{7pt}\selectfont
+\[
+    \begin{tikzpicture}[baseline={([yshift=-2.5ex]current bounding box.center)}]
+        \matrix(m) [matrix of nodes,ampersand replacement=\&, row sep=1ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=5ex, minimum width=3ex,anchor=center},] {
+                               \&   \mbox{$L_AE_{1n}$} 	\&  \mbox{$L_AE_{1n-1}$} 	\&  $\hd$               \&   \mbox{$L_AE_{11}$}  	\& \mbox{$L_AE_{2n}$} \&  \mbox{$L_AE_{2n-1}$}  \&  $\hd$ 		\&   \mbox{$L_AE_{21}$} \&     $\hd$ 	\& \mbox{$L_AE_{nn}$}  	\& \mbox{$L_AE_{nn-1}$} \&  $\hd$ 	\&   \mbox{$L_AE_{n1}$}\\
+         \mbox{$E_{1n}$}   \   \&   $a_{11}$     	  	\&         $0$              \&           $\hd$      \&   $0$                	\&    $a_{12}$        \&    $0$                 \&     $\hd$  	\&    $0$   			\&     $\hd$ 	\&    $a_{1n}$ 			\&    $0$    			\&  $\hd$   \&    $0$           \\
+         \mbox{$E_{1n-1}$} \   \&   $0$         		\&           $a_{11}$       \&           $\hd$      \&   $0$                	\&    $0$             \&    $a_{12}$            \&     $\hd$  	\&    $0$   			\&     $\hd$ 	\&    $0$ 				\&    $a_{1n}$   		\&  $\hd$   \&    $0$           \\
+         $\vd$             \   \&   $\vd$        		\&         $\vd$            \&         $\rdd$      	\&   $\vd$               	\&   $\vd$            \&   $\vd$                \&     $\rdd$  	\&   $\vd$   			\&     $\rdd$ 	\&   $\vd$ 				\&   $\vd$   			\&  $\rdd$ 	\&   $\vd$         \\
+         \mbox{$E_{11}$}   \   \&   $0$         		\&            $0$           \&           $\hd$      \&   $a_{11}$           	\&    $0$             \&    $0$                 \&     $\hd$  	\&    $a_{12}$   		\&     $\hd$ 	\&    $0$   			\&    $0$ 				\&  $\hd$   \&    $a_{1n}$           \\
+         \mbox{$E_{2n}$}   \   \&   $a_{21}$    		\&           $0$            \&           $\hd$      \&   $0$                	\&   $a_{22}$         \&           $0$          \&     $\hd$    \&   $0$  				\&     $\hd$  	\&    $a_{2n}$    			\&    $0$ 				\&  $\hd$   \&    $0$         \\
+         \mbox{$E_{2n-1}$} \   \&   $0$          		\&           $a_{21}$       \&           $\hd$      \&   $0$                	\&   $0$              \&           $a_{22}$     \&     $\hd$    \&   $0$    			\&     $\hd$   	\&    $0$   			\&    $a_{2n}$ 				\&  $\hd$   \&    $0$                  \\
+         $\vd$             \   \&   $\vd$        		\&         $\vd$            \&         $\rdd$      	\&   $\vd$               	\&   $\vd$            \&   $\vd$                \&     $\rdd$   \&   $\vd$     			\&     $\rdd$  	\&    $\vd$ 			\&    $\vd$   			\&  $\rdd$  \&    $\vd$               \\
+         \mbox{$E_{21}$}   \   \&   $0$          		\&           $0$            \&           $\hd$      \&   $a_{21}$           	\&   $0$              \&     $0$                \&     $\hd$    \&   $a_{22}$    		\&     $\hd$   	\&    $0$   			\&    $0$ 				\&  $\hd$   \&    $a_{2n}$                  \\
+         $\vd$             \   \&   $\vd$        		\&           $\vd$          \&     $\rdd$      		\&   $\vd$                  \&  $\vd$             \&  $\vd$                 \&     $\rdd$   \&  $\vd$   			\&     $\rdd$  	\&    $\vd$ 			\&    $\vd$   			\&  $\rdd$  \&    $\vd$      \\
+         \mbox{$E_{nn}$}   \   \&   $a_{n1}$     		\&           $0$            \&           $\hd$      \&   $0$                	\&    $a_{n2}$             \& $0$  					\& 	   $\hd$  	\& $0$  				\&     $\hd$   	\&  $a_{nn}$ 				\& $0$            	\&  $\hd$   \&   $0$     \\
+         \mbox{$E_{nn-1}$} \   \&   $0$          		\&           $a_{n1}$       \&           $\hd$      \&   $0$                	\&    $0$             \& $a_{n2}$  					\& 	   $\hd$  	\& $0$  				\&     $\hd$   	\&  $0$ 				\& $a_{nn}$            	\&  $\hd$   \&   $0$             \\
+         $\vd$             \   \&   $\vd$        		\&         $\vd$            \&         $\rdd$      	\&   $\vd$               	\&   $\vd$            \&  $\vd$        			\&     $\rdd$   \&   $\vd$    			\&     $\rdd$  	\&    $\vd$   			\&    $\vd$ 			\&  $\rdd$  \&    $\vd$       \\
+         \mbox{$E_{n1}$}   \   \&   $0$          		\&           $0$            \&           $\hd$      \&   $a_{n1}$            	\&    $0$             \& $0$  					\&     $\hd$  	\& $a_{n2}$   				\&     $\hd$   	\&  $0$ 				\& $0$          	\&  $\hd$   \&   $a_{nn}$           \\
+        };
+        \node[fit= (m-2-2.north west) (m-14-14.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+    \end{tikzpicture}   
+\]
+}
+If we interpret this structure as a ``matrix-of-matrices'' then each matrix element is the product of the identity matrix $I$ with the corresponding element of $A$. 
+The result is $A \otimes I$.
+
+For $R_A$
+\begin{align*}
+R_A E_{ij} =  E_{ij} A& = E_{ij}  \qty(\sum_{k,l} a_{kl} E_{kl}) 
+ = \sum_{k,l} a_{kl} E_{il} \delta_{jk} \\
+ & = \sum_l a_{jl} E_{il }.
+\end{align*}
+Now the matrix structure is different:
+{\fontsize{6pt}{7pt}\selectfont
+\[
+    \begin{tikzpicture}[baseline={([yshift=-2.5ex]current bounding box.center)}]
+        \matrix(m) [matrix of nodes,ampersand replacement=\&, row sep=1ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=5ex, minimum width=3ex,anchor=center},] {
+                               \&   \mbox{$L_AE_{1n}$} 	\&  \mbox{$L_AE_{1n-1}$} 	  \&  $\hd$               \&   \mbox{$L_AE_{11}$}  	\& \mbox{$L_AE_{2n}$} \&  \mbox{$L_AE_{2n-1}$}  \&  $\hd$ 		\&   \mbox{$L_AE_{21}$} \&     $\hd$ 	\& \mbox{$L_AE_{nn}$}  	\& \mbox{$L_AE_{nn-1}$} \&  $\hd$ 	\&   \mbox{$L_AE_{n1}$}\\
+         \mbox{$E_{1n}$}   \   \&   $a_{nn}$     	  	  \&       $a_{n-1n}$         \&           $\hd$      \&   $a_{1n}$             \&    $0$             \&    $0$                 \&     $\hd$  	\&    $0$   			\&     $\hd$ 	\&    $0$ 			\&    $0$    			\&  $\hd$   \&    $0$           \\
+         \mbox{$E_{1n-1}$} \   \&   $a_{nn-1}$          \&       $a_{n-1n-1}$       \&           $\hd$      \&   $a_{1n-1}$           \&    $0$             \&    $0$                 \&     $\hd$  	\&    $0$   			\&     $\hd$ 	\&    $0$ 				\&    $0$   		\&  $\hd$   \&    $0$           \\
+         $\vd$             \   \&   $\vd$        		    \&         $\vd$            \&         $\rdd$      	\&   $\vd$               	\&   $\vd$            \&   $\vd$                \&     $\rdd$  	\&   $\vd$   			\&     $\rdd$ 	\&   $\vd$ 				\&   $\vd$   			\&  $\rdd$ 	\&   $\vd$         \\
+         \mbox{$E_{11}$}   \   \&   $a_{n1}$         	  \&     $a_{n-11}$           \&           $\hd$      \&   $a_{11}$           	\&    $0$             \&    $0$                 \&     $\hd$  	\&    $0$   		\&     $\hd$ 	\&    $0$   			\&    $0$ 				\&  $\hd$   \&    $0$           \\
+         \mbox{$E_{2n}$}   \   \&   $0$    		          \&           $0$            \&           $\hd$      \&   $0$                	\&   $a_{nn}$         \&    $a_{n-1m}$          \&     $\hd$    \&   $a_{1n}$  				\&     $\hd$  	\&    $0$    			\&    $0$ 				\&  $\hd$   \&    $0$         \\
+         \mbox{$E_{2n-1}$} \   \&   $0$          		    \&           $0$            \&           $\hd$      \&   $0$                	\&   $a_{nn-1}$       \&    $a_{n-1n-1}$        \&     $\hd$    \&   $a_{1n-1}$    			\&     $\hd$   	\&    $0$   			\&    $0$ 				\&  $\hd$   \&    $0$                  \\
+         $\vd$             \   \&   $\vd$        		    \&         $\vd$            \&         $\rdd$      	\&   $\vd$               	\&   $\vd$            \&   $\vd$                \&     $\rdd$   \&   $\vd$     			\&     $\rdd$  	\&    $\vd$ 			\&    $\vd$   			\&  $\rdd$  \&    $\vd$               \\
+         \mbox{$E_{21}$}   \   \&   $0$          		    \&           $0$            \&           $\hd$      \&   $a_{21}$           	\&   $a_{n1}$         \&     $a_{n-11}$         \&     $\hd$    \&   $a_{11}$    		\&     $\hd$   	\&    $0$   			\&    $0$ 				\&  $\hd$   \&    $0$                  \\
+         $\vd$             \   \&   $\vd$        		    \&           $\vd$          \&      $\rdd$      		\&   $\vd$                \&  $\vd$             \&  $\vd$                 \&     $\rdd$   \&  $\vd$   			\&     $\rdd$  	\&    $\vd$ 			\&    $\vd$   			\&  $\rdd$  \&    $\vd$      \\
+         \mbox{$E_{nn}$}   \   \&   $0$     		        \&           $0$            \&           $\hd$      \&   $0$                	\&    $0$             \& $0$  					        \& 	   $\hd$  	\& $0$  				\&     $\hd$   	\&  $a_{nn}$ 				\& $a_{n-1n}$            	\&  $\hd$   \&   $a_{1n}$     \\
+         \mbox{$E_{nn-1}$} \   \&   $0$          		    \&           $0$            \&           $\hd$      \&   $0$                	\&    $0$             \& $0$  					        \& 	   $\hd$  	\& $0$  				\&     $\hd$   	\&  $a_{nn-1}$ 				\& $a_{n-1n-1}$            	\&  $\hd$   \&   $a_{1n-1}$             \\
+         $\vd$             \   \&   $\vd$        		    \&         $\vd$            \&         $\rdd$      	\&   $\vd$               	\&   $\vd$            \&  $\vd$        			    \&     $\rdd$   \&   $\vd$    			\&     $\rdd$  	\&    $\vd$   			\&    $\vd$ 			\&  $\rdd$  \&    $\vd$       \\
+         \mbox{$E_{n1}$}   \   \&   $0$          		    \&           $0$            \&           $\hd$      \&   $0$            	    \&    $0$             \& $0$  					        \&     $\hd$  	\& $0$   				\&     $\hd$   	\&  $a_{n1}$ 				\& $a_{n-11}$          	\&  $\hd$   \&   $a_{11}$           \\
+        };
+        \node[fit= (m-2-2.north west) (m-14-14.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+    \end{tikzpicture}   
+\]
+} 
+In this case we have a ``matrix-of-matrices'' with only diagonal elements. These are all equal to 
+\[
+    \begin{tikzpicture}[baseline={([yshift=-2.5ex]current bounding box.center)}]
+                \matrix(m) [matrix of nodes,ampersand replacement=\&, row sep=1ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=5ex, minimum width=3ex,anchor=center},] {
+                $a_{nn}$     	  	  \&       $a_{n-1n}$         \&           $\hd$      \&   $a_{1n}$  \\
+                 $a_{nn-1}$          \&       $a_{n-1n-1}$       \&           $\hd$      \&   $a_{1n-1}$ \\
+                 $\vd$        		    \&         $\vd$            \&         $\rdd$      	\&   $\vd$   \\
+                 $a_{n1}$         	  \&     $a_{n-11}$           \&           $\hd$      \&   $a_{11}$  \\
+                };
+        \node[fit= (m-1-1.north west) (m-4-4.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+    \end{tikzpicture}   
+\]
+The permutation matrix $R$ has the property 
+\[
+R x = 
+\left[\begin{array}{c} e_n^{\sf T}x \\  e_{n-1}^{\sf T}x \\  \vdots \\  e_{2}^{\sf T}x \\  e_{1}^{\sf T}x\end{array}\right]
+=
+\begin{bmatrix}
+  x_n \\ x_{n-1} \\ \vdots \\ x_2 \\ x_1 
+\end{bmatrix}
+, \ 
+x^{\sf T}R=x^{\sf T}R^{\sf T}=\qty(Rx)^{\sf T}.
+\]
+Hence, 
+\[
+RA^{\sf T}= 
+\mqty[ a_{1n} & a_{2n} & \cdots & a_{nn} \\ a_{1n-1} & a_{2n-1} & \cdots & a_{nn-1} \\
+\vdots & \vdots & \ddots & \vdots \\ a_{11} & a_{21} & \cdots & a_{n1}]
+\]
+and 
+\[
+RA^{\sf T}R=
+\mqty[ a_{nn} & a_{n-1n} & \cdots & a_{1n} \\ a_{nn-1} & a_{n-1n-1} & \cdots & a_{1n-1} \\
+\vdots & \vdots & \ddots & \vdots \\ a_{n1} & a_{n-11} & \cdots & a_{11}]
+\]
+completing the derivation.
+\subno{5.} Using the composite index for the Kronecker product 
+\[
+\qty(A \otimes I)_{n(i-1)+k,n(j-1)+l} = A_{ij} I_{kl} = a_{ij} \mathbbm{1}_{j \geq i}\delta_{kl}.
+\]
+If $A \otimes I$ is upper triangular we must have 
+\[
+n(j-1)+l < n(i-1)+k \Leftrightarrow \qty(A \otimes I)_{n(i-1)+k,n(j-1)+l}=0.
+\]
+Since $\delta_{kl}=0$ if $k \neq l$ the inequality is equivalent to $j<i$. If this condition holds 
+then $\mathbbm{1}_{j \geq i}=0$ and so the proof for $L_A$ is complete.
+
+From the matrix expression of $RA^{\sf T}R$ it is clear that this is an upper triangular matrix. 
+Since $I \otimes RA^{\sf T}R$ is a diagonal matrix of matrices, all elements below the diagonal 
+are zero.    
+\end{problem}
+\bibliographystyle{plainnat} 
+\bibliography{LinOptRefs} 
+\end{document}
