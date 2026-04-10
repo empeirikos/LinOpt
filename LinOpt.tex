@@ -6,6 +6,9 @@
 \usepackage{ifdraft}
 \usepackage{asymptote}
 \usepackage{nccmath}
+\usepackage{mathtools}
+
+\allowdisplaybreaks
 
 \usepackage{listings}
 
@@ -17,6 +20,7 @@
 \newcommand{\code}[1]{\lstinline!#1!}
 \newcommand{\codebg}[2]{\setlength{\fboxsep}{0pt}\colorbox{#1}{\lstinline!#2!}}
 \newcommand{\subno}[1]{\par\noindent\textbf{#1}}
+\newcommand{\sT}{{\sf T}}
 
 \ifoptiondraft
 {
@@ -27,6 +31,10 @@
     \geometry{paperheight=25cm,paperwidth=17cm,top=1.5cm,bottom=1.cm,left=1cm,right=1cm}
 }
 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+
 \usepackage{mlmodern}
 \usepackage[T1]{fontenc}
 
@@ -34,7 +42,7 @@
 \usepackage{bbm}
 
 \usepackage{tikz}
-\usetikzlibrary{matrix,fit,decorations.text,positioning,arrows.meta,patterns}
+\usetikzlibrary{matrix,fit,decorations.text,positioning,arrows.meta,patterns,shapes,math}
 
 \tikzset{mystyle/.style={draw,circle,label={[fill=yellow]0:#1}}}
 
@@ -117,6 +125,44 @@
   }%
 }%
 
+\NewDocumentCommand{\drawhnodes}{ m m }   
+{
+    \tikzmath{
+        coordinate \a, \b;
+        int \i;
+        \a = (#1.west);
+        \b = (#1.east);
+        \l = \bx - \ax;
+        \dx = 5.0;
+        \n = int(\l/\dx);
+        \g = (\l - \n * \dx)/2.0 ;
+        coordinate \c;
+        for \i in {1,...,\n+1}{
+            \c = ({\ax+\g+(\i-1)*\dx},\ay);
+            {\filldraw[fill=#2,line width=0.1mm] (\c) circle (.2mm) ;};
+        };
+    }    
+}
+
+\NewDocumentCommand{\drawvnodes}{ m m }   
+{
+    \tikzmath{
+        coordinate \a, \b;
+        int \i;
+        \a = (#1.north);
+        \b = (#1.south);
+        \l = \ay - \by;
+        \dy = 5.0;
+        \n = int(\l/\dy);
+        \g = (\l - \n * \dy)/2.0 ;
+        coordinate \c;
+        for \i in {1,...,\n+1}{
+            \c = (\ax,{\by+\g+(\i-1)*\dy});
+            {\filldraw[fill=#2,line width=0.1mm] (\c) circle (.2mm) ;};
+        };
+    }
+}
+
 \newcommand{\Out}{\mathsf{O}}
 \newcommand{\T}{\mathsf{T}}
 \newcommand{\Q}{\mathsf{Q}}
@@ -133,6 +179,7 @@
 \DeclareMathOperator{\softmax}{softmax}
 \DeclareMathOperator{\g}{g}
 \DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator{\diag}{diag}
 
 \newtheoremstyle{pprop}
                 {\topsep} % space above
@@ -140,9 +187,9 @@
                 {\normalshape} % body font
                 {0pt} % indent amount
                 {\bfseries} % head font
-                {:} % punctuation after head
-                {\newline } % space after theorem head
-                {} % theorem head spec
+                {} % punctuation after head
+                {0pt} % space after theorem head
+                {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}\\[6pt]} % theorem head spec
                 
 \theoremstyle{pprop}
 \newtheorem{problem}{Problem}[section]
@@ -1229,7 +1276,8 @@ $$
 \phi=-6 \phi_1 +2 \phi_2+\phi_3.
 $$  
 \end{problem}
-\section{Chapter 3}
+\section*{Chapter 3}
+\setcounter{section}{3}
 \begin{problem}
 \begin{align*}
 & \left[\begin{matrix}1 & 2 & 3\\2 & 3 & 7\\1 & 3 & 1\end{matrix}\right] \xrightarrow{-2R1+R2}
@@ -2107,6 +2155,603 @@ From the matrix expression of $RA^{\sf T}R$ it is clear that this is an upper tr
 Since $I \otimes RA^{\sf T}R$ is a diagonal matrix of matrices, all elements below the diagonal 
 are zero.    
 \end{problem}
+\section*{Chapter 4}
+\stepcounter{section}
+A great additional reference for this chapter is \cite{strang1993wavelet}.
+\begin{problem}
+\subno{1.} This part is straightforward. 
+\subno{2.} To get a formula for the inverse use the equation in (1). If $y=W_{3,3}c$, then
+\[
+\begin{tikzpicture}
+\matrix(m) [matrix of nodes,ampersand replacement=\&, row sep=1ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+$c_1$ \& = \& $\frac12 y_1$ \& + \& $\frac12 y_2$ \&               \&                \\
+$c_2$ \& = \&               \&   \&               \& + \& $\frac12 y_3$ \& + \& $\frac12 y_4$  \\           
+$c_3$ \& = \&               \&   \&               \&  \&             \&  \&              \&+\& $\frac12 y_5$ \& + \& $\frac12 y_6$\\           
+$c_4$ \& = \&               \&   \&               \&   \&            \&  \&              \& \&              \&  \&               \& + \& $\frac12 y_7$ \& + \& $\frac12 y_8$\\           
+$c_5$ \& = \& $\frac12 y_1$ \& - \&  $\frac12 y_2$\&   \& \\
+$c_6$ \& = \&                \&  \&               \& + \&$\frac12 y_3$ \& + \& $\frac12 y_4$   \\
+$c_7$ \& = \&               \&   \&               \&   \&            \&  \&              \&+\& $\frac12 y_5$ \& - \& $\frac12 y_6$\\           
+$c_8$ \& = \&               \&   \&               \&    \&           \&  \&              \&  \&             \&  \&              \& + \& $\frac12 y_7$ \& - \& $\frac12 y_8$\\           
+}; 
+\end{tikzpicture}
+\] 
+which translates to 
+\[
+W_{3,3}^{-1}= \frac12
+\mqty[ 
+  1 & 1 & 0  & 0  & 0  & 0  & 0 & 0 \\
+  0 & 0 & 1  & 1  & 0  & 0  & 0 & 0 \\
+  0 & 0 & 0  & 0  & 1  & 1  & 0 & 0 \\
+  0 & 0 & 0  & 0  & 0  & 0  & 1 & 1 \\
+  1 & -1 & 0  & 0  & 0  & 0  & 0 & 0 \\
+  0 & 0 & 1  & -1  & 0  & 0  & 0 & 0 \\
+  0 & 0 & 0  & 0  & 1  & -1  & 0 & 0 \\
+  0 & 0 & 0  & 0  & 0  & 0  & 1 & -1 \\
+] = \frac12 W_{3,3}^{\sf T}.
+\]
+Next for the orthogonality of the columns of $W_{3,3}$ 
+\[
+W_{3,3}^{\sf T}W_{3,3}=\left[\begin{matrix}2 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\0 & 2 & 0 & 0 & 0 & 0 & 0 & 0\\0 & 0 & 2 & 0 & 0 & 0 & 0 & 0\\0 & 0 & 0 & 2 & 0 & 0 & 0 & 0\\0 & 0 & 0 & 0 & 2 & 0 & 0 & 0\\0 & 0 & 0 & 0 & 0 & 2 & 0 & 0\\0 & 0 & 0 & 0 & 0 & 0 & 2 & 0\\0 & 0 & 0 & 0 & 0 & 0 & 0 & 2\end{matrix}\right]
+=2 I
+\]
+and 
+\[
+W_{3,3}W_{3,3}^{\sf T}= \left[\begin{matrix}2 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\0 & 2 & 0 & 0 & 0 & 0 & 0 & 0\\0 & 0 & 2 & 0 & 0 & 0 & 0 & 0\\0 & 0 & 0 & 2 & 0 & 0 & 0 & 0\\0 & 0 & 0 & 0 & 2 & 0 & 0 & 0\\0 & 0 & 0 & 0 & 0 & 2 & 0 & 0\\0 & 0 & 0 & 0 & 0 & 0 & 2 & 0\\0 & 0 & 0 & 0 & 0 & 0 & 0 & 2\end{matrix}\right]
+= 2 I
+\]
+which proves that the rows and columns of $W_{3,3}^{-1}$ are orthogonal.
+\subno{3.} This is easier by writing each of $W_{3,1}, \ W_{3,2}, \ W_{3,3}$ as block $4 \times 4$ matrices 
+\begin{align*}
+  W_{3,1} & = \mqty[ H & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I \\] \\
+   W_{3,2} & = \mqty[ E_1 & A_1 & O & O \\ E_2 & A_2 & O & O \\ O & O & I & O \\ O & O & O & I \\] \\
+   W_{3,3} & = \mqty[ E_1 & O & A_1 & O \\ E_2 & O & A_2 & O \\ O & E_1 & O & A_1 \\ O & E_2 & O & A_2 \\] 
+\end{align*}
+where $H=\smqty[1 & 1 \\ 1 & -1]$, $E_1=\smqty[1 & 0 \\ 1 & 0]$,  $E_2=\smqty[0 & 1 \\ 0 & 1]$, $A_1=\smqty[1 & 0 \\ -1 & 0]$ and
+$A_2=\smqty[0 & 1 \\ 0 & -1 ]$. 
+Then 
+\begin{align*}
+W_{3,2}W_{3,1} & =
+\mqty[E_1 H & A_1 & O & O \\ 
+E_2H  & A_2 & O & O \\
+O & O & I & O \\
+O & O & O & I \\
+] \\
+& =
+\mqty[E & A_1 & O & O \\ 
+A^{\sf T} & A_2 & O & O \\
+O & O & I & O \\
+O & O & O & I \\
+] 
+\end{align*}
+where $E=E_1+E_2=\smqty[1 & 1 \\ 1 & 1]$ and $A=A_1+A_2=\smqty[1 & 1 \\ -1 & -1]$.
+Finally 
+\begin{align*}
+W_{3,3}W_{3,2}W_{3,1} & =
+\mqty[E_1E & E_1A_1 & A_1 & O \\  
+E_2E & E_2A_1 & A_2 & O \\
+E_1A^{\sf T} & E_1A_2 & O & A_1 \\
+E_2A^{\sf T} & E_2A_2 & O & A_2 \\
+] \\
+& =
+\mqty[E & E_1 & A_1 & O \\  
+E & -E_1 & A_2 & O \\
+A^{\sf T} & E_2 & O & A_1 \\
+A^{\sf T} & -E_2 & O & A_2 \\
+] .
+\end{align*}
+The last matrix is equal to $W_3$.
+\subno{4.} The proof for $W_{3,1}$ is straightforward since 
+\[
+W_{3,1}^{\sf T}W_{3,1}=W_{3,1}W_{3,1}^{\sf T}=W_{3,1}^2 =
+\mqty[H^2 & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I]
+=
+\mqty[2I & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I].
+\]
+For $W_{3,2}$ first check column orthogonality:
+\begin{align*}
+W_{3,2}^{\sf T}W_{3,2} & =
+\mqty[E_1^{\sf T} & E_2^{\sf T} & O & O \\
+A_1^{\sf T} & A_2^{\sf T} & O & O \\
+O & O & I & O \\
+O & O & O & I 
+]
+\mqty[ E_1 & A_1 & O & O \\ E_2 & A_2 & O & O \\ O & O & I & O \\ O & O & O & I \\] \\
+& =
+\mqty[E_1^{\sf T}E_1+E_2^{\sf T}E_2 & E_1^{\sf T}A_1+E_2^{\sf T}A_2 & O & O \\
+A_1^{\sf T}E_1+ A_2^{\sf T}E_2& A_1^{\sf T}A_1+ A_2^{\sf T}A_2& O & O \\
+O & O & I & O \\
+O & O & O & I 
+].
+\end{align*}
+Use 
+\[
+E_1^{\sf T}E_1=A_1^{\sf T}A_1=2E_{11}, \; E_2^{\sf T}E_2=A_2^{\sf T}A_2=E_{22}, \; E_1^{\sf T}A_1=E_2^{\sf T}A_2=O
+\]
+to rewrite the last equation as 
+\[
+W_{3,2}^{\sf T}W_{3,2}  = \mqty[
+2I & O & O & O \\
+O & 2I & O & O \\
+O & O & I & O \\
+O & O & O & I 
+]
+\]
+from which we conclude the columns of $W_{3,2}$ are orthogonal. For the rows 
+\begin{align*}
+W_{3,2} W_{3,2}^{\sf T}& =
+\mqty[ E_1 & A_1 & O & O \\ E_2 & A_2 & O & O \\ O & O & I & O \\ O & O & O & I \\]
+\mqty[E_1^{\sf T} & E_2^{\sf T} & O & O \\
+A_1^{\sf T} & A_2^{\sf T} & O & O \\
+O & O & I & O \\
+O & O & O & I 
+] \\
+& =
+\mqty[E_1E_1^{\sf T}+A_1A_1^{\sf T} & E_1E_2^{\sf T}+A_1A_2^{\sf T} & O & O \\
+E_2A_1^{\sf T}+ A_2A_1^{\sf T}& E_2E_2^{\sf T}+ A_2A_2^{\sf T}& O & O \\
+O & O & I & O \\
+O & O & O & I 
+].  
+\end{align*}
+Use 
+\[
+E_1E_1^{\sf T}=E_2E_2^{\sf T}=E, \; A_1A_1^{\sf T}=A_2A_2^{\sf T}=\smqty[1 & -1 \\ -1 & 1]=L, \; E_1E_2^{\sf T}=A_1A_2^{\sf T}=E_2A_1^{\sf T}=A_2A_1^{\sf T}=O
+\]
+to conclude that 
+\[
+W_{3,2} W_{3,2}^{\sf T} =
+ \mqty[
+2I & O & O & O \\
+O & 2I & O & O \\
+O & O & I & O \\
+O & O & O & I 
+ ] .
+\]
+From these to test the orthogonality of the columns of $W_3$
+\begin{align*}
+  W_3^{\sf T}W_3 & = W_{3,1}^{\sf T} W_{3,2}^{\sf T} W_{3,3}^{\sf T} W_{3,3} W_{3,2} W_{3,1} \\
+  & = W_{3,1}^{\sf T} W_{3,2}^{\sf T} \diag([2I,2I,2I,2I]) W_{3,2} W_{3,1} \\
+  & = 2 W_{3,1}^{\sf T} W_{3,2}^{\sf T} W_{3,2} W_{3,1} \\
+  & = 2 W_{3,1}^{\sf T} \diag([2I,2I,I,I]) W_{3,1} \\
+  & = 2 \mqty[H & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I]
+   \mqty[
+2I & O & O & O \\
+O & 2I & O & O \\
+O & O & I & O \\
+O & O & O & I 
+ ] 
+ \mqty[H & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I] \\
+ & = 2 \mqty[H & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I]
+ \mqty[2H & O & O & O \\ O & 2I & O & O \\ O & O & I & O \\ O & O & O & I]
+ =  \mqty[8I & O & O & O \\ O & 4I & O & O \\ O & O & 2I & O \\ O & O & O & 2I].
+\end{align*}
+For rows of $W_3^{-1}$, 
+\begin{align*}
+  W_3^{-1}W_3^{-\sf T} & = \qty(W_3^\T W_3)^{-1} \\
+  & =\mqty[ \frac18I & O & O & O \\ O & \frac14I & O & O \\ O & O & \frac12I & O \\ O & O & O & \frac12I \\]  .
+\end{align*}
+proving orthogonality.
+For the rows of $W_3$
+\begin{align*}
+   W_3 W_3^{\sf T} & = W_{3,3}W_{3,2}W_{3,1}W_{3,1}^{\sf T}W_{3,2}^{\sf T}W_{3,3}^{\sf T} \\
+   & = W_{3,3}W_{3,2}\diag\qty(\qty[2I,I,I,I])W_{3,2}^{\sf T}W_{3,3}^{\sf T} \\
+   & = W_{3,3} \mqty[ E_1 & A_1 & O & O \\ E_2 & A_2 & O & O \\ O & O & I & O \\ O & O & O & I \\]
+   \mqty[ 2I & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I \\]
+   \mqty[E_1^{\sf T} & E_2^{\sf T} & O & O \\A_1^{\sf T} & A_2^{\sf T} & O & O \\O & O & I & O \\O & O & O & I ] 
+   W_{3,3}^{\sf T} \\
+   & = W_{3,3} \mqty[ E_1 & A_1 & O & O \\ E_2 & A_2 & O & O \\ O & O & I & O \\ O & O & O & I \\]
+   \mqty[2E_1^{\sf T} & 2E_2^{\sf T} & O & O \\A_1^{\sf T} & A_2^{\sf T} & O & O \\O & O & I & O \\O & O & O & I ] W_{3,3}^{\sf T}  \\
+   & =  W_{3,3} \mqty[ 2E_1E_1^{\sf T}+A_1A_1^{\sf T} & 2E_1E_2^{\sf T}+A_1A_2^{\sf T} & O & O \\ 
+   2E_2E_1^{\sf T}+A_2A_1^{\sf T} & 2E_2E_2^{\sf T}+A_2A_2^{\sf T} & O & O \\ O & O & I & O \\ O & O & O & I \\] W_{3,3}^{\sf T} \\
+   & =  W_{3,3} \mqty[ E+2I & O & O & O \\ 
+   O & E+2I & O & O \\ O & O & I & O \\ O & O & O & I \\] W_{3,3}^{\sf T}  
+\end{align*}
+The second matrix is not diagonal and so the rows of $W_3$ are not orthogonal. For the columns of $W_3^{-1}$
+\begin{align*}
+  W_3^{-\T} W_3^{-1} & = \qty(W_3 W_3^\T)^{-1}. 
+\end{align*}
+We have already shown that the matrix in the brackets is not a diagonal matrix and hence its inverse is also not a diagonal matrix.
+Therefore the columns of $W_3^{-1}$ are not orthogonal.
+
+The inverse of $W_{3,1}$ is 
+\[
+W_{3,1}^{-1}=
+\mqty[H^{-1} & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I]=
+\mqty[\frac12H & O & O & O \\ O & I & O & O \\ O & O & I & O \\ O & O & O & I].
+\]
+To find the inverse of $W_{3,2}$ it is easier to rewrite it as a $2 \times 2$ block matrix 
+\[
+W_{3,2}= \mqty[ W_{2,2} & O \\ O & I].
+\]
+where 
+\[
+W_{2,2} = \mqty[1 & 0 & 1 & 0 \\ 1 & 0 & -1 & 0 \\ 0 & 1 & 0 & 1 \\ 0 & 1 & 0 & -1].
+\]
+From this it is clear that 
+\[
+W_{3,2}^{-1}= \mqty[ W_{2,2}^{-1} & O \\ O & I].
+\]
+To find the inverse of $W_{2,2}$ we follow exactly the same procedure as for $W_{3,3}$.
+As expected $W_{2,2}^{-1}=\frac12W_{2,2}^\T$ and so 
+\[
+W_{3,2}^{-1}= \mqty[ \frac12 W_{2,2}^\T & O \\ O & I].
+\]
+\end{problem}
+\begin{problem}
+\subno{1.} %An example of $W_{n,n}$ for $n=4$ is shown below 
+%\[
+%\begin{tikzpicture}
+%  \matrix(m) [matrix of math nodes, row sep=1ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+%    1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%    1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%    0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+%    0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & 0 & 0\\
+%    0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+%    0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 & 0\\
+%    0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+%    0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0\\
+%    0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+%    0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0 & 0\\
+%    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+%    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0 & 0\\
+%    0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+%    0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1 & 0\\
+%    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+%    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & -1\\
+%};
+%        \node[fit= (m-1-1.north west) (m-16-16.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+%\end{tikzpicture}
+%\]  
+From the scheme given for constructing the $W_{n,n}$ matrix: 
+\[
+\begin{tikzpicture}
+  \matrix(m) [matrix of math nodes, row sep=4ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+  \text{row 1:}       & 1 & 0 &     &   &  &   & 0 &  1   &   & &   &   &    & 0  & & & & & & & & & & & & \\
+  \text{row 2:}       & 1 & 0 &     &   &  &   & 0 &  -1   &  & &   &   &    & 0  & & & & & & & & & & & & \\
+                   &   &   &     &   &  &   &   &     &   & &   &   &     &   & & & & & & & & & & & & \\
+                   &   &   &     &   &  &   &   &     &   & &   &   &     &   & & & & & & & & & & & & \\
+  \text{row $2k+1$:}  & 0 & 0 & \hd & 0 &  & 1 & 0 & \hd & 0 & & 1 & 0 & \hd & 0 & & & & & & & & & & & & \\[-2ex]
+  \text{row $2k+2$:}  & 0 & 0 & \hd & 0 &  & 1 & 0 & \hd & 0 & & -1 & 0 & \hd & 0 & & & & & & & & & & & & \\
+                      &   &   &     &   &  &   &   &     &   & &   &   &      &   & & & & & & & & & & & & \\
+                      &   &   &     &   &  &   &   &     &   & &   &   &      &   & & & & & & & & & & & & \\
+  };  
+  \node[fit= (m-6-2.south west) (m-6-5.south east), below delimiter={\}},inner sep=0ex,label={[yshift=-7pt]below:{$k$}}]  {};
+  \node[fit= (m-6-7.south west) (m-6-10.south east), below delimiter={\}},inner sep=0ex,label={[yshift=-7pt]below:{$2^{n-1}$}}]  {};
+  \node[fit= (m-6-12.south west)(m-6-15.south east), below delimiter={\}},inner sep=0ex,label={[yshift=-7pt]below:{$2^{n-1}-k$}}]  {};
+  \node[fit= (m-1-4.north west) (m-1-7.south east),inner sep=0ex] (supb1417) {};
+  \drawhnodes{supb1417}{black};
+  \node[fit= (m-2-4.north west) (m-2-7.south east),inner sep=0ex] (supb2427) {};
+  \drawhnodes{supb2427}{black};
+  \node[fit= (m-2-9.south west) (m-2-15.south east), below delimiter={\}},inner sep=0ex,label={[yshift=-7pt]below:{$2^{n-1}$}}]  {};
+  \node[fit= (m-2-2.south west) (m-2-8.south east), below delimiter={\}},inner sep=0ex,label={[yshift=-7pt]below:{$2^{n-1}$}}]  {};
+  \node[fit= (m-2-10.north west) (m-2-14.south east),inner sep=0ex] (supb210214) {};
+  \drawhnodes{supb210214}{black};
+  \node[fit= (m-1-10.north west) (m-1-14.south east),inner sep=0ex] (supb110114) {};
+  \drawhnodes{supb110114}{black};
+  \node[fit= (m-3-5.south west) (m-4-5.south east),inner sep=0ex] (supb3545) {};
+  \drawvnodes{supb3545}{black};
+  \node[fit= (m-3-12.south west) (m-4-12.south east),inner sep=0ex] (supb312412) {};
+  \drawvnodes{supb312412}{black};
+  \node[fit= (m-7-5.north west) (m-8-5.north east),inner sep=0ex] (supb7585) {};
+  \drawvnodes{supb7585}{black};
+  \node[fit= (m-7-12.north west) (m-8-12.north east),inner sep=0ex] (supb712812) {};
+  \drawvnodes{supb712812}{black};
+\end{tikzpicture}
+\]
+Using this template 
+\begin{align*}
+  u^n(2k+1) & = u^{n-1}(k+1)+u^{n-1}(2^{n-1}+k+1) \\
+  u^n(2k+2) & = u^{n-1}(k+1)-u^{n-1}(2^{n-1}+k+1) \\
+\end{align*} 
+Using the recursive relation for the last step we get 
+\begin{align*}
+  u^n(2^n) & = u^{n-1}(2^{n-1})-u^{n-1}(2^n)\\
+  u^n(2^n-1) & = u^{n-1}(2^{n-1})+u^{n-1}(2^n)  \\
+  \vdots \kern3ex  & \kern16ex \vdots \\
+  u^n(2^n - 2k') & = u^{n-1}(2^{n-1}-k')-u^{n-1}(2^n-k') \\
+  u^n(2^n - 2k'-1) & = u^{n-1}(2^{n-1}-k')+u^{n-1}(2^n-k')  \\
+  \vdots \kern3ex  & \kern16ex \vdots 
+\end{align*}
+If we set $k'=2^{n-1}-k-1$ then
+\begin{align*}
+  u^n(2^n - 2k') &= u^n(2k+2) = u^{n-1}(k+1)-u^{n-1}(2^{n-1}+k+1) \\
+  u^n(2^n - 2k'-1) & = u^n(2k+1) = u^{n-1}(k+1)+u^{n-1}(2^{n-1}+k+1)  
+\end{align*}
+so the template and the recursive relation produce identical reconstructions.
+The same property can be used to obtain the inverse by noting that 
+\begin{align*}
+  u^{n-1}(2^{n-1}-k) & = \frac12 \qty(u^n(2^n - 2k-1)+u^n(2^n - 2k)) \\
+  u^{n-1}(2^n-k) & = \frac12 \qty(u^n(2^n - 2k-1) - u^n(2^n - 2k))
+\end{align*}
+Note that now the $u^n$ components are separated by 1. Also, since $k=0,\ldots,2^{n-1}-1$, the formula for $u^{n-1}(2^n-k)$
+applies for rows $2^{n-1}+1$ to $2^n$ while the formula for $u^{n-1}(2^{n-1}-k)$ applies for rows $1$ to $2^{n-1}$. This is 
+the same as $W_{n,n}^\T$ except from the factor of $\frac12$. Orthogonality of columns and rows follows from this property 
+since 
+\[
+W_{n,n}^\T W_{n,n} =2 W_{n,n}^{-1} W_{n,n} = 2 I, \quad   W_{n,n} W_{n,n}^\T =2 W_{n,n}  W_{n,n}^{-1} = 2I.
+\] 
+\subno{2.} The formula given for $W_{n,n}$ produces a matrix with the following structure:
+\[
+\begin{tikzpicture}
+  \matrix(m) [matrix of math nodes, row sep=0ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+     & {\scriptscriptstyle1} & {\scriptscriptstyle2} &  \hd   & {\scriptscriptstyle2^{n-1}}  & {\scriptscriptstyle1}  &  {\scriptscriptstyle2}   & \hd  & {\scriptscriptstyle2^{n-1}} &  \\
+  {\scriptscriptstyle1}\quad & 1 & 0 &  \hd   & 0  & 1  &  0   & \hd  & 0  &  \\
+  {\scriptscriptstyle1}\quad & 1 & 0 &  \hd   & 0  & -1 &  0   & \hd  & 0  &  \\
+  {\scriptscriptstyle2}\quad & 0 & 1 &  \hd   & 0  &  0  & 1   & \hd  & 0  &  \\
+  {\scriptscriptstyle2}\quad & 0 & 1 &  \hd   & 0  &  0  & -1  & \hd  & 0  &  \\
+    \vd \quad & \vd  & \vd  &  \rdd   & \vd  &  \vd  &  \vd   & \rdd  & \vd  &  \\
+  {\scriptscriptstyle2^{n-1}}\quad & 0  & 0  &  \hd    & 1  & 0  &  0   & \hd  & 1 &  \\
+  {\scriptscriptstyle2^{n-1}}\quad & 0  & 0  &  \hd   & 1  &  0 &   0  & \hd  & -1&  \\
+  };  
+  \node[fit= (m-2-2.north west) (m-8-9.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+\end{tikzpicture}
+\]
+This the correct expression for $W_{n,n}$. For $W_n$ first note that from the definition of $W_0, \ W_2$
+\[
+W_2 = \mqty[\mqty(1 \\ 1) & \mqty(1 \\ -1)]= \mqty[1 \otimes \mqty(1 \\ 1) & 1 \otimes \mqty(1 \\ -1)]
+= \mqty[W_0 \otimes \mqty(1 \\ 1) & I_0 \otimes \mqty(1 \\ -1)]
+\]
+which is in agreement with the formula given ($I_0=W_0=1$). Given the vector $u^{n-1}$ of reconstructed coefficients then 
+\begin{align*}
+W_n c & = \mqty[W_{n-1} \otimes \mqty(1 \\ 1) & I_{2^{n-1}} \otimes \mqty(1 \\ -1)] \mqty(c^1 \\ c^2) \\ 
+& = \qty(W_{n-1} \otimes \mqty(1 \\ 1)) c^1 + \qty(I_{2^{n-1}} \otimes \mqty(1 \\ -1)) c^2 
+\end{align*}
+where $c^1=\qty(c_1,\ldots,c_{2^{n-1}})$ and $c^2=\qty(c_{2^{n-1}+1},\ldots,c_{2^{n}})$. We can use the formulas given to write
+\[
+\qty(W_{n-1} \otimes \mqty(1 \\ 1)) c^1 = \qty(W_{n-1} \otimes \mqty(1 \\ 1)) (c^1 \otimes 1) = \qty(W_{n-1} c^1) \otimes \mqty(1 \\ 1)  
+\]
+and
+\[
+\qty(I_{2^{n-1}} \otimes \mqty(1 \\ -1)) c^2 = \qty(I_{2^{n-1}} \otimes \mqty(1 \\ -1)) (c^2 \otimes 1) = c_2 \otimes \mqty(1 \\ -1). 
+\]
+$W_{n-1} c^1$ is the full reconstruction using $c^1$ which is a vector with $2^{n-1}$ components. $c^2$ is the vector of the last 
+$2^{n-1}$ components of $c$. Then, if we abbreviate $W_{n-1} c^1$ with $u^{n-1}_{n-1}$, 
+\begin{equation*}
+\qty(u^{n-1}_{n-1}\otimes \mqty(1 \\ 1))^\T = 
+\mqty[u^{n-1}_{n-1,1} & u^{n-1}_{n-1,1} & u^{n-1}_{n-1,2} & u^{n-1}_{n-1,2} & \cdots & u^{n-1}_{n-1,2^{n-1}} & u^{n-1}_{n-1,2^{n-1}}],
+\end{equation*}
+and 
+\begin{equation*}
+\qty(c^2 \otimes \mqty(1 \\ -1))^\T = 
+\mqty[c_{2^{n-1}+1} & -c_{2^{n-1}+1} & c_{2^{n-1}+2} & -c_{2^{n-1}+2} & \cdots & c_{2^{n}} & -c_{2^{n}} ].
+\end{equation*}
+Combining the two equations 
+{\fontsize{7pt}{8pt}\selectfont
+\begin{multline*}
+\qty(u^{n-1}_{n-1}\otimes \mqty(1 \\ 1)+c^2 \otimes \mqty(1 \\ -1) )^\T = \\
+\mqty[u^{n-1}_{n-1,1}+c_{2^{n-1}+1} & u^{n-1}_{n-1,1}-c_{2^{n-1}+1} & u^{n-1}_{n-1,2}+c_{2^{n-1}+2} & u^{n-1}_{n-1,2}-c_{2^{n-1}+2}   & \cdots & u^{n-1}_{n-1,2^{n-1}}+c_{2^{n}} & u^{n-1}_{n-1,2^{n-1}}-c_{2^{n}} ],
+\end{multline*} }
+which is the final equation for the reconstruction of the signal from page 107. Recall that in these equations $u^{n-1}(2^{n-1}+i)=c(2^{n-1}+i)$ since in all steps we start with 
+$u^{j+1}=u^j$ and the only modifications apply to components $1,\ldots,2^{j+1}$.
+
+For the reproof, using $(A \otimes B)^\T=A^\T \otimes B^\T$, 
+\begin{align*}
+W_{n,n}W_{n,n}^\T  & =
+\mqty[I_{2^{n-1}}\otimes \mqty(1 \\ 1) & I_{2^{n-1}}\otimes \mqty(1 \\ -1)]
+\mqty[I_{2^{n-1}}\otimes \mqty(1 & 1) \\ I_{2^{n-1}}\otimes \mqty(1 & -1)]      \\
+& = \qty(I_{2^{n-1}}\otimes \mqty(1 \\ 1))\qty(I_{2^{n-1}}\otimes \mqty(1 & 1))
++ \qty(I_{2^{n-1}}\otimes \mqty(1 \\ -1))\qty(I_{2^{n-1}}\otimes \mqty(1 & -1))  \\
+& = \qty(I_{2^{n-1}} I_{2^{n-1}})\otimes \qty(\mqty(1 \\ 1)\mqty(1 & 1))
++ \qty(I_{2^{n-1}} I_{2^{n-1}})\otimes \qty(\mqty(1 \\ -1)\mqty(1 & -1)) \\
+& = I_{2^{n-1}} \otimes \mqty[1 & 1 \\ 1 & 1]  + I_{2^{n-1}} \otimes \mqty[1 & -1 \\ -1 & 1] \\
+& = I_{2^{n-1}} \otimes \qty(\mqty[1 & 1 \\ 1 & 1]+\mqty[1 & -1 \\ -1 & 1]) \\
+& = I_{2^{n-1}} \otimes \mqty[2 & 0 \\ 0 & 2] = 2 I_{2^{n-1}} \otimes I_2 = 2 I_{2^n}. 
+\end{align*}
+
+Next we use proof by induction. From the definition of $W_1$
+\[
+W_1^\T W_1 = \mqty[1 & 1 \\ 1 & -1]\mqty[1 & 1 \\ 1 & -1]=\mqty[2 & 0 \\ 0 & 2]=B_1.
+\]
+Assume that $W_{n-1}^\T W_{n-1}=B_{n-1}$. Then 
+\begin{align*}
+  W_{n}^\T W_{n} & = \mqty[W_{n-1}^\T \otimes \mqty(1 & 1) \\ I_{2^{n-1}} \otimes \mqty(1 & -1) ]
+  \mqty[W_{n-1}\otimes \mqty(1 \\ 1) & I_{2^{n-1}}  \otimes \mqty(1 \\ -1) ]  \\
+  & = \mqty[
+\qty(W_{n-1}^\T \otimes \mqty(1 & 1))\qty(W_{n-1}\otimes \mqty(1 \\ 1))  & \qty(W_{n-1}^\T \otimes \mqty(1 & 1))\qty(I_{2^{n-1}}\otimes \mqty(1 \\ -1)) \\
+\qty(I_{2^{n-1}} \otimes \mqty(1 & -1))\qty(W_{n-1}\otimes \mqty(1 \\ 1))  & \qty(I_{2^{n-1}}\otimes \mqty(1 & -1))\qty(I_{2^{n-1}}\otimes \mqty(1 \\ -1)) 
+  ] \\
+ & = \mqty[
+\qty(W_{n-1}^\T W_{n-1})\otimes \qty(\mqty(1 & 1)\mqty(1 \\ 1)) & \qty(W_{n-1}^\T I_{2^{n-1}}) \otimes  \qty(\mqty(1 & 1)\mqty(1 \\ -1)) \\
+\qty(I_{2^{n-1}}W_{n-1}) \otimes \qty(\mqty(1 & -1)\mqty(1 \\ 1)) & \qty(I_{2^{n-1}}I_{2^{n-1}})\otimes \qty(\mqty(1 & -1)\mqty(1 \\ -1)) 
+ ]  \\
+ & = \mqty[
+B_{n-1} \otimes 2 &  W_{n-1}^\T  \otimes  0 \\
+W_{n-1} \otimes 0 & I_{2^{n-1}} \otimes 2 
+ ]=2 \mqty[
+B_{n-1}  &  O \\
+O & I_{2^{n-1}} 
+ ] =2 B_n.
+\end{align*}
+\subno{3.} As we have seen, the Haar components are gradually modified at each step of the reconstruction. At the $i$th step 
+\[
+W_{n,i} u = \mqty[W_{i,i}  & O_{2^i,2^n-2^i} \\ O_{2^n-2^i,2^i} & I_{2^n-2^i}] \mqty(u(1 : 2^i) \\ u(2^i : 2^n) )
+= \mqty(W_{i,i}u(1 : 2^i) \\ I_{2^n-2^i}u(2^i : 2^n))=\mqty(W_{i,i}u(1 : 2^i) \\ u(2^i : 2^n)).
+\] 
+So $W_{i,i}u(1 : 2^i)$ modifies the first $2^i$ components while $u(2^i : 2^n)$ is unchanged.
+
+To prove that 
+\[
+W_{n,n}W_{n,n-1} \cdots W_{n,1}=W_n,
+\]
+note that for $n=1$
+\[
+W_1 = \mqty[W_0 \otimes e & I_1 \otimes a] = \mqty[I_1 \otimes e & I_1 \otimes a]=W_{1,1}
+\]
+since $W_0=I_1=1$ where $e^\T=\smqty(1 & 1)$ and $a^\T=\smqty(1 & -1)$. If we assume that 
+\[
+W_{n-1}=W_{n-1,n-1}W_{n-1,n-2}\cdots W_{n-1,1}
+\]
+we must show that 
+\[
+W_{n}=W_{n,n}W_{n,n-1}\cdots W_{n,1}.
+\]
+From the formula for $W_n$
+\[
+W_n = \mqty[W_{n-1}\otimes e & I_{2^{n-1}} \otimes a ].
+\]
+Write 
+\[
+\qty(I_{2^{n-1}}\otimes e) \qty(W_{n-1} \otimes 1) =
+\qty(I_{2^{n-1}}W_{n-1})\otimes \qty(e \otimes 1)=
+W_{n-1} \otimes e.
+\]
+Then 
+\[
+W_n = \mqty[\qty(I_{2^{n-1}}\otimes e) W_{n-1} & I_{2^{n-1}} \otimes a ] =
+\mqty[\qty(I_{2^{n-1}}\otimes e)  & I_{2^{n-1}} \otimes a ]
+\mqty[ W_{n-1} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}].
+\]
+($O_{2^{n-1}} \equiv O_{2^{n-1},2^{n-1}}$). Since 
+\[
+W_{n,n}=\mqty[\qty(I_{2^{n-1}}\otimes e)  & I_{2^{n-1}} \otimes a ]
+\]
+we can write 
+\[
+W_n = W_{n,n} \mqty[ W_{n-1} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}].
+\]
+Using $W_{n-1}=W_{n-1,n-1}W_{n-1,n-2}\cdots W_{n-1,1}$ and the property of diagonal matrices 
+\begin{align*}
+\mqty[ W_{n-1} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}]
+& =
+\mqty[ W_{n-1,n-1}W_{n-1,n-2}\cdots W_{n-1,1} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}] \\
+& =
+\mqty[ W_{n-1,n-1} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}]
+\mqty[ W_{n-1,n-2} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}]
+\cdots 
+\mqty[ W_{n-1,1} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}].
+\end{align*}
+From the formula for $W_{n,i}$
+\[
+W_{n,n-1}=\mqty[ W_{n-1,n-1} & O_{2^{n-1}} \\ O_{2^{n-1}} & I_{2^{n-1}}].
+\]
+Next since
+\[
+W_{n-1,n-2}=\mqty[ W_{n-2,n-2} & O_{2^{n-2}} \\ O_{2^{n-2}} & I_{2^{n-2}}]
+\]
+we have 
+\[
+\begin{tikzpicture}[baseline={([yshift=-1.ex]current bounding box.center)}]
+  \matrix(m) [matrix of math nodes, row sep=0ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+    W_{n-1,n-2}  &   O_{2^{n-1}} \\
+    O_{2^{n-1}}  &   I_{2^{n-1}} \\
+  };  
+  \node[fit= (m-1-1.north west) (m-2-2.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+\end{tikzpicture}
+=
+\begin{tikzpicture}[baseline={([yshift=-1.ex]current bounding box.center)}]
+  \matrix(m) [matrix of math nodes, row sep=0ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+    W_{n-2,n-2}  &   O_{2^{n-2}} &   O_{2^{n-2}} &   O_{2^{n-2}}  \\
+    O_{2^{n-2}}  &   I_{2^{n-2}} &   O_{2^{n-2}} &   O_{2^{n-2}}  \\
+    O_{2^{n-2}}  &   O_{2^{n-1}} &   I_{2^{n-2}} &   O_{2^{n-2}}  \\
+    O_{2^{n-2}}  &   O_{2^{n-1}} &   O_{2^{n-2}} &   I_{2^{n-2}}  \\
+  };  
+  \node[fit= (m-1-1.north west) (m-4-4.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+\end{tikzpicture}.
+\]
+This matrix is 
+\[
+W_{n,n-2}=
+\begin{tikzpicture}[baseline={([yshift=-1.ex]current bounding box.center)}]
+  \matrix(m) [matrix of math nodes, row sep=0ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=15ex,anchor=center},] {
+    W_{n-2,n-2}  &   O_{2^{n-2},2^n-2^{n-2}} \\
+    O_{2^{n}-2^{n-2},2^{n-2}}  &   I_{2^{n}-2^{n-2}} \\
+  };  
+  \node[fit= (m-1-1.north west) (m-2-2.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+\end{tikzpicture}.
+\]
+We can show the same for all other diagonal matrices and this completes the proof.
+
+To prove that the columns of $W_{n,k}$ are orthogonal write 
+\begin{align*}
+  W_{n,k}^\T W_{n,k} & = \mqty[W_{k,k}^\T & O \\ O & I] \mqty[W_{k,k} & O \\ O & I]
+  = \mqty[W_{k,k}^\T W_{k,k} & O \\ O & I ]
+\end{align*}
+Next 
+\begin{align*}
+  W_{k,k}^\T W_{k,k} & = \mqty[I \otimes \mqty(1 & 1) \\ I \otimes \mqty(1 & -1) ]
+  \mqty[I \otimes \mqty(1 \\ 1) & I \otimes \mqty(1 \\ -1)] \\
+  & =\mqty[
+    \qty(I \otimes \mqty(1 & 1))\qty(I \otimes \mqty(1 \\ 1))  & \qty(I \otimes \mqty(1 & 1))\qty(I \otimes \mqty(1 \\ -1)) \\
+    \qty(I \otimes \mqty(1 & -1))\qty(I \otimes \mqty(1 \\ 1))  & \qty(I \otimes \mqty(1 & -1))\qty(I \otimes \mqty(1 \\ -1)) \\
+  ] \\
+  & = \mqty[
+    I \otimes 2 & I \otimes 0 \\ I \otimes 0 & I \otimes 2
+  ] = 2 I.
+\end{align*}
+Since $W_{k,k}^\T W_{k,k}$ is diagonal, $W_{n,k}^\T W_{n,k} $ is diagonal and this completes the proof. For the rows of $W_{n,k}$
+\begin{align*}
+  W_{n,k} W_{n,k}^\T & =\mqty[W_{k,k} & O \\ O & I] \mqty[W_{k,k}^\T & O \\ O & I] 
+  = \mqty[W_{k,k} W_{k,k}^\T & O \\ O & I ].
+\end{align*}
+We have shown above that $W_{k,k} W_{k,k}^\T$ is diagonal and so conclude that the rows of $W_{n,k}$ are orthogonal.
+
+For the rows of $W_n$
+\begin{align*}
+  W_n W_n^\T & = \mqty[ W_{n-1} \otimes e & I \otimes a]  \mqty[ W_{n-1}^\T \otimes e^\T \\ I \otimes a^\T] \\
+  & = \qty(W_{n-1} \otimes e)\qty(W_{n-1}^\T \otimes e^\T ) + \qty(I \otimes a)\qty(I \otimes a^\T) \\
+  & = \qty(W_{n-1}  W_{n-1}^\T)\otimes\qty(e e^\T) + I \otimes \qty(a a^\T).
+\end{align*}
+We have a recursive relation which only contains matrices like $E=e e^\T$ and $A=a a^T$ which are not diagonal. If we expand the expression 
+we obtain powers of $E$ and $A$ which are also not diagonal. So the rows of $W_n$ are not orthogonal. For the columns of $W_n^{-1}$
+\[
+W_n^{-\T}W_n{-1}=\qty(W_n W_n^\T)
+\]
+and we reach the same conclusion. For the inverse of $W_{n,k}$, since it is a diagonal block matrix 
+\[
+W_{n,k}^{-1}=\mqty[W_{k,k}^{-1} & O \\ O & I]=\mqty[\frac12 W_{k,k}^\T & O \\ O & I]
+\]
+as we have shown in (1).
+\end{problem}
+\begin{problem}
+ $H$ is a Hadamard matrix with the property $H^\T H=nI_n$. The matrix given is $H_2 \otimes H$; therefore its elements are also 
+ $\pm 1$. We have 
+ \[
+ (H_2 \otimes H)^\T (H_2 \otimes H)=(H_2^\T \otimes H^\T) (H_2 \otimes H)= (H_2^\T H_2) \otimes (H^\T H ) 
+ = 2I_2 \otimes n I_n = 2n I_2 \otimes I_n = 2n I_{2n}
+ \] 
+ completing the proof.
+\end{problem}
+\begin{problem}
+  \[
+  \begin{tikzpicture}
+    \node at (0,0) {\includegraphics[scale=.5]{Figure_1.png}};
+  \end{tikzpicture}
+  \]
+\end{problem}
+\begin{problem}
+  For any Hadamard matrix
+\[
+H_{2^n}=\mqty[H_{2^{n-1}} & H_{2^{n-1}} \\ H_{2^{n-1}} & -H_{2^{n-1}} ].
+\]
+If we split a $2^n \times 1$ vector into two vectors $x^1_{2^{n-1}}, \ x^2_{2^{n-1}}$ it is easy to show that 
+\[
+H_{2^n}x = \mqty[H_{2^{n-1}} x^1_{2^{n-1}} + H_{2^{n-1}} x^2_{2^{n-1}} \\ H_{2^{n-1}} x^1_{2^{n-1}} - H_{2^{n-1}} x^2_{2^{n-1}} ].
+\]
+In turn, for $H_{2^{n-1}} x_1 $ we can repeat the same procedure. We do this until we reach the simple evaluation for $H_2$. As shown 
+in the algorithm below, for each of the $n/2$ times we repeat this procedure, we have two recursive calls, so a total of $n$ recursive calls. 
+\begin{algorithm}[H]
+\caption{Recursive Hadamard Transform}
+\begin{algorithmic}[1]
+\Require $x \in \mathbb{R}^{2^n}$, integer $n \ge 1$
+\Ensure $y = H_{2^n} x$  
+\Function{Hadamard}{$x, n$}
+\If{$n = 1$}
+\State \Return $\begin{bmatrix} x_1 + x_2 & x_1 - x_2 \end{bmatrix}$
+\EndIf
+\State Split $x$ into $x^{1}, x^{2} \in \mathbb{R}^{2^{n-1}}$
+\State $y^{1} \gets \Call{Hadamard}{x^{1}, n-1}$
+\State $y^{2} \gets \Call{Hadamard}{x^{2}, n-1}$
+\State \Return $\begin{bmatrix}
+y^{1} + y^{2} &
+y^{1} - y^{2}
+\end{bmatrix}$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\end{problem}
+
+\section*{Chapter 5}
+\stepcounter{section}
+
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
 \end{document}
