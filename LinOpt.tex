@@ -180,6 +180,8 @@
 \DeclareMathOperator{\g}{g}
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\id}{id}
 
 \newtheoremstyle{pprop}
                 {\topsep} % space above
@@ -2751,7 +2753,87 @@ y^{1} - y^{2}
 
 \section*{Chapter 5}
 \stepcounter{section}
+\begin{problem}
+  Pick two vectors $v \in V$ and $w \in W$; then $v+w \in V \cup W$. There are three cases: first, $v+w \in (V \cup W) \setminus W$ which contradicts the 
+  fact that $V$ is a subspace unless $W \subseteq V$. Second, $v+w \in (V \cup W) \setminus V$ which contradicts the fact that $W$ is a subspace unless 
+  $V \subseteq W$. Finally $v+w \in V \cap W$ which again contradicts the subspace properties of $V, \ W$ unless $V = W$. 
+  We conclude that we either have $V \subseteq W$ or $W \subseteq V$.
+\end{problem}
+\begin{problem}
+  First pick $x$ such that $f(x)=0$. If $x \in \im f$ then $x=f(y)$ for some $y \in E$. From the definition of $f$, $f(x)=f \circ f(y)=f(y)$ so $y \in \ker f$.
+  Therefore $f(y)=0$ which means that only if $x=0$ then $x \in \ker f, \ \im f$. Hence $\ker f \cap \im f = \qty{0}$ and $E$ is the direct sum of these two 
+  subspaces. 
+\end{problem}
+\begin{problem}
+\subno{1.} From the definition of $\ker a$, $(u_1,\ldots,u_p)\in \ker a$ if 
+\[
+u_1 + \cdots+ u_i + \cdots + u_p = 0.
+\]
+This is equivalent to $u_i = -\sum_{j \neq i} u_j$ for all $i=1,\ldots,p$. This can only hold if  
+\[
+  u_i \in U_i \cap \sum_{j \neq i} U_j, \quad i=1,\ldots,p.
+\]
+Hence we obtain sets $Z_1,\ldots, Z_p$.
 
+If we require that $U_i \cap \sum_{j \neq i} U_j=\qty{0}$ it does not follow that $Z_i=\qty{0}$. For the other subspaces we could have 
+$U_j \cap \sum_{k \neq j} U_k \neq \qty{0}$ and this would produce nonzero elements in $Z_i$. If we require that $U_i \cap \sum_{j \neq i} U_j=\qty{0}$ for all $i=1,\ldots,p$ 
+then $Z_i=\qty{0}$ for all $i=1,\ldots,p$ and $\ker a=\qty{0}$.
+\subno{2.} If the condition given holds then $\ker a=\qty{0}$ and $a$ is injective. When map $a$ is injective then it is a linear isomorphism between
+$U_1 \times \cdots \times U_p$ and $U_1 \oplus \cdots \oplus U_p$. Hence $U_1+\cdots+U_p$ is a direct sum. Conversely, if $U_1+\cdots+U_p$ is a direct sum 
+then $a$ is an injective linear map and $\ker a=\qty{0}$. From the definition of $\ker a$ this can hold only if $U_i \cap \sum_{j \neq i} U_j=\qty{0}$ for all $i=1,\ldots,p$.
+This completes the proof.
+\end{problem}
+\begin{problem}
+\subno{1.} From the definition, for some vector $x \in E$
+\[
+\id_E x = x = f_1 x + \cdots + f_p x.
+\] 
+Therefore $x \in \sum_i \im f_i$ and since $\im \id_E = E$ we must also have $E = \sum_i \im f_i$. If we assume that $f_i \circ f_j=0$ then 
+$\im f_i \cap \im f_j = \qty{0}$ if $i \neq j$ and so $E = \im f_1 \oplus \cdots \oplus \im f_p$. Therefore $f_i$ partitions $E$ and so 
+it must be a projection with the property $f_i \circ f_i = f_i$. Conversely, for any $f_i$, $\id_E=f_i +g_i$ where $g_i=\sum_{j \neq i} f_j$. 
+Note that $g_i$ is also a projection since
+\begin{align*}
+g_i \circ g_i & =(\operatorname{id}_E-f_i) \circ (\operatorname{id}_E-f_i)
+=\operatorname{id}_E\circ\operatorname{id}_E-\operatorname{id}_E\circ f_i -
+f_i \circ \operatorname{id}_E + f_i \circ f_i \\
+& = \operatorname{id}_E - f_i - f_i + f_i = \operatorname{id}_E - f_i=g_i.
+\end{align*}
+Next note that 
+\[
+f_i \circ g_i = f_i \circ (\id_E - f_i) = f_i \circ \id_E - f_i \circ f_i = f_i - f_i =0
+\]
+with the same holding for $g_i \circ f_i$.
+Therefore for any $f_i$
+$$
+\ker f_i = \operatorname{im} g_i = \sum_{j\neq i} \operatorname{im}f_j.
+$$
+(the sum is not a direct sum so it follows trivially from the definition of $g_i$). Since for any $k \neq i$ 
+\[
+\operatorname{im}f_k \subseteq \sum_{j\neq i} \operatorname{im}f_j
+\] 
+it is the case that
+$$
+\operatorname{im}f_k \subseteq \ker f_i
+$$
+and so $f_i \circ f_k=0$. Since this is valid for any $i \neq k$ this completes the proof.
+
+Define the projection operator $\pi_i: E \to U_i$. This, obviously, has the property $\pi_i \circ \pi_i = \pi_i$. Next, from the property given 
+\begin{align*}
+  (\pi_1 + \cdots + \pi_n )\circ (\pi_1 + \cdots + \pi_n ) & = \pi_n \circ \pi _n + \pi_n \circ (\pi_1 +\cdots + \pi_{n-1} ) + (\pi_1 +\cdots + \pi_{n-1} ) \circ \pi_n\\
+  & \kern5ex  + (\pi_1 +\cdots + \pi_{n-1} ) \circ (\pi_1 +\cdots + \pi_{n-1} ) \\
+& = \pi_n + (\pi_1 +\cdots + \pi_{n-1} ) \circ (\pi_1 +\cdots + \pi_{n-1} ). 
+\end{align*}
+Repeating the same procedure for all partial sums we obtain 
+\begin{align*}
+  (\pi_1 + \cdots + \pi_n )\circ (\pi_1 + \cdots + \pi_n ) & = \pi_1 + \cdots + \pi_n.
+\end{align*}
+and so $\pi=\pi_1 + \cdots + \pi_n$ is a projection. 
+If we replace $\id_E$ (which is a projection) 
+with $\pi$ and $E$ with $U_1+\cdots+U_p$ in the first part of this question we 
+obtain the same results. Hence we conclude that $\pi_i \circ \pi_j=0$ for $i \neq j$ and so
+$U_1 + \cdots + U_p$ is a direct sum. Conversely, if $U_1 + \cdots + U_p$ is a direct sum then $\pi_i \circ \pi_j=0$ for $i \neq j$
+and the property given holds. 
+\end{problem}
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
 \end{document}
