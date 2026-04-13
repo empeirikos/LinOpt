@@ -170,6 +170,7 @@
 \newcommand{\V}{\mathsf{V}}
 
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\cR}{\mathcal{R}}
 
 \newcommand{\vc}{\symbf{c}}
 \newcommand{\vw}{\symbf{w}}
@@ -2999,6 +3000,62 @@ with this property is the zero vector. Hence $\ker P = \ker A^\T$. We note that 
 $A^\T x=0$ is orthogonal to all columns of $A$ and so $\ker A^\T = (\im A)^\perp$. Since $\im P = \im A$, $\ker P = (\im P)^\perp$ 
 and so $\R^n = \ker P \oplus \im P$.
 \end{problem}  
+\begin{problem}
+\subno{1.}
+\[
+\begin{tikzpicture}
+  \node at (0,0) {\includegraphics{rotations.pdf}};
+\end{tikzpicture}
+\]  
+\subno{2.}
+\[
+\qty{
+\begin{aligned}
+  x\cos\theta  - y \sin\theta  & = x' \\
+  x\sin\theta  + y \cos\theta  & = y' \\
+\end{aligned}
+}
+\Leftrightarrow
+\qty{ 
+\begin{aligned}
+  x' \cos\theta + y' \sin\theta & = x \\
+  -x' \sin\theta + y' \cos\theta & = y\\
+\end{aligned}
+}
+\]
+Therefore 
+\[
+R_\theta^{-1}=
+\mqty[\cos\theta & - \sin\theta \\ \sin\theta & \cos\theta]^{-1}
+=
+\mqty[\cos\theta & \sin\theta \\ -\sin\theta & \cos\theta]=
+\mqty[\cos(-\theta) & - \sin(-\theta) \\ \sin(-\theta) & \cos(-\theta)]=R_{-\theta}.
+\]
+\subno{3.}
+\begin{align*}
+  R_\theta R_\phi & =
+  \mqty[\cos\theta & - \sin\theta \\ \sin\theta & \cos\theta]
+  \mqty[\cos\phi & - \sin\phi \\ \sin\phi & \cos\phi] \\ 
+  &= \mqty[
+    \cos\theta \cos\phi - \sin\theta \sin\phi & -\cos\theta \sin\phi - \sin\theta \cos\phi \\
+    \sin\theta \cos\phi + \cos\theta \sin\phi & -\sin\theta \sin\phi + \cos\theta \cos\phi
+  ]  \\
+  & = \mqty[
+    \cos(\theta+\phi) & -\sin(\theta+\phi) \\
+    \sin(\theta+\phi) & \cos(\theta+\phi)
+  ] = R_{\theta+\phi} = R_{\phi+\theta} = R_\phi R_\theta.
+\end{align*}
+
+Denote the set of plane rotation matrices by $\cR$. This set equipped with the binary operation of matrix multiplication 
+is a commutative group if it satisfies the following properties:
+\begin{enumerate}[1.]
+  \item Commutative law: $R_\theta  R_\phi = R_{\phi}  R_\theta $ as shown above. 
+  \item Associative law: 
+  $R_\theta (R_\phi  R_\psi) = (R_\theta  R_\phi) R_\psi$ since $\theta+(\phi+\psi)=(\theta+\phi)+\psi$. 
+  \item For all $R_\theta \in \cR$, $R_0 R_\theta = R_\theta R_0 = R_\theta$ (identity element).
+  \item For all $R_\theta \in \cR$, $R_{\theta}R_{-\theta}=R_{-\theta}R_{\theta}=R_0$ (multiplicative inverse). 
+\end{enumerate} 
+\end{problem}
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
 \end{document}
