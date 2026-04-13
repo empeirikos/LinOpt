@@ -9,8 +9,9 @@ point C=(0,1);
 draw(A--B--C--cycle);
 
 transform t1;
-int [] angles={30,45,60,90}; 
-for(int a: angles){
+pair c;
+int [] alphas={30,45,60,90}; 
+for(int a: alphas){
 t1= rotate(a,origin()) ;
 point Ad = t1*A;
 point Bd = t1*B;
@@ -20,5 +21,5 @@ point Cd = t1*C;
 //dot("$C_{"+string(a)+"}$", Cd, SW);
 draw(Ad--Bd--Cd--cycle);
 }
+draw(((-.15,0))--((.15,0)));  draw(((0,-.15))--((0,.15)));
 
-draw((-.15,0)--(.15,0));  draw((0,-.15)--(0,.15));

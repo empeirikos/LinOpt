@@ -125,6 +125,17 @@
   }%
 }%
 
+\newcommand{\hhd}{%
+  \mathrel{%
+    \tikz[baseline={([yshift=-.55ex]current bounding box.center)}]{
+      \fill[black] (0,0) circle [radius=.8pt];
+      \foreach \i in {1,2,...,5}{
+      \fill[black] ({-.2*\i},0) circle [radius=.8pt];
+      \fill[black] ({.2*\i},0) circle [radius=.8pt];
+      }
+    }
+  }%
+}%
 \NewDocumentCommand{\drawhnodes}{ m m }   
 {
     \tikzmath{
@@ -169,6 +180,7 @@
 \newcommand{\K}{\mathsf{K}}
 \newcommand{\V}{\mathsf{V}}
 
+\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\cR}{\mathcal{R}}
 
@@ -2794,32 +2806,38 @@ This completes the proof.
 \] 
 Therefore $x \in \sum_i \im f_i$ and since $\im \id_E = E$ we must also have $E = \sum_i \im f_i$. If we assume that $f_i \circ f_j=0$ then 
 $\im f_i \cap \im f_j = \qty{0}$ if $i \neq j$ and so $E = \im f_1 \oplus \cdots \oplus \im f_p$. Therefore $f_i$ partitions $E$ and so 
-it must be a projection with the property $f_i \circ f_i = f_i$. Conversely, for any $f_i$, $\id_E=f_i +g_i$ where $g_i=\sum_{j \neq i} f_j$. 
-Note that $g_i$ is also a projection since
-\begin{align*}
-g_i \circ g_i & =(\operatorname{id}_E-f_i) \circ (\operatorname{id}_E-f_i)
-=\operatorname{id}_E\circ\operatorname{id}_E-\operatorname{id}_E\circ f_i -
-f_i \circ \operatorname{id}_E + f_i \circ f_i \\
-& = \operatorname{id}_E - f_i - f_i + f_i = \operatorname{id}_E - f_i=g_i.
-\end{align*}
-Next note that 
+it must be a projection with the property $f_i \circ f_i = f_i$. Conversely, note that for any linear map $f$ the trace of 
+its matrix representation is basis independent. We have already seen that given a basis transformation any matrix $F$ has the 
+property
 \[
-f_i \circ g_i = f_i \circ (\id_E - f_i) = f_i \circ \id_E - f_i \circ f_i = f_i - f_i =0
+F' = P F P^{-1}
 \]
-with the same holding for $g_i \circ f_i$.
-Therefore for any $f_i$
-$$
-\ker f_i = \operatorname{im} g_i = \sum_{j\neq i} \operatorname{im}f_j.
-$$
-(the sum is not a direct sum so it follows trivially from the definition of $g_i$). Since for any $k \neq i$ 
+where $P$ is the change of basis matrix. From the cyclical property of the trace operator 
 \[
-\operatorname{im}f_k \subseteq \sum_{j\neq i} \operatorname{im}f_j
-\] 
-it is the case that
-$$
-\operatorname{im}f_k \subseteq \ker f_i
-$$
-and so $f_i \circ f_k=0$. Since this is valid for any $i \neq k$ this completes the proof.
+\tr(F')=\tr(P F P^{-1})=\tr(P^{-1}PF)=\tr(F)
+\]
+and so the trace of a linear map is invariant. Since 
+\[
+\id_E = f_1 + \cdots + f_p 
+\]
+it follows that 
+\[
+\dim E =\tr(\id_E) = \tr(f_1) + \cdots + \tr(f_p).
+\]
+Now under some basis the matrix of a projection $f$ has the form $\mqty[I_r & O \\ O & O]$ where $r$ is the dimension of $\im f$.
+$\tr f = \dim \im f$ and so we must have 
+\[
+\dim E = \dim\im f_1 + \cdots + \dim\im f_p.
+\]
+This only holds if $\im f_i \cap \im f_j = \qty{0}$ for any $i \neq j$. To see this note that  
+\[
+\dim \id_E = \dim \im f_1 + \dim \im (f_2+ \cdots f_p) - \dim \im f_1 \cap \im (f_2+ \cdots f_p).  
+\]
+If we write the same for $\dim \im (f_2+ \cdots f_p)$ until it is fully resolved we obtain 
+\[
+\dim \id_E = \dim \im f_1 + \cdots + \dim \im f_p + \underbrace{\hhd}_{\text{lots of intersections}}.
+\]
+Only if all intersections have $0$ as their common element does equality hold.
 
 Define the projection operator $\pi_i: E \to U_i$. This, obviously, has the property $\pi_i \circ \pi_i = \pi_i$. Next, from the property given 
 \begin{align*}
@@ -3052,9 +3070,196 @@ is a commutative group if it satisfies the following properties:
   \item Commutative law: $R_\theta  R_\phi = R_{\phi}  R_\theta $ as shown above. 
   \item Associative law: 
   $R_\theta (R_\phi  R_\psi) = (R_\theta  R_\phi) R_\psi$ since $\theta+(\phi+\psi)=(\theta+\phi)+\psi$. 
-  \item For all $R_\theta \in \cR$, $R_0 R_\theta = R_\theta R_0 = R_\theta$ (identity element).
-  \item For all $R_\theta \in \cR$, $R_{\theta}R_{-\theta}=R_{-\theta}R_{\theta}=R_0$ (multiplicative inverse). 
+  \item For all $R_\theta \in \cR$, $R_0 R_\theta = R_\theta R_0 = R_\theta$ ($R_0$ is the identity element).
+  \item For all $R_\theta \in \cR$, $R_{\theta}R_{-\theta}=R_{-\theta}R_{\theta}=R_0$ (existence of inverse). 
 \end{enumerate} 
+\end{problem}
+\begin{problem}
+\subno{1.} $c^\T=\mqty(c_1 & c_2)$ is a unique fixed point if 
+\[
+c = R_\theta c + a \Leftrightarrow (I-R_\theta) c = a .
+\] 
+$I-R_\theta$ is invertible since 
+\[
+\mqty[1 - \cos\theta & -\sin\theta \\ \sin\theta & 1 - \cos\theta] \mqty(x \\ y)=0 \Rightarrow \mqty(x \\ y) = \mqty(0 \\ 0) , 
+\quad \theta \in (0,2\pi).
+\]
+This is easy to prove since the rows of $I-R_\theta$ are orthogonal vectors and, if a third vector $\mqty(x & y)$ is orthogonal 
+to these two vectors, the vector space must have dimension 3 which does not hold. To find the inverse make the assumption that 
+\[
+(I-R_\theta) \lambda R_\phi = I
+\]
+where $\lambda$ is a scalar. Then we must have 
+\[
+\lambda (R_\phi - R_{\phi+\theta}) = I.
+\]
+Since 
+\[
+R_\psi + R_{-\psi} = 2\cos\psi I
+\]
+and 
+\[
+-R_\psi = R_{\pm\pi} R_\psi = R_{\pm\pi+\psi}
+\]
+we must have 
+\[
+\phi = -(-\pi+\phi+\theta) \Rightarrow \phi = \frac12 (\pi-\theta)
+\]
+and $\lambda=1/(2\cos\qty(\frac12(\pi-\theta)))=1/(2\sin\qty(\frac12\theta))$.
+\subno{2.} It is clear that if 
+\[
+y=R_\theta x + a
+\]
+then 
+\[
+y-c=R_\theta x + a-c.
+\]
+Next
+\[
+a - c = (I-R_\theta)c - I c=-R_\theta c.
+\]
+Hence 
+\[
+y - c = R_\theta (x - c).
+\]
+\subno{3.}
+\[
+\begin{tikzpicture}
+  \node at (0,0) {\includegraphics{affine.pdf}};
+\end{tikzpicture}
+\]  
+If $\theta=2k\pi$ then $y=x+a$ so we have a translation. 
+\subno{4.}
+$R_{\theta,(a_1,a_2)}$ corresponds to the following transformations 
+\[
+ x \xrightarrow{T} x-c, \; x-c \xrightarrow{R_\theta} y-c , \; y-c \xrightarrow{T} y
+\]
+where T (resp. R) indicates a translation (resp. rotation). Given $c$ the reverse 
+procedure is 
+\[
+y \xrightarrow{T} y-c, \; y-c \xrightarrow{R_{-\theta}} x-c , \; x-c \xrightarrow{T} x. 
+\]
+This suggests that the inverse is of the form $R_{-\theta,(a_1,a_2)}$ since both transformations 
+use $c$. However given that in the reverse procedure the rotation is by $-\theta$, $(a_1,a_2)$
+cannot produce the same $c$. So instead the inverse must be of the form $R_{-\theta,(b_1,b_2)}$.
+Since both must produce the same $c$,
+\[
+\frac{1}{2\sin\frac{\theta}{2}} R_{\frac{\pi}{2}-\frac{\theta}{2}} a
+=
+-\frac{1}{2\sin\frac{\theta}{2}} R_{\frac{\pi}{2}+\frac{\theta}{2}} b , 
+\]
+or 
+\[
+R_{\frac{\pi}{2}-\frac{\theta}{2}} a=-R_{\frac{\pi}{2}+\frac{\theta}{2}} b.
+\]
+Use $R_{-\pi}=-1$ to get 
+\[
+R_{\frac{\pi}{2}-\frac{\theta}{2}} a=R_{-\frac{\pi}{2}+\frac{\theta}{2}} b.
+\]
+Therefore 
+\[
+b = R_{\frac{\pi}{2}-\frac{\theta}{2}}^2 a =R_{\pi-\theta} a.
+\]
+\subno{5.}
+\[
+R_{\alpha,a}x= R_\alpha x + a 
+\]
+and 
+\[
+R_{\beta,b}x= R_\beta x + b .
+\]
+Therefore 
+\[
+R_{\beta,b} \circ R_{\alpha,a} x = R_\beta R_\alpha x + R_\beta a + b
+\]
+and so 
+\[
+R_{\beta,b} \circ R_{\alpha,a} = R_{\alpha+\beta,t}
+\]
+where $t=R_\beta a + b$.
+
+In general 
+\[
+R_{\beta,b} \circ R_\alpha x = R_{\alpha+\beta}x + b 
+\]
+while 
+\[
+R_\alpha  \circ R_{\beta,b} x = R_{\alpha+\beta}x + R_\alpha b
+\]
+so the two compositions are different. 
+
+A nonabelian group is a set equiped with a binary operation for 
+which 
+\begin{enumerate}[1.]
+  \item The associative law holds. Use (5) to write 
+  \[  
+  R_{\alpha,a} \circ (R_{\beta,b} \circ R_{\gamma,c}) =
+  R_{\alpha,a} \circ R_{\beta+\gamma,R_\beta c + b} = R_{\alpha+\beta+\gamma,R_{\alpha}(R_\beta c + b)+a}
+  \]
+  Also 
+  \[  
+  (R_{\alpha,a} \circ R_{\beta,b}) \circ R_{\gamma,c} =
+  R_{\alpha+\beta,R_\alpha b+ a} \circ R_{\gamma,c} = R_{\alpha+\beta+\gamma,R_{\alpha+\beta}c+R_\alpha b+ a}.
+  \]
+  It is easy to check that the two expressions are equal.
+  \item The identity element is $R_{0,0}$ which is an affine map. 
+  \item In (4) we have shown the existence of an inverse for every affine map.
+\end{enumerate}
+
+To prove that $R_{\beta,b} \circ R_{\alpha,a}$ is not a translation
+\[
+R_{\beta,b} \circ R_{\alpha,a} = R_{\alpha+\beta,R_\beta a + b}.
+\]
+This is a translation only if $\alpha+\beta=2\pi k$ for all $k \in \Z$. If $a=0$ its center of rotation is 
+\[
+c = \frac{1}{2\sin \frac{\alpha+\beta}{2}} R_{\frac{\pi}{2}-\frac{\alpha+\beta}{2}} b.
+\]
+If $\alpha+\beta=2\pi k$ the translation vector is $R_\beta a + b$.
+\end{problem}
+\begin{problem}
+\subno{1.} $0 \in U$ (since it is a subspace) and so $a \in \cal A$. Affine subspaces of dimension 0 are also called 
+vectors. In $\R^2$, an affine subspace of dimension 1 is obtained by the parallel translation of a line by vector $a$ (the same is true 
+for $\R^n$). In $\R^3$, an affine subspace of dimension 2 is obtained by the parallel translation of a plane with vector $a$. 
+
+An affine combination of vectors $a+u_i \in \cal A$ is given by 
+\[
+\sum_i \lambda_i (a+u_i) = a + \sum_i \lambda_i u_i
+\]
+since $\sum_i \lambda_i =1$
+and since $U$ is a subspace, $a+ \sum_i \lambda_i u_i \in \cal A$.
+\subno{2.} If $b \in \cal A$ then $b=a+u'$ for some $u' \in U$. Since 
+\[ 
+a + u = a + u' + u - u' = b + u-u'
+\]
+and $u-u' \in U$ the desired result follows.
+\subno{3.} Since $a \in \cal A$, the zero vector is a member of $U_a$ which is an important requirement for 
+$U_a$ to be a subspace. Next note that 
+\[
+x - a +  y - a = (x + y - a) - a, \qquad x,y,a \in \cal A.
+\]
+$x+y-a$ is an affine combination and so it is a member of $\cal A$. From the definition of $U_a$,  
+$x - a +  y - a \in U_a$ and so this is closed under vector addition. Regarding scalar multiplication 
+\[
+\lambda (x-a) = (\lambda x - \lambda a + a) - a.
+\]
+$\lambda x - \lambda a + a$ is another affine combination of members of $\cal A$ and so it is also a member. 
+Therefore $\lambda (x-a) \in \cal A$. Finally use the property $x \in {\cal A} \Leftrightarrow x-a \in U_a$
+to conclude that ${\cal A}=a + U_a$.
+
+If $a,b \in \cal A$ then assume that it is possible to have $u \in U_a$ with $u \not\in U_b$. Since 
+$u=x-a=x+b-a-b$ and $x,a,b \in \cal A$, $x+b-a$ is an affine combination and so it is also a member of 
+$\cal A$. Hence $x-a \in U_b$ and we have a contradiction. So $U_a=U_b$; it is also true that $U_a=U$ since 
+if $u \in U_a, \ x, \ z \in \cal A$ 
+\[
+u = z - a = z - a + x - x = y - x
+\]
+with $y \in \cal A$ since $z-a+x$ is an affine combination. 
+\subno{4.} If two affine subspaces $\cal A,\, \cal B$ have the same direction then 
+${\cal A}=a + U$ and ${\cal B}= b + U$ for some $a \in \cal A$ and $b \in \cal B$.  
+If ${\cal A} \neq {\cal B}$, then assume that, for some $u,u' \in U$, $a+u=b+u'$. For any element 
+$v + a \in \cal A$ we can also write it as $v + u' - u + b$. Since $v,u,u' \in U$, $v+u'-u \in U$ and so 
+$v + a \in \cal B$. Therefore ${\cal A}={\cal B}$ and we have reached a contradiction. We conclude that 
+${\cal A} \cap {\cal B} = \varnothing$ if ${\cal A} \neq {\cal B}$ and they are parallel.
 \end{problem}
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
