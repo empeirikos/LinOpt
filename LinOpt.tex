@@ -169,6 +169,8 @@
 \newcommand{\K}{\mathsf{K}}
 \newcommand{\V}{\mathsf{V}}
 
+\newcommand{\R}{\mathbb{R}}
+
 \newcommand{\vc}{\symbf{c}}
 \newcommand{\vw}{\symbf{w}}
 
@@ -182,6 +184,7 @@
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\im}{im}
 \DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\sspan}{span}
 
 \newtheoremstyle{pprop}
                 {\topsep} % space above
@@ -2825,7 +2828,7 @@ Define the projection operator $\pi_i: E \to U_i$. This, obviously, has the prop
 \end{align*}
 Repeating the same procedure for all partial sums we obtain 
 \begin{align*}
-  (\pi_1 + \cdots + \pi_n )\circ (\pi_1 + \cdots + \pi_n ) & = \pi_1 + \cdots + \pi_n.
+  (\pi_1 + \cdots + \pi_n )\circ (\pi_1 + \cdots + \pi_n ) & = \pi_1 + \cdots + \pi_n
 \end{align*}
 and so $\pi=\pi_1 + \cdots + \pi_n$ is a projection. 
 If we replace $\id_E$ (which is a projection) 
@@ -2834,6 +2837,168 @@ obtain the same results. Hence we conclude that $\pi_i \circ \pi_j=0$ for $i \ne
 $U_1 + \cdots + U_p$ is a direct sum. Conversely, if $U_1 + \cdots + U_p$ is a direct sum then $\pi_i \circ \pi_j=0$ for $i \neq j$
 and the property given holds. 
 \end{problem}
+\begin{problem}
+\subno{1.} An involution is invertible since if $f(x)=0$ we also have $f(f(x))=x$. Since $f$ is a linear map $x=0$ 
+and so $\ker f=\qty{0}$. Furthermore, $f \circ f = \id \Rightarrow f^{-1} = f$. 
+\subno{2.} $f$ has the property  
+\[
+\begin{aligned}
+f\qty(\frac{u+f(u)}{2}) & =\frac{f(u)+f(f(u))}{2}=u, \quad u \in E_1 \\
+f\qty(\frac{u+f(u)}{2}) & =\frac{f(u)+f(f(u))}{2}=0, \quad u \in E_{-1} 
+\end{aligned}
+\] 
+and 
+\[
+\begin{aligned}
+f\qty(\frac{u-f(u)}{2}) & =\frac{f(u)-f(f(u))}{2}=0, \quad u \in E_1 \\
+f\qty(\frac{u-f(u)}{2}) & =\frac{f(u)-f(f(u))}{2}=-u, \quad u \in E_{-1}   
+\end{aligned}
+\] 
+Therefore $\pi_1 = f \circ \frac12 (f + \id)$ is a projection $E \to E_1$ while $\pi_{-1} = f \circ \frac12 (f - \id)$ is a projection $E \to E_{-1}$ 
+($\ker \pi_1 = E_{-1}$ and $\ker \pi_{-1} = E_1$). Since for any $u \in E$
+\[
+u = \frac{u+f(u)}{2} + \frac{u-f(u)}{2}
+\]
+we must have  
+\[
+f(E)= E =\im  \pi_1 +  \im \pi_{-1} 
+\]
+since for $f$ to be invertible it must be bijective. Combining this with the kernels of $\pi_1, \ \pi_{-1}$ 
+we conclude that $E = E_1 \oplus E_{-1}$. 
+\subno{3.} Since $f$ is an involution, if $F$ is the matrix representation of $f$ in some basis, then $F^2=I_n$. Write $F$ in block form 
+\[
+F = \mqty[ A & B \\ C & D].
+\]
+Since $\pi_1 = f \circ \frac12 (f + \id)$, we have
+\[
+\mqty[ A & B \\ C & D] \frac12 \qty(\mqty[ A & B \\ C & D] + \mqty[ I_k & O \\ O & I_{n-k}])
+=
+\frac12 \qty(\mqty[ I_k & O \\ O & I_{n-k}] + \mqty[ A & B \\ C & D])
+=
+\mqty[I_k & O \\ O & O].
+\]
+The matrix on the right-hand side is the matrix representation of $\pi_1$ in the same basis. From the above equation we have $A^2 + AB = A$ and $CA + CD = C$. Since $F^2=I_n$ 
+it is easy to see that $B=C=O$, $A=I_k$ and $D=I_{n-k}$. We can check that 
+\[
+\mqty[ I_k & O \\ O & -I_{n-k}] \mqty[ I_k & O \\ O & -I_{n-k}] =\mqty[ I_k & O \\ O & I_{n-k}] 
+\]
+and 
+\[
+\frac12 \qty(\mqty[ I_k & O \\ O & I_{n-k}] - \mqty[ I_k & O \\ O & -I_{n-k}])
+=
+\mqty[O & O \\ O & I_{n-k}].
+\]
+the matrix for $\pi_{-1}$. It is easier to give a geometric interpretation of the action of $f$ if we consider matrix 
+$F$ in $\R^2$. If under some basis $F$ is represented by $\smqty[1 & 0 \\ 0 & -1]$ then $f$ is a reflection across the $x$-axis. 
+For vectors like $\vec{x}=\mqty(x & 0)$, $F \vec{x}=\vec{x}$ while for vectors like $\vec{y}=\mqty(0 & y)$, $F \vec{y}=-\vec{y}$.
+Any other vector $\mqty(x & y)$ is also reflected across the $x$-axis.
+If we extend the same idea to $\R^n$ we can see that $f$ produces the reflection of any vector across the subspace $E_1$.
+\end{problem}
+\begin{problem}
+ An upper Hessenberg matrix looks something like this 
+ \[ H=
+ \begin{tikzpicture}[baseline={([yshift=-2.5ex]current bounding box.center)}]
+  \matrix (m) [matrix of math nodes, row sep=0ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+           & \scriptstyle k=1 & \scriptstyle k=2 & \scriptstyle k=3 & \hd & \scriptstyle k=n \\
+  \scriptstyle j=1  &    0 & * & * & \hd & * \\
+  \scriptstyle j=2  &    0 & 0 & * & \hd & * \\ 
+  \scriptstyle j=3  &    0 & 0 & 0 & \hd & * \\
+   \vd  &    \vd & \vd & \vd & \rdd & \vd \\
+  \scriptstyle j=n  &    0 & 0 & 0 & \hd & 0 \\
+  };
+  \node[fit= (m-2-2.north west) (m-6-6.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+ \end{tikzpicture},
+ \] 
+ while an unreduced upper Hessenberg matrix looks like this
+ \[ H_u =
+  \begin{tikzpicture}[baseline={([yshift=-1.5ex]current bounding box.center)}]
+    \matrix (m) [matrix of math nodes, row sep=0ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+           & \scriptstyle k=1 & \scriptstyle k=2 & \scriptstyle k=3 & \hd & \scriptstyle k=n-1 & \scriptstyle k=n \\
+      \scriptstyle j=1  & 0 & * & * & \hd   & *  & * \\
+      \scriptstyle j=2  & * & 0 & * & \hd   & *  & * \\ 
+      \scriptstyle j=3  & 0 & * & 0 & \hd   & *  & * \\
+       \vd  & \vd & \vd & \vd   & \rdd  & \vd & \vd \\
+      \scriptstyle j=n-1  & 0 & 0 & 0 & \hd & 0  & * \\
+      \scriptstyle j=n  & 0 & 0 & 0 & \hd   & *  &  0 \\
+    };
+    \node[fit= (m-2-2.north west) (m-7-7.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+  \end{tikzpicture}.
+ \]
+ Consider a vector $x$ such that $Hx=0$. We obtain the following system of equations
+\[
+\begin{aligned} 
+0 \cdot x_1 + h_{12}x_2 + h_{13}x_3 + \cdots + h_{1n-2}x_{n-3} + h_{1n-1}x_{n-1} + h_{1n}x_n & = 0 \\
+h_{21} \cdot x_1 + 0 \cdot x_2 +h_{23} x_3   + \cdots + h_{2n-2}x_{n-2} + h_{2n-1}x_{n-1} + h_{2n}x_n & = 0 \\
+ \vdots \kern30ex & \\        
+0 \cdot x_1 + 0 \cdot x_2 + 0 \cdot x_3 + \cdots + h_{n-1,n-2} \cdot x_{n-2} + 0 \cdot x_{n-1} + h_{n-1,n}x_n & = 0 \\
+0 \cdot x_1 + 0 \cdot x_2 + 0 \cdot x_3 + \cdots + 0 \cdot x_{n-2} + h_{n,n-1}x_{n-1} + 0 \cdot x_n & = 0
+\end{aligned}
+\]
+From the last equation we have $x_{n-1}=0$. 
+From the second to last equation we have 
+$$x_{n-2}=-\frac{h_{n-1,n}}{h_{n-1,n-2}}x_n.$$
+From the third to last equation we have
+$$x_{n-3}=-\frac{h_{n-2,n}}{h_{n-2,n-3}}x_n.
+$$
+etc. Continuing in this way we can express all $x_i$ as a function of $x_n$. Hence the null space of $H$ is one-dimensional 
+and so $\dim(\ker(H))=1$.
+\end{problem}
+\begin{problem} 
+  \subno{1.} If $Ax=0$ then $A^\T Ax =0$. Now suppose that for some vector $y$, $Ay \neq 0$ is in the nullspace of $A^\T$. 
+  Then we can write  
+  \[
+  y^\T A^\T A y =0 \Rightarrow \norm{A y}^2=0.
+  \]
+  This is only possible if $Ay=0$ which contradicts the assumption. Hence $\ker(A) = \ker(A^\T A)$. Since by the Rank-Nullity Theorem
+  \[
+   k = \rank(A^\T A) + \dim\ker(A^\T A)  
+  \]
+  and 
+  \[
+   k = \rank(A) + \dim\ker( A)  
+  \]
+  use of $\ker(A^\T A)=\ker(A)$ completes the proof. Exactly the same argument can be used to show that $\rank(A A^\T)=\rank(A)$.
+\subno{2.} Since the columns of $A$ are linearly independent vectors the only vector $x$ for which $Ax=0$ is the zero vector.
+  Hence $\ker(A)=\qty{0}$ and so $\ker(A^\T A)=\qty{0}$. From the Rank-Nullity Theorem we have $\rank(A^\T A)=k$. It is invertible 
+  since it is surjective (its columns span a $k$ dimensional space) and injective.
+  For $P$, 
+  \[
+  P^2 = A(A^\T A)^{-1} A^T A(A^\T A)^{-1} A^\T  =
+  A(A^\T A)^{-1} (A^\T A)(A^\T A)^{-1} A^\T= A(A^\T A)^{-1} A^\T = P 
+  \]
+  and, using $(ABC)^\T=C^\T B^\T A^\T$
+  \[
+  P^\T = A (A^\T A)^{-\T} A^\T = A (A^\T A)^{-1} A^\T = P.
+  \]
+  When $k=1$, $A$ is a column vector and 
+  \[
+  P = \norm{A}^{-2}AA^\T
+  \]
+  is a rank-1 projection matrix that maps any vector onto the line spanned by $A$.
+\subno{3.} We note again that since 
+\[
+A = \mqty[ a_1 & \cdots & a_k]
+\]  
+then 
+\[
+A x = x_1 a_1 + \cdots + x_k a_k.
+\]
+and so $\im A = \sspan \qty(a_1, \ldots, a_k)$.
+Now 
+$$
+P x = A(A^\T A)^{-1} A^\T x = A((A^\T A)^{-1} A^\T x) 
+$$
+and so $\im P \subseteq \im A$. Next if $x=Ay$ then 
+\[
+P Ay = A(A^\T A)^{-1} A^\T A y = Ay 
+\] 
+and since $P$ is a projection, $\im A \subseteq \im P$. Hence $\im P = \im A$. For the nullspace of $P$ 
+it is clear that if $A^\T x =0$ then $P x =0$. The nullspace of $A$ is $\qty{0}$ and so any vector that 
+$(A^\T A)^{-1}$ maps to zero will be part of the nullspace of $P$. Since $A^\T A$ is invertible the only vector 
+with this property is the zero vector. Hence $\ker P = \ker A^\T$. We note that a vector $x$ with the property 
+$A^\T x=0$ is orthogonal to all columns of $A$ and so $\ker A^\T = (\im A)^\perp$. Since $\im P = \im A$, $\ker P = (\im P)^\perp$ 
+and so $\R^n = \ker P \oplus \im P$.
+\end{problem}  
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
 \end{document}
