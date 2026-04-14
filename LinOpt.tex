@@ -42,7 +42,7 @@
 \usepackage{bbm}
 
 \usepackage{tikz}
-\usetikzlibrary{matrix,fit,decorations.text,positioning,arrows.meta,patterns,shapes,math}
+\usetikzlibrary{matrix,fit,decorations.text,positioning,arrows.meta,patterns,shapes,math,calc}
 
 \tikzset{mystyle/.style={draw,circle,label={[fill=yellow]0:#1}}}
 
@@ -2825,17 +2825,17 @@ it follows that
 \dim E =\tr(\id_E) = \tr(f_1) + \cdots + \tr(f_p).
 \]
 Now under some basis the matrix of a projection $f$ has the form $\mqty[I_r & O \\ O & O]$ where $r$ is the dimension of $\im f$.
-$\tr f = \dim \im f$ and so we must have 
+$\tr f = \rank f$ and so we must have 
 \[
-\dim E = \dim\im f_1 + \cdots + \dim\im f_p.
+\dim E = \rank f_1 + \cdots + \rank f_p.
 \]
 This only holds if $\im f_i \cap \im f_j = \qty{0}$ for any $i \neq j$. To see this note that  
 \[
-\dim \id_E = \dim \im f_1 + \dim \im (f_2+ \cdots f_p) - \dim \im f_1 \cap \im (f_2+ \cdots f_p).  
+\dim \id_E = \rank f_1 + \rank (f_2+ \cdots f_p) - \dim (\im f_1 \cap \im( f_2+ \cdots + f_p)).  
 \]
-If we write the same for $\dim \im (f_2+ \cdots f_p)$ until it is fully resolved we obtain 
+If we write the same for $\rank (f_2+ \cdots f_p)$ until it is fully resolved we obtain 
 \[
-\dim \id_E = \dim \im f_1 + \cdots + \dim \im f_p + \underbrace{\hhd}_{\text{lots of intersections}}.
+\dim \id_E = \rank f_1 + \cdots + \rank f_p + \underbrace{\hhd}_{\text{lots of intersections}}.
 \]
 Only if all intersections have $0$ as their common element does equality hold.
 
@@ -3260,6 +3260,243 @@ If ${\cal A} \neq {\cal B}$, then assume that, for some $u,u' \in U$, $a+u=b+u'$
 $v + a \in \cal A$ we can also write it as $v + u' - u + b$. Since $v,u,u' \in U$, $v+u'-u \in U$ and so 
 $v + a \in \cal B$. Therefore ${\cal A}={\cal B}$ and we have reached a contradiction. We conclude that 
 ${\cal A} \cap {\cal B} = \varnothing$ if ${\cal A} \neq {\cal B}$ and they are parallel.
+\end{problem}
+\begin{problem}
+\subno{1.} The $m+1$ vectors are linearly independent if and only if
+\[
+\lambda_0 \hat{u}_0 + \lambda_1 \hat{u}_1 + \cdots + \lambda_m \hat{u}_m = 0 \Rightarrow \lambda_0=\lambda_1=\cdots=\lambda_m=0.
+\]    
+Write each vector $\hat{u}_i$ as $(u_1,1)$; the equation above is now  
+\[
+\lambda_0 ({u}_0,1) + \lambda_1 ({u}_1,1) + \cdots + \lambda_m ({u}_m,1) = (0,0).
+\]
+From the $n+1$ component we must have
+\[
+\lambda_0 + \lambda_1 + \cdots + \lambda_m = 0 \Rightarrow \lambda_0 = -\lambda_1 - \cdots - \lambda_m.
+\]
+Then we can rewrite the original condition as 
+\[
+\lambda_1 ({u}_1-u_{0},0) + \cdots + \lambda_m ({u}_m-u_0,0) = (0,0).
+\]
+If $u_1-u_0,\ldots,u_m-u_0$ are independent then the first $n$ components are zero only if 
+$\lambda_1=\cdots=\lambda_m=0$. So we obtain the required result.
+\subno{2.} This is a simple reworking using (1). Instead of going from 
+\[
+\lambda_0 + \lambda_1 + \cdots + \lambda_m = 0
+\]
+to
+\[
+\lambda_0 = -\lambda_1 - \cdots - \lambda_m
+\]
+go from 
+\[
+\lambda_0 + \cdots + \lambda_i + \cdots + \lambda_m = 0
+\]
+to 
+\[
+\lambda_i = - \lambda_0 - \cdots - \lambda_{i-1} - \lambda_{i+1} - \cdots - \lambda_m.
+\]
+\subno{3.} From the $n+1$ affinely independent vectors we obtain $n$ independent vectors 
+$u_1-u_0,\ldots,u_n-u_0$ which form a basis of $\R^n$. Therefore for any $v \in \R^n$
+\[
+v = v_1 (u_1-u_0)+ \cdots + v_n (u_n-u_0), \quad v_1,\ldots,v_n \in \R.
+\]
+Since $u_0 \in \R^n$ we can write 
+\[
+v + u_0 = (1-v_1 - \cdots - v_n) u_0 + v_1 u_1 + \cdots + u_n. 
+\]
+Therefore $v'=v+u_0$ is a linear combination of $u_0,u_1,\ldots,u_n$ with the sum of the 
+coefficients equal to one. Since for any $i$, $\qty{u_j-u_i}_{j \neq i}$ also forms a basis of $\R^n$
+we obtain the barycentric expansion of any vector. To prove that for any $v \in \R^n$ 
+\[
+v = u_0 + \lambda_1 e_1 + \cdots + \lambda_n e_n
+\]
+start with  
+\[
+v = \lambda_0 u_0 + \lambda_1 u_1 + \cdots + \lambda_n u_n
+\]
+and use $\lambda_0+\lambda_1+\cdots+\lambda_n=1$, $e_i=u_i-u_0$ to complete the proof. To prove the converse is 
+a straightforward conversion of 
+\[
+v = u_0 + x_1 e_1 + \cdots + x_n e_n
+\]
+to 
+\[
+v =(1-(x_1+\cdots+x_n)) u_0 + x_1 u_1 + \cdots + x_n u_n
+\]
+using $e_i=u_i-u_0$.
+\subno{4.} To specify any linear map from $\R^n \to \R^m$ we must specify how each of the
+$n$ basis vectors of $\R^n$ maps to a vector in $\R^m$. Since $u_0,\ldots,u_n$ is an affine 
+frame of $\R^n$, $u_1-u_0,\ldots,u_n-u_0$ is a basis of $\R^n$. For a linear 
+map $\vec{f}$, a set of equations 
+\[
+\vec{f}(u_i-u_0) = w_i \in \R^m, \quad i=1,\ldots,n
+\]
+provides a unique specification (Proposition 2.14). Since $\vec{f}$ is a linear map we can rewrite the last equation as 
+\[
+\vec{f}(u_i)-\vec{f}(u_0)=w_i.
+\]
+If we define $w_i = v_i - v_0$ then 
+\[
+\vec{f}(u_i)-\vec{f}(u_0)=v_i-v_0.
+\]
+Adding  $\vec{f}(u_0)-v_0=b$ we obtain a unique definition for vector $b$. Then the affine 
+map $f(u)=\vec{f}(u)+b$ satisfies all the conditions given.
+\subno{5.} Any affine map $f$ can be written as $f(u)=\vec{f}(u)+c$ where $\vec{f}$ is a linear map and $c$ is a vector.
+Since $a_0,\ldots,a_n$ is an affine frame, $a_1-a_0,\ldots,a_n-a_0$ are basis vectors of $\R^n$. Therefore we can 
+produce the standard matrix for $\vec{f}$ as follows 
+\[
+F=
+  \begin{tikzpicture}[baseline={([yshift=-3.ex]current bounding box.center)}]
+    \matrix (m) [matrix of math nodes, row sep=0ex, column sep=0ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, minimum width=3ex,anchor=center},] {
+        \scriptstyle\vec{f}(a_1-a_0) & \scriptstyle\vec{f}(a_2-a_0) & \hd     & \scriptstyle\vec{f}(a_n-a_0) \\[2ex]
+        r_1              &        r_2       & \hd     &     r_n          \\
+    };
+    \node[fit= (m-2-1.north west) (m-2-4.south east), left delimiter={[}, right delimiter={]},inner sep=2ex] {};
+  \end{tikzpicture}  
+\]
+($r_1,\ldots,r_n \in \R^n$ with $r_i=\vec{f}(a_i-a_0)$; $F$ is a $n \times n$ matrix)
+
+If a translation was another linear map then we could produce a matrix representation for it and combine the two. 
+However, a translation is not a linear map (for example, it does not preserve the zero vector). We must find another 
+way to represent a translation so that we can derive a matrix for an affine map. 
+
+Any vector $v \in \R^n$ has a barycentric expansion
+\[
+v = v_1 (a_0-a_n) + \cdots + v_n (a_{n-1}-a_n) + a_n,\quad \sum_{i=1}^n v_i=1.
+\]
+where $a_0,a_1,\ldots,a_{n-1},a_n \in \R^n$ and $a_0-a_n,a_1-a_n,\ldots,a_{n-1}-a_n$ are a basis of $\R^n$.
+Lets pretend that $v$ is really a $\R^{n+1}$ vector with the $n+1$ component always equal to 1. The `basis'
+for this representation is $a_0-a_n,\ldots,a_{n-1}-a_n,a_n$. If we want to map $v$ to $v+c$ then, since $v+c$ also 
+has a unit $n+1$ component, the transformation matrix has the following form: 
+\[
+  \begin{tikzpicture}[baseline={([yshift=-5.ex]current bounding box.center)}]
+    \matrix (m) [matrix of math nodes, row sep=2ex, column sep=2ex, nodes in empty cells, nodes={shape=rectangle,minimum height=5ex, minimum width=7ex,anchor=center},] {
+                \\[2ex]
+        v_1+c_1       \\
+        v_2+c_2       \\
+        \vd      \\
+        v_n+c_n       \\
+        1     \\
+    };
+    \node[fit= (m-2-1.north west) (m-6-1.south east), left delimiter={(}, right delimiter={)},inner sep=0ex] {};
+  \end{tikzpicture}  
+=
+  \begin{tikzpicture}[baseline={([yshift=-1.5ex]current bounding box.center)}]
+    \matrix (m) [matrix of math nodes, row sep=2ex, column sep=2ex, nodes in empty cells, nodes={shape=rectangle,minimum height=5ex, minimum width=3ex,anchor=center},] {
+             &    &   &     &   & \scriptstyle\text{$c$ vector}           \\[2ex]
+        1    & 0  & 0 & \hd & 0 & c_1        \\
+        0    & 1  & 0 & \hd & 0 & c_2        \\
+        \vd  & \vd&\vd&\rdd &\vd & \vd        \\
+        0    & 0  & 0 & \hd & 1 & c_n        \\
+        0    & 0  & 0 & \hd & 0 & 1        \\
+    };
+    \node[fit= (m-2-1.north west) (m-6-6.south east), left delimiter={[}, right delimiter={]},inner sep=1.5ex] {};
+    \node[fit= (m-2-1.north west) (m-5-5.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+    \node[fit= (m-2-6.north west) (m-6-6.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+    \node[fit= (m-6-1.north west) (m-6-5.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+    \node[fit= (m-2-1.north west) (m-2-5.north east), above delimiter={\{},inner sep=1ex] (im) {};
+    \node[fit= (m-6-1.south west) (m-6-5.south east), below delimiter={\}},inner sep=1ex] (zil) {};
+    \node at ($(im)+(0,6.5ex)$) {\fontsize{7pt}{8pt}\selectfont $n \times n$ identity matrix};
+    \node at ($(zil)-(0,6.5ex)$) {\fontsize{7pt}{8pt}\selectfont $1 \times n$ zero vector};
+    \draw[-{Stealth[]}] ($(m-1-6.south)+(0,1ex)$)--(m-2-6.north);
+  \end{tikzpicture}  
+  \begin{tikzpicture}[baseline={([yshift=-5.ex]current bounding box.center)}]
+    \matrix (m) [matrix of math nodes, row sep=2ex, column sep=2ex, nodes in empty cells, nodes={shape=rectangle,minimum height=5ex, minimum width=5ex,anchor=center},] {
+                \\[2ex]
+        v_1       \\
+        v_2       \\
+        \vd      \\
+        v_n       \\
+        1     \\
+    };
+    \node[fit= (m-2-1.north west) (m-6-1.south east), left delimiter={(}, right delimiter={)},inner sep=0ex] {};
+  \end{tikzpicture}  
+\]
+This form is consistent with the fact that a pure translation is an affine map 
+\[
+t(u)= \id(u)+ c .
+\]
+$\id$ is a linear map whose matrix representation is the identity matrix.
+For 
+\[
+f(u) = \vec{f}(u) + c
+\]
+if we replace the $n \times n$ identity matrix with $F$, the matrix representation for $\vec{f}$, we obtain the matrix for 
+the affine map which has the same form as shown in the problem.
+
+If $\hat{a}_i$ is the column vector with the components of $a$ using $a_1-a_0,a_2-a_0,\ldots,a_n-a_0,a_0$ as a basis 
+then its affine transformation is given by 
+\[
+      A \hat{a}_i = \hat{b}_i. 
+\]  
+If we form a $(n+1)\times(n+1)$ matrix 
+\[
+\mqty[\hat{a}_0 & \hat{a}_1 & \cdots & \hat{a}_n]
+\]
+then 
+\[
+A\mqty[\hat{a}_0 & \hat{a}_1 & \cdots & \hat{a}_n]
+=\mqty[A\hat{a}_0 & A\hat{a}_1 & \cdots & A\hat{a}_n]
+=\mqty[\hat{b}_0 & \hat{b}_1 & \cdots & \hat{b}_n]
+\]
+and 
+\[
+A = \mqty[\hat{b}_0 & \hat{b}_1 & \cdots & \hat{b}_n] 
+\mqty[\hat{a}_0 & \hat{a}_1 & \cdots & \hat{a}_n]^{-1}.
+\]
+
+Vector $a_0,\ldots,a_n \in \R^n$ can be all converted to $\R^{n+1}$ in the affine frame by augmenting them 
+with the compulsory unit $n+1$-component. Hence 
+\[
+\mqty[\hat{a}_0 & \hat{a}_1 & \cdots & \hat{a}_n] 
+=
+\mqty[
+  \mqty[e_0 \\ 1] & \mqty[e_1 \\ 1] & \cdots & \mqty[e_n \\ 1] & \mqty[0 \\ 1] 
+]
+\]
+which is the matrix shown in the problem. Note that the affine basis 
+$$a_0-a_n,a_1-a_n,\ldots,a_{n-1}-a_n,a_n$$ 
+corresponds to the first $n$ rows of the matrix. The inverse matrix follows from writing the matrix
+in block form:
+\[
+\mqty[\hat{a}_0 & \hat{a}_1 & \cdots & \hat{a}_n]  = \mqty[\vb*{I}_n & \vb{0} \\ \vb{1}^\T & 1]
+\]
+where we have used bold letters for vectors and matrices. Lets guess that 
+\[
+\mqty[\vb*{I}_n & \vb{0} \\ \vb{1}^\T & 1]\mqty[\vb*{I}_n & \vb{0} \\ \vb{1}^\T & 1]^{-1}
+=
+\mqty[\vb*{I}_n & \vb{0} \\ \vb{1}^\T & 1]\mqty[\vb*{I}_n & \vb{0} \\ \vb*{x}^\T & 1]
+=
+\mqty[\vb*{I}_n & \vb{0} \\ \vb{1}^\T+\vb*{x}^\T & 1].
+\]
+Since the last matrix should be the identity matrix set $\vb*{x}=-\vb{1}$ to complete the proof. 
+\subno{6.} For any affine combination in $f({\cal A})$ 
+\begin{align*}
+\sum_i \lambda_i f(a_i) & = \sum_i \lambda_i (\vec{f}(a_i) + c) =\vec{f}\qty(\sum_i\lambda_i a_i) + c \\
+& = f\qty(\sum_i \lambda_i a_i) \in f({\cal A})    
+\end{align*}
+hence $f({\cal A})$ is closed under affine combinations and so is an affine subspace of $\R^n$.
+
+Consider $n$ points $b_1,\ldots,b_n \in \cal B$. These map to 
+\[
+f^{-1}(b_1),\ldots,f^{-1}(b_n) \in \cal B
+\]
+vectors in $\R^n$. Take an affine combination of these points 
+\[
+\lambda_1 f^{-1}(b_1)+\cdots+\lambda_n f^{-1}(b_n).
+\]
+Since $f$ is an affine map 
+\[
+f\qty(\lambda_1 f^{-1}(b_1)+\cdots+\lambda_n f^{-1}(b_n))=
+\lambda_1f(f^{-1}(b_1))+\cdots+\lambda_n f(f^{-1}(b_n))=\lambda_1 b_1 + \cdots + \lambda_n b_n \in \cal B
+\]
+and so 
+\[
+\lambda_1 f^{-1}(b_1)+\cdots+\lambda_n f^{-1}(b_n) \in f^{-1}({\cal B}).
+\]
+Hence $f^{-1}({\cal B})$ is an affine subspace of $\R^n$.
+
 \end{problem}
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
