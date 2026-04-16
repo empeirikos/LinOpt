@@ -3498,6 +3498,573 @@ and so
 Hence $f^{-1}({\cal B})$ is an affine subspace of $\R^n$.
 
 \end{problem}
+\section*{Chapter 6}
+\stepcounter{section}
+\begin{problem}
+\[
+\begin{tikzpicture}[>={Straight Barb[scale=0.8]}]
+  \node[circle,draw] (1) at (0,0) {1}; \node[circle,draw] (2) at (1,0) {2}; \node[circle,draw] (n) at (7,0) {$n$};
+  \draw[<->,out=45,in=135] (1) to (n);  \draw[<->,out={-45},in={-135}] (1) to (2);
+  \draw[<->,out={-45},in={-135}] (2) to  (n);
+  \node[circle,draw] (3) at (2,0) {3};
+  \draw[<->,out=45,in=135] (2) to (3); \draw[<->,out={30},in={150}] (3) to (n);
+  \foreach \i in {4,...,10} {
+    \draw (1+\i*0.5,0) circle (1pt);
+  }
+\end{tikzpicture}
+\]  
+\end{problem}
+\begin{problem}
+  \subno{1.}
+\begin{align*}
+\mqty|a_1 & b_1 & c_1 \\a_2 & b_2 & c_2 \\a_3 & b_3 & c_3 \\|
+& =
+\mqty|a_1 & b_1 & c_1-a_1 \\a_2 & b_2 & c_2-a_2 \\a_3 & b_3 & c_3-a_3 \\|
+=
+\mqty|a_1 & b_1-a_1 & c_1-a_1 \\a_2 & b_2-a_2 & c_2-a_2 \\a_3 & b_3-a_3 & c_3-a_3 \\| \\
+& = \lambda^{-1}
+\mqty|a_1 & \lambda(b_1-a_1) & c_1-a_1 \\a_2 & \lambda(b_2-a_2) & c_2-a_2 \\a_3 & \lambda(b_3-a_3) & c_3-a_3 \\|
+=\mqty|a_1 & \lambda(b_1-a_1) & \mu(c_1-a_1) \\a_2 & \lambda(b_2-a_2) & \mu(c_2-a_2) \\a_3 & \lambda(b_3-a_3) & \mu(c_3-a_3) \\| \\  
+& =  \lambda^{-1} \mu^{-1}
+\mqty|a_1 & \lambda(b_1-a_1)+\mu(c_1-a_1) & \mu(c_1-a_1) \\a_2 & \lambda(b_2-a_2)+\mu(c_2-a_2) & \mu(c_2-a_2) \\a_3 & \lambda(b_3-a_3)+\mu(c_3-a_3) & \mu(c_3-a_3) \\| \\
+& =   \lambda^{-1} \mu^{-1}
+\mqty|a_1 & 0 & \mu(c_1-a_1) \\a_2 & 0 & \mu(c_2-a_2) \\a_3 & 0 & \mu(c_3-a_3) \\| =0.
+\end{align*}  
+\subno{2.}
+\begin{align*}
+\mqty|a_1 & b_1 & c_1 & d_1\\a_2 & b_2 & c_2 & d_2\\a_3 & b_3 & c_3 & d_3\\ 1 & 1 & 1 & 1\\|  
+& =
+\mqty|a_1 & b_1-a_1 & c_1 & d_1\\a_2 & b_2-a_2 & c_2 & d_2\\a_3 & b_3-a_3 & c_3 & d_3\\ 1 & 0 & 1 & 1\\|
+=
+\mqty|a_1 & b_1-a_1 & c_1-a_1 & d_1\\a_2 & b_2-a_2 & c_2-a_2 & d_2\\a_3 & b_3-a_3 & c_3-a_3 & d_3\\ 1 & 0 & 0 & 1\\|  \\
+& =
+\mqty|a_1 & b_1-a_1 & c_1-a_1 & d_1-a_1\\a_2 & b_2-a_2 & c_2-a_2 & d_2-a_2\\a_3 & b_3-a_3 & c_3-a_3 & d_3-a_3\\ 1 & 0 & 0 & 0\\| \\
+& = (\lambda\mu\nu)^{-1}
+\mqty|a_1 & \lambda(b_1-a_1) & \mu(c_1-a_1) & \nu(d_1-a_1)\\a_2 & \lambda(b_2-a_2) & \mu(c_2-a_2) & \nu(d_2-a_2)\\a_3 & \lambda(b_3-a_3) & \mu(c_3-a_3) & \nu(d_3-a_3)\\ 1 & 0 & 0 & 0\\| \\
+& = (\lambda\mu\nu)^{-1}
+\mqty|a_1 & \lambda(b_1-a_1)+\mu(c_1-a_1)+\nu(d_1-a_1) & \mu(c_1-a_1) & \nu(d_1-a_1)\\a_2 & \lambda(b_2-a_2)+\mu(c_2-a_2)+\nu(d_2-a_2) & \mu(c_2-a_2) & \nu(d_2-a_2)\\a_3 & \lambda(b_3-a_3)+\mu(c_3-a_3)+\nu(d_3-a_3) & \mu(c_3-a_3) & \nu(d_3-a_3)\\ 1 & 0 & 0 & 0\\| \\
+& = (\lambda\mu\nu)^{-1}
+\mqty|a_1 & 0 & \mu(c_1-a_1) & \nu(d_1-a_1)\\a_2 & 0 & \mu(c_2-a_2) & \nu(d_2-a_2)\\a_3 & 0 & \mu(c_3-a_3) & \nu(d_3-a_3)\\ 1 & 0 & 0 & 0\\| = 0. 
+\end{align*}
+\end{problem}
+\begin{problem}
+First consider the following block matrices   
+\[
+\mqty[I_m & O \\ O & A], \mqty[B & O \\ O & I_n] , \mqty[I_m & C \\ O & I_n]
+\]
+wher $A$ (resp. $B$) are $n \times n$ (resp. $m \times m$) matrices and each block matrix is $(m+n) \times (m+n)$. 
+The first matrix can be written, in explicit form, as 
+\[
+\begin{tikzpicture}
+  \matrix (m) [matrix of math nodes, row sep=1ex, column sep=1ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, anchor=center},]
+  {
+      1 & 0 & 0 & 0 & \hd & 0 &\hd & 0 & 0 & \hd & 0   \\
+      0 & 1 & 0 & 0 & \hd & 0 &\hd & 0 & 0 & \hd & 0   \\
+      0 & 0 & 1 & 0 & \hd & 0 &\hd & 0 & 0 & \hd & 0   \\
+      0 & 0 & 0 & 1 & \hd & 0 &\hd & 0 & 0 & \hd & 0   \\
+      \vd & \vd & \vd & \vd & \vd & \vd & \rdd & \vd & \vd & \rdd & \vd  \\
+      0 & 0 & 0 & 0 & \hd & 1 & 0 & 0 & \hd & 0 & 0 \\
+      0 & 0 & 0 & 0 & \hd & 0 & a_{11} & a_{12} & \hd & a_{1n-1} & a_{1n} \\
+      0 & 0 & 0 & 0 & \hd & 0 & a_{21} & a_{22} & \hd & a_{2n-1} & a_{2n} \\
+      \vd & \vd & \vd & \vd & \rdd & \vd & \vd & \vd & \rdd & \vd & \vd \\
+      0 & 0 & 0 & 0 & \hd & 0 & a_{n-1,1} & a_{n-1,2} & \hd & a_{n-1n-1} & a_{n-1n} \\
+      0 & 0 & 0 & 0 & \hd & 0 & a_{n1} & a_{n2} & \hd & a_{nn-1} & a_{nn} \\
+  };
+  \node[fit= (m-1-1.north west) (m-11-11.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+\end{tikzpicture}
+\]
+and so its determinant is equal to the determinant of the cofactor of element (1,1): 
+\[
+\mqty[I_{m-1} & O \\ O & A].
+\]
+Following this recursive procedure we conclude that 
+\[
+\mqty|I_m & O \\ O & A|=\det(A).
+\]
+For the second matrix the procedure is similar. Now we have 
+\[
+\begin{tikzpicture}
+  \matrix (m) [matrix of math nodes, row sep=1ex, column sep=1ex, nodes in empty cells, nodes={shape=rectangle,minimum height=3ex, anchor=center},]
+  {
+      b_{11} & b_{12} & \hd & b_{1n-1} & b_{1n} & 0 & 0 & 0 & 0 & \hd & 0 & 0   \\
+      b_{21} & b_{22} & \hd & b_{2n-1} & b_{2n} & 0 & 0 & 0 & 0 & \hd & 0 & 0   \\
+      \vd & \vd & \rdd & \vd & \vd & \vd & \vd & \vd & \vd & \rdd & \vd & \vd  \\
+      b_{m-11} & b_{m-12} & \hd & b_{m-1m-1} & b_{m-1m} & 0 & 0 & 0 & 0 & \hd & 0 & 0   \\
+      b_{m1} & b_{m2} & \hd & b_{mm-1} & b_{mm} & 0 & 0 & 0 & 0 & \hd & 0 & 0   \\
+      0 & 0 & \hd & 0 & 0 & 1 & 0 & 0 & 0 & \hd & 0 & 0   \\
+      0 & 0 & \hd & 0 & 0 & 0 & 1 & 0 & 0 & \hd & 0 & 0   \\
+      \vd & \vd & \rdd & \vd & \vd & \vd & \vd & \vd & \vd & \rdd & \vd & \vd  \\
+      0 & 0 & \hd & 0 & 0 & 0 & 0 & 0 & 0 & \hd & 1 & 0   \\
+      0 & 0 & \hd & 0 & 0 & 0 & 0 & 0 & 0 & \hd & 0 & 1   \\
+  };
+  \node[fit= (m-1-1.north west) (m-10-12.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+\end{tikzpicture}
+\]
+Now we evaluate the determinant using the cofactor of the $(n+m,n+m)$ element of the matrix and so 
+\[
+\mqty|B & O \\ O & I_n|=\mqty|B & O \\ O & I_{n-1}|=\cdots=\det(B).
+\]
+For the third matrix we have 
+\[
+\begin{tikzpicture}
+  \matrix (m) [matrix of math nodes, row sep=1ex, column sep=2ex, nodes in empty cells, nodes={shape=rectangle,minimum width=5ex,minimum height=3ex, anchor=center},]
+  {
+      1 & 0 & \hd  & 0 & 0 & c_{11}  & c_{12} & \hd & c_{1n-1} & c_{1n}   \\
+      0 & 1 & \hd  & 0 & 0 & c_{21}  & c_{22} & \hd & c_{2n-1} & c_{2n}   \\
+      \vd & \vd & \rdd  & \vd  & \vd & \vd & \vd & \rdd & \vd & \vd  \\
+      0 & 0 & \hd  & 1 & 0 & c_{m-11} & c_{m-12}  & \hd & c_{m-1n-1} & c_{m-1n}   \\
+      0 & 0 & \hd  & 0 & 1 & c_{m1} & c_{m2}  & \hd & c_{mn-1} & c_{mn}   \\
+      0 & 0 & \hd & 0 & 0  & 1 & 0  & \hd & 0 & 0   \\
+      0 & 0 & \hd & 0 & 0  & 0 & 1  & \hd & 0 & 0   \\
+      \vd & \vd & \rdd & \vd  & \vd & \vd & \vd  & \rdd & \vd & \vd  \\
+      0 & 0 & \hd & 0 & 0 & 0  & 0  & \hd & 1 & 0   \\
+      0 & 0 & \hd & 0 & 0 & 0  & 0  & \hd & 0 & 1   \\
+  };
+  \node[fit= (m-1-1.north west) (m-10-10.south east), left delimiter={[},right delimiter={]},inner sep=2ex] {};
+  \node[fit= (m-2-6.north west) (m-5-10.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+  \node[fit= (m-2-2.north west) (m-5-5.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+  \node[fit= (m-6-2.north west) (m-10-5.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+  \node[fit= (m-6-6.north west) (m-10-10.south east), left delimiter={[}, right delimiter={]},inner sep=0ex] {};
+  \node[opacity=.5,scale=3] at ($(m-2-2)!.5!(m-5-5)$) {$I_{m-1}$};
+  \node[opacity=.5,scale=3] at ($(m-2-6)!.5!(m-5-10)$) {$C_{m-1,n}$};
+  \node[opacity=.5,scale=3] at ($(m-6-6)!.5!(m-10-10)$) {$I_{n}$};
+  \node[opacity=.5,scale=3] at ($(m-6-2)!.5!(m-10-5)$) {$O$};
+\end{tikzpicture}
+\]
+and so 
+\[
+\mqty|I_m & C \\ O & I_n|=\mqty|I_{m-1} & C_{m-1,n} \\ O & I_n|.
+\]
+Following this recursion we obtain 
+\[
+\mqty|I_m & C \\ O & I_n|=\det(I_n)=1.
+\]
+Next note that 
+\[
+  \mqty[I_m & A_2 \\ O & I_n ] \mqty[A_1 & O \\ O & I_n] =
+  \mqty[A_1 & A_2 \\ O & I_n]
+\]
+and 
+\[
+\mqty[I_m & O \\ O & A_4]\mqty[A_1 & A_2 \\ O & I_n]=
+\mqty[A_1 & A_2 \\ O & A_4].
+\]
+Therefore 
+\[
+\mqty[A_1 & A_2 \\ O & A_4] = \mqty[I_m & O \\ O & A_4] \mqty[I_m & A_2 \\ O & I_n ] \mqty[A_1 & O \\ O & I_n]
+\]
+and so 
+\begin{align*}
+\mqty|A_1 & A_2 \\ O & A_4| & =\mqty|I_m & O \\ O & A_4| \mqty|I_m & A_2 \\ O & I_n | \mqty|A_1 & O \\ O & I_n| \\
+& = \det(A_4) \cdot 1 \cdot \det(A_1) = \det(A_1)\det(A_4).
+\end{align*}
+
+If $A$ is an upper triangular $n \times n$ matrix then it can be written in the block form shown in the problem.
+Hence its determinant is 
+\[
+\det(A)=\det(A_1)\det(A_4).
+\]
+$A_1, \, A_4$ are also upper triangular and so 
+\[
+\det(A)=\det(A_{11})\det(A_{14})\det(A_{41})\det(A_{44}).
+\]
+Note that each of these four matrices contains a part of the diagonal of $A$ and all together 
+they reproduce the whole diagonal. The same is true for the next iteration; after completing the expansion
+to groups of $2 \times 2$ and $1 \times 1$ matrices (depending on whether $m,n$ is odd or even) we obtain 
+\begin{align*}
+\det(A) & =\mqty|a_{11} & a_{12} \\ 0 & a_{22}|\mqty|a_{33} & a_{32} \\ 0 & a_{44}|
+\cdots \mqty|a_{kk} & a_{k+1k+2} \\ 0 & a_{k+2k+2}|\mqty|a_{k+3k+3} & a_{k+3k+4} \\ 0 & a_{k+4k+4}|
+\cdots \\
+& = a_{11}a_{22}a_{33}a_{44}\cdots a_{n+1n+1}a_{n+2n+2}a_{n+3n+3}a_{n+4n+4}\cdots a_{nn}.
+\end{align*}  
+\end{problem}
+\begin{problem}
+In general 
+\[
+\mqty|
+1+ x_1 y_1 & 1+ x_1 y_2 & \cdots & 1+ x_1 y_n \\
+1+ x_2 y_1 & 1+ x_2 y_2 & \cdots & 1+ x_2 y_n \\
+\vdots & \vdots & \ddots & \vdots \\
+1+ x_n y_1 & 1+ x_n y_2 & \cdots & 1+ x_n y_n \\
+|
+=
+(y_2-y_1)\cdots(y_n-y_1)
+\mqty|
+1+ x_1 y_1 & x_1  & \cdots & x_1  \\
+1+ x_2 y_1 & x_2 & \cdots & x_2  \\
+\vdots & \vdots & \ddots & \vdots \\
+1+ x_n y_1 & x_n  & \cdots & x_n  \\
+|=0
+\] 
+If $n=1$ then $\det(1+x_1y_1)=1+x_1y_1$. If $n=2$
+\[
+\mqty|
+1+ x_1 y_1 & 1+ x_1 y_2 \\
+1+ x_2 y_1 & 1+ x_2 y_2 \\
+|
+=
+\mqty|
+1+ x_1 y_1 & x_1 (y_2-y_1) \\
+1+ x_2 y_1 & x_2 (y_2-y_1) \\
+|
+=
+(y_2-y_1)
+\mqty|
+1+ x_1 y_1 & x_1  \\
+1+ x_2 y_1 & x_2  \\
+|
+=(y_2-y_1) (x_2-x_1).
+\] 
+For $n\geq 3$ we obtain two or more columns of the determinant that are equal and so the determinant is zero.
+\end{problem}
+\begin{problem}
+  \begin{align*}
+    \mqty|1 & 4 & 9 & 16 \\ 4 & 9 & 16 & 25 \\ 9 & 16 & 25 & 36 \\ 16 & 25 & 36 & 49|
+    & =
+    \mqty|1 & 4-1 & 9-4 & 16-9 \\ 4 & 9-4 & 16-9 & 25-16 \\ 9 & 16-9 & 25-16 & 36-25 \\ 16 & 25-16 & 36-25 & 49-36|
+    =
+    \mqty|1 & 3 & 5 & 7 \\ 4 & 5 & 7 & 9 \\ 9 & 7 & 9 & 11 \\ 16 & 9 & 11 & 13| \\
+    & =
+    \mqty|1 & 3 & 5-3 & 7-5 \\ 4 & 5 & 7-5 & 9-7 \\ 9 & 7 & 9-7 & 11-9 \\ 16 & 9 & 11-9 & 13-11|
+    =
+    \mqty|1 & 3 & 2 & 2 \\ 4 & 5 & 2 & 2 \\ 9 & 7 & 2 & 2 \\ 16 & 9 & 2 & 2|=0.
+  \end{align*}
+\end{problem}
+\begin{problem}
+  \subno{1.}
+  If 
+  \[
+  R = \mqty[r_1 & r_2 & r_3 & \cdots & r_{n-2} & r_{n-1} & r_n]
+  \]
+  then 
+  \begin{align*}
+  R^\T R & = 
+  \mqty[r_1^\T \\ r_2^\T \\ r_3^\T \\ \cdots \\ r_{n-2}^\T \\ r_{n-1}^\T \\ r_n^\T]
+\mqty[r_1 & r_2 & r_3 & \cdots & r_{n-2} & r_{n-1} & r_n] \\
+& = \mqty[
+r_1^\T r_1 & r_1^\T r_2 & r_1^\T r_3 & \cdots & r_1^\T r_{n-2} & r_1^\T r_{n-1} & r_1^\T r_n \\
+r_2^\T r_1 & r_2^\T r_2 & r_2^\T r_3 & \cdots & r_2^\T r_{n-2} & r_2^\T r_{n-1} & r_2^\T r_n \\
+r_3^\T r_1 & r_3^\T r_2 & r_3^\T r_3 & \cdots & r_3^\T r_{n-2} & r_3^\T r_{n-1} & r_3^\T r_n \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+r_{n-2}^\T r_1 & r_{n-2}^\T r_2 & r_{n-2}^\T r_3 & \cdots & r_{n-2}^\T r_{n-2} & r_{n-2}^\T r_{n-1} & r_{n-2}^\T r_n \\
+r_{n-1}^\T r_1 & r_{n-1}^\T r_2 & r_{n-1}^\T r_3 & \cdots & r_{n-1}^\T r_{n-2} & r_{n-1}^\T r_{n-1} & r_{n-1}^\T r_n \\
+r_{n}^\T r_1 & r_n^\T r_2 & r_n^\T r_3 & \cdots & r_n^\T r_{n-2} & r_n^\T r_{n-1} & r_n^\T r_n \\
+]
+  \end{align*}
+Given $A$, first we must have $r_1^T r_1=1$ which holds if $r_1^\T=(1,0,0,\ldots,0,0,0,0)$. Then we must have 
+$r_2^\T r_1 =2$ and $r_2^T r_2T=5$. From the first condition, the first component of $r_2$ is 2. From the second 
+condition the second component of $r_2$ is 1 (set all other components equal to zero). So   
+ $r_2^\T=(2,1,0,\ldots,0,0,0,0)$. If $r_3^\T=(0,2,1,\ldots,0,0,0,0)$ then $r_3^\T r_1 = 0$, $r_3^\T r_2 = 2 $ and 
+ $r_3^\T r_3 =5$. Repeating the same structure for all other vectors we obtain 
+ \[
+ R^\T = 
+ \mqty[
+1 & 0 & 0 & 0 & \cdots & 0 & 0 & 0 & 0 \\
+2 & 1 & 0 & 0 & \cdots & 0 & 0 & 0 & 0 \\
+0 & 2 & 1 & 0 & \cdots & 0 & 0 & 0 & 0 \\
+0 & 0 & 2 & 1 & \cdots & 0 & 0 & 0 & 0 \\
+\vdots &  \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 2 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 2 & 1 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 2 & 1 \\
+ ]
+ \]  
+ \subno{2.} $R$ is an upper-triangular matrix. Since $\det(R^\T)=\det(R)=1$ (all diagonal elements of $R$ are equal to 1)
+ we conclude that $\det(A)=\det(R^\T)\det(R)=1$.
+ \subno{3.} For the determinant of 
+ \[
+ A - \lambda I =
+ \mqty[
+1-\lambda & 2 & 0 & 0 & \cdots & 0 & 0 & 0 & 0 \\
+2 & 5-\lambda & 2 & 0 & \cdots & 0 & 0 & 0 & 0 \\
+0 & 2 & 5-\lambda & 2 & \cdots & 0 & 0 & 0 & 0 \\
+0 & 0 & 2 & 5-\lambda  & \cdots & 0 & 0 & 0 & 0 \\
+\vdots &  \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 2 & 5-\lambda & 2 & 0 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 2 & 5-\lambda & 2 \\
+0 & 0 & 0 & 0 & \cdots & 0 & 0 & 2 & 5-\lambda \\
+ ]
+ \]
+ apply the Laplace expansion from the last row. We have 
+ \begin{align*}
+ \det(A - \lambda I) & = 
+ (5-\lambda) 
+ \mqty|
+1-\lambda & 2 & 0 & 0 & \cdots & 0 & 0 & 0  \\
+2 & 5-\lambda & 2 & 0 & \cdots & 0 & 0 & 0  \\
+0 & 2 & 5-\lambda & 2 & \cdots & 0 & 0 & 0  \\
+0 & 0 & 2 & 5-\lambda  & \cdots & 0 & 0 & 0  \\
+\vdots &  \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots  \\
+0 & 0 & 0 & 0 & \cdots & 2 & 5-\lambda & 2  \\
+0 & 0 & 0 & 0 & \cdots & 0 & 2 & 5-\lambda  \\
+ | \\ 
+ & \kern3ex - 2
+ \mqty|
+1-\lambda & 2 & 0 & 0 & \cdots & 0 & 0 & 0  \\
+2 & 5-\lambda & 2 & 0 & \cdots & 0 & 0 & 0  \\
+0 & 2 & 5-\lambda & 2 & \cdots & 0 & 0 & 0  \\
+0 & 0 & 2 & 5-\lambda  & \cdots & 0 & 0 & 0  \\
+\vdots &  \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots  \\
+0 & 0 & 0 & 0 & \cdots & 2 & 5-\lambda & 0  \\
+0 & 0 & 0 & 0 & \cdots & 0 & 2 & 2  \\
+ | .
+ \end{align*}
+For the second term the Laplace expansion using the last row is 
+\begin{align*}
+& \mqty|
+1-\lambda & 2 & 0 & 0 & \cdots & 0 & 0 & 0  \\
+2 & 5-\lambda & 2 & 0 & \cdots & 0 & 0 & 0  \\
+0 & 2 & 5-\lambda & 2 & \cdots & 0 & 0 & 0  \\
+0 & 0 & 2 & 5-\lambda  & \cdots & 0 & 0 & 0  \\
+\vdots &  \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots  \\
+0 & 0 & 0 & 0 & \cdots & 2 & 5-\lambda & 0  \\
+0 & 0 & 0 & 0 & \cdots & 0 & 2 & 2  \\
+ | \\
+ & = 2
+\mqty|
+1-\lambda     & 2         & 0         & 0         & \cdots  & 0       & 0         \\
+2             & 5-\lambda & 2         & 0         & \cdots  & 0       & 0         \\
+0             & 2         & 5-\lambda & 2         & \cdots  & 0       & 0         \\
+0             & 0         & 2         & 5-\lambda & \cdots  & 0       & 0         \\
+\vdots        &  \vdots   & \vdots    & \vdots    & \ddots & \vdots  & \vdots    \\
+0             & 0         & 0         & 0         & \cdots  & 2       & 5-\lambda \\
+| \\
+& \kern3ex - 2
+\mqty|
+1-\lambda     & 2         & 0         & 0         & \cdots  & 0     & 0       \\
+2             & 5-\lambda & 2         & 0         & \cdots  & 0     & 0       \\
+0             & 2         & 5-\lambda & 2         & \cdots  & 0     & 0       \\
+0             & 0         & 2         & 5-\lambda & \cdots  & 0     & 0       \\
+\vdots        &  \vdots   & \vdots    & \vdots    & \ddots  & \vdots& \vdots  \\
+0             & 0         & 0         & 0         & \cdots  & 2     & 0       \\
+| \\
+ & = 2
+\mqty|
+1-\lambda     & 2         & 0         & 0         & \cdots  & 0       & 0         \\
+2             & 5-\lambda & 2         & 0         & \cdots  & 0       & 0         \\
+0             & 2         & 5-\lambda & 2         & \cdots  & 0       & 0         \\
+0             & 0         & 2         & 5-\lambda & \cdots  & 0       & 0         \\
+\vdots        &  \vdots   & \vdots    & \vdots    & \ddots & \vdots  & \vdots    \\
+0             & 0         & 0         & 0         & \cdots  & 2       & 5-\lambda \\
+| .
+\end{align*}
+Consolidating these equations we can write 
+\begin{align*}
+  \det(A-\lambda I) & =(5-\lambda) 
+ \underbrace{
+  \mqty|
+1-\lambda & 2 & 0 & 0 & \cdots & 0 & 0 & 0  \\
+2 & 5-\lambda & 2 & 0 & \cdots & 0 & 0 & 0  \\
+0 & 2 & 5-\lambda & 2 & \cdots & 0 & 0 & 0  \\
+0 & 0 & 2 & 5-\lambda  & \cdots & 0 & 0 & 0  \\
+\vdots &  \vdots & \vdots & \vdots & \ddots & \vdots & \vdots & \vdots  \\
+0 & 0 & 0 & 0 & \cdots & 2 & 5-\lambda & 2  \\
+0 & 0 & 0 & 0 & \cdots & 0 & 2 & 5-\lambda  \\
+ |
+ }_{(n-1)\times(n-1)} \\
+ & \kern3ex - 4 
+ \underbrace{\mqty|
+1-\lambda     & 2         & 0         & 0         & \cdots  & 0       & 0         \\
+2             & 5-\lambda & 2         & 0         & \cdots  & 0       & 0         \\
+0             & 2         & 5-\lambda & 2         & \cdots  & 0       & 0         \\
+0             & 0         & 2         & 5-\lambda & \cdots  & 0       & 0         \\
+\vdots        &  \vdots   & \vdots    & \vdots    & \ddots & \vdots  & \vdots    \\
+0             & 0         & 0         & 0         & \cdots  & 2       & 5-\lambda \\
+|}_{(n-2)\times(n-2)}.
+\end{align*} 
+Denote the $(n-1)$ degree polynomial in the first term by $p_{n-1}(\lambda)$ and the 
+$(n-2)$ degree polynomial in the second term by $p_{n-2}(\lambda)$ (it is derived from $p_{n-1}(\lambda)$ 
+by deleting the last row/column). Then 
+\[
+\det(A-\lambda I)=(5-\lambda)p_{n-1}(\lambda)-4 p_{n-2}(\lambda).
+\]   
+Using this formulation it is clear that $p_1(\lambda)=1-\lambda$ and $p_0(\lambda)=1$ since 
+\[
+p_2(\lambda) = 
+\mqty |1-\lambda & 2 \\ 2 & 5 - \lambda | = 
+(5-\lambda) (1-\lambda) - 4 .
+\]
+\end{problem}
+\begin{problem}
+\begin{align*}
+  \det(B) & =
+  \mqty|  
+  1 & -1 & -1 & -1 & \cdots & -1 & -1 \\
+  1 & -1 & 1 & 1 & \cdots & 1 & 1 \\
+  1 & 1 & -1 & 1 & \cdots & 1 & 1 \\
+  1 & 1 & 1 & -1 & \cdots & 1 & 1 \\
+  \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+  1 & 1 & 1 & 1 & \cdots & -1 & 1 \\
+  1 & 1 & 1 & 1 & \cdots & 1 & -1 \\  
+  | \\
+  & = 
+  \mqty|
+  2 & -1 & -1 & -1 & \cdots & -1 & -1 \\
+  2 & -1 & 1 & 1 & \cdots & 1 & 1 \\
+  0 & 1 & -1 & 1 & \cdots & 1 & 1 \\
+  0 & 1 & 1 & -1 & \cdots & 1 & 1 \\
+  \vdots & \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+  0 & 1 & 1 & 1 & \cdots & -1 & 1 \\
+  0 & 1 & 1 & 1 & \cdots & 1 & -1 \\  
+  | \\
+  & = 2  
+  \underbrace{  \mqty|
+   -1 & 1 & 1 & \cdots & 1 & 1 \\
+   1 & -1 & 1 & \cdots & 1 & 1 \\
+   1   & 1 & -1 & \cdots & 1 & 1 \\
+   \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+   1 & 1 & 1 & \cdots & -1 & 1 \\
+   1 & 1 & 1 & \cdots & 1 & -1 \\  
+  |}_{(n-1)\times(n-1)} \\
+  & \kern3ex - 2 
+  \underbrace{\mqty|
+  -1       &  -1 & -1 & \cdots & -1 & -1 \\
+  1       &  -1 & 1 & \cdots & 1 & 1 \\
+  1       &  1 & -1 & \cdots & 1 & 1 \\
+  \vdots  &  \vdots & \vdots & \ddots & \vdots & \vdots \\
+  1       &  1 & 1 & \cdots & -1 & 1 \\
+  1       &  1 & 1 & \cdots & 1 & -1 \\  
+  | }_{(n-1)\times(n-1)} = 2 f_{n-1} -2 h_{n-1}.
+\end{align*}
+The second term has the property 
+\begin{align*}
+  h_{n-1} & =
+  \underbrace{\mqty|
+  -1       &  -1 & -1 & \cdots & -1 & -1 \\
+  1       &  -1 & 1 & \cdots & 1 & 1 \\
+  1       &  1 & -1 & \cdots & 1 & 1 \\
+  \vdots  &  \vdots & \vdots & \ddots & \vdots & \vdots \\
+  1       &  1 & 1 & \cdots & -1 & 1 \\
+  1       &  1 & 1 & \cdots & 1 & -1 \\  
+  | }_{(n-1)\times(n-1)}
+=
+  \mqty|
+  0       &  -1 & -1 & \cdots & -1 & -1 \\
+  2       &  -1 & 1 & \cdots & 1 & 1 \\
+  0       &  1 & -1 & \cdots & 1 & 1 \\
+  \vdots  &  \vdots & \vdots & \ddots & \vdots & \vdots \\
+  0       &  1 & 1 & \cdots & -1 & 1 \\
+  0       &  1 & 1 & \cdots & 1 & -1 \\  
+  | 
+  \\
+& = -2
+  \underbrace{\mqty|
+    -1 & -1 & \cdots & -1 & -1 \\
+    1 & -1 & \cdots & 1 & 1 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    1 & 1 & \cdots & -1 & 1 \\
+    1 & 1 & \cdots & 1 & -1 \\  
+  | }_{(n-2) \times (n-2)} 
+=-2h_{n-2}   
+\end{align*} 
+We note that 
+\[
+h_2 = \mqty|-1 & -1 \\ 1 & -1|=2
+\]
+and so 
+\[
+h_{n-1}=(-2)^{n-3} h_2=(-1)^{n-3} 2^{n-2}.
+\]
+From the first term we have 
+\begin{align*}
+f_{n-1} & =
+\underbrace{  \mqty|
+   -1     & 1       & 1       & \cdots & 1      & 1       & 1 \\
+   1      & -1      & 1       & \cdots & 1      & 1       & 1 \\
+   1      & 1       & -1      & \cdots & 1      & 1       & 1 \\
+   \vdots & \vdots  & \vdots  & \ddots & \vdots & \vdots  & \vdots \\
+   1      & 1       & 1       & \cdots & -1     & 1       & 1\\
+   1      & 1       & 1       & \cdots & 1      & -1      & 1\\  
+   1      & 1       & 1       & \cdots & 1      &  1      & -1\\  
+  |}_{(n-1)\times(n-1)} \\
+  & =
+   \mqty|
+   -2     & 1       & 1       & \cdots & 1      & 1       & 1 \\
+   2      & -1      & 1       & \cdots & 1      & 1       & 1 \\
+   0      & 1       & -1      & \cdots & 1      & 1       & 1 \\
+   \vdots & \vdots  & \vdots  & \ddots & \vdots & \vdots  & \vdots \\
+   0      & 1       & 1       & \cdots & -1     & 1       & 1\\
+   0      & 1       & 1       & \cdots & 1      & -1      & 1\\  
+   0      & 1       & 1       & \cdots & 1      &  1      & -1\\  
+  | \\
+  & = -2
+    \underbrace{ \mqty|
+    -1      & 1       & \cdots & 1      & 1       & 1 \\
+    1       & -1      & \cdots & 1      & 1       & 1 \\
+    \vdots  & \vdots  & \ddots & \vdots & \vdots  & \vdots \\
+    1       & 1       & \cdots & -1     & 1       & 1\\
+    1       & 1       & \cdots & 1      & -1      & 1\\  
+    1       & 1       & \cdots & 1      &  1      & -1\\  
+  | }_{(n-2) \times (n-2)}
+  - 2
+   \underbrace{\mqty|
+    1       & 1       & \cdots & 1      & 1       & 1 \\
+    1       & -1      & \cdots & 1      & 1       & 1 \\
+    \vdots  & \vdots  & \ddots & \vdots & \vdots  & \vdots \\
+    1       & 1       & \cdots & -1     & 1       & 1\\
+    1       & 1       & \cdots & 1      & -1      & 1\\  
+    1       & 1       & \cdots & 1      &  1      & -1\\  
+  |  }_{(n-2) \times (n-2)}
+  =-2f_{n-2}-2g_{n-2}.
+\end{align*}
+The $g_{n-2}$ term has the property 
+\begin{align*}
+  g_{n-2} & =
+     \underbrace{\mqty|
+    1       & 1       & \cdots & 1      & 1       & 1 \\
+    1       & -1      & \cdots & 1      & 1       & 1 \\
+    \vdots  & \vdots  & \ddots & \vdots & \vdots  & \vdots \\
+    1       & 1       & \cdots & -1     & 1       & 1\\
+    1       & 1       & \cdots & 1      & -1      & 1\\  
+    1       & 1       & \cdots & 1      &  1      & -1\\  
+  |}_{(n-2)\times(n-2)}
+  =
+  \mqty|
+    0       & 1       & \cdots & 1      & 1       & 1 \\
+    2       & -1      & \cdots & 1      & 1       & 1 \\
+    \vdots  & \vdots  & \ddots & \vdots & \vdots  & \vdots \\
+    0       & 1       & \cdots & -1     & 1       & 1\\
+    0       & 1       & \cdots & 1      & -1      & 1\\  
+    0       & 1       & \cdots & 1      &  1      & -1\\  
+  | \\
+  & = -2 
+   \underbrace{ \mqty|
+    1       &  1       & \cdots & 1      & 1       & 1 \\
+    1       &  -1       & \cdots & 1      & 1       & 1 \\
+    \vdots  &  \vdots  & \ddots & \vdots & \vdots  & \vdots \\
+    1       &  1       & \cdots & -1     & 1       & 1\\
+    1       &  1       & \cdots & 1      & -1      & 1\\  
+    1       &  1       & \cdots & 1      &  1      & -1\\  
+  | }_{(n-3)\times (n-3)} = -2 g_{n-3}.
+\end{align*}
+Since 
+\[
+g_2 = \mqty|1 & 1 \\ 1 & -1|=-2
+\]
+we have 
+\[
+g_{n}= (-2)^{n-1}.
+\]
+Also note that 
+\[
+f_2 = \mqty|-1 & 1 \\ 1 & -1|=0.
+\]
+Using these recursive relationships we can write
+\begin{align*}
+f_{n-1} & = -2 f_{n-2} - 2 g_{n-2} \\
+& = (-2)^2 f_{n-3} + (-2)^2 g_{n-3} + (-2) g_{n-2}\\
+& = (-2)^3 f_{n-4} + (-2)^3 g_{n-4}  + (-2)^2 g_{n-3} + (-2) g_{n-2} \\
+&  \kern30ex \vdots  \\
+& = (-2)^{n-3} f_2 + (-2)^{n-3} g_2 + (-2)^{n-4} g_3 + \cdots + (-2)^3 g_{n-4}  + (-2)^2 g_{n-3} + (-2) g_{n-2} \\
+& = (-2)^{n-3} (-2) + (-2)^{n-4} (-2)^2 + \cdots + (-2)^3 (-2)^{n-5}  + (-2)^2 (-2)^{n-4} + (-2) (-2)^{n-3} \\
+& = (-2)^{n-2} + (-2)^{n-2} + \cdots +  (-2)^{n-2}  + (-2)^{n-2} + (-2)^{n-2} = (n-3)(-2)^{n-2}.
+\end{align*}
+Now we can complete the derivation for the determinant:
+\begin{align*}
+  \det(B) & = 2 f_{n-1} - 2 h_{n-1} = 2 (n-3) (-2)^{n-2} - 2 (-1)^{n-3} 2^{n-2} \\
+  & = 2 (n-3) (-1)^{n-2} 2^{n-2} + 2 (-1)^{n-2} 2^{n-2} = (-1)^n (n-2)2^{n-1}.
+\end{align*}
+\end{problem}
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
 \end{document}
