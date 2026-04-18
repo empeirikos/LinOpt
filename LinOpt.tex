@@ -42,7 +42,7 @@
 \usepackage{bbm}
 
 \usepackage{tikz}
-\usetikzlibrary{matrix,fit,decorations.text,positioning,arrows.meta,patterns,shapes,math,calc}
+\usetikzlibrary{matrix,fit,decorations.text,positioning,arrows.meta,patterns,shapes,math,calc,backgrounds}
 
 \tikzset{mystyle/.style={draw,circle,label={[fill=yellow]0:#1}}}
 
@@ -174,6 +174,31 @@
     }
 }
 
+\NewDocumentCommand{\drawdnodes}{ m m }   
+{
+    \tikzmath{
+        coordinate \a, \b;
+        int \i;
+        \a = (#1.north west);
+        \b = (#1.south east);
+        \w = \bx - \ax; 
+        \h = \ay - \by;
+        \l = \h * sqrt(1+ (\w / \h) * (\w / \h)); %\w * \w ;
+        \dl = 5.0;
+        \dx = \dl * (\w / \l);
+        \dy = \dl * (\h / \l);
+        \n = int(\l/\dl);
+        \g = (\l - \n * \dl)/2.0 ;
+        \gx = \g * \w / \l;
+        \gy = \g * \h / \l;
+        coordinate \c;
+        for \i in {1,...,\n+1}{
+            \c = ({\ax+\gx+(\i-1)*\dx},{\ay-\gy-(\i-1)*\dy});
+            {\filldraw[fill=#2,line width=0.1mm] (\c) circle (.2mm) ;};
+        };
+    }    
+}
+
 \newcommand{\Out}{\mathsf{O}}
 \newcommand{\T}{\mathsf{T}}
 \newcommand{\Q}{\mathsf{Q}}
@@ -183,6 +208,7 @@
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\cR}{\mathcal{R}}
+\newcommand{\cP}{\mathcal{P}}
 
 \newcommand{\vc}{\symbf{c}}
 \newcommand{\vw}{\symbf{w}}
@@ -4057,13 +4083,320 @@ f_{n-1} & = -2 f_{n-2} - 2 g_{n-2} \\
 &  \kern30ex \vdots  \\
 & = (-2)^{n-3} f_2 + (-2)^{n-3} g_2 + (-2)^{n-4} g_3 + \cdots + (-2)^3 g_{n-4}  + (-2)^2 g_{n-3} + (-2) g_{n-2} \\
 & = (-2)^{n-3} (-2) + (-2)^{n-4} (-2)^2 + \cdots + (-2)^3 (-2)^{n-5}  + (-2)^2 (-2)^{n-4} + (-2) (-2)^{n-3} \\
-& = (-2)^{n-2} + (-2)^{n-2} + \cdots +  (-2)^{n-2}  + (-2)^{n-2} + (-2)^{n-2} = (n-3)(-2)^{n-2}.
+& = \underbrace{(-2)^{n-2} + (-2)^{n-2} + \cdots +  (-2)^{n-2}  + (-2)^{n-2} + (-2)^{n-2}}_{\text{from $g_2$ to $g_{n-2}$ there are $n-2-2+1=n-3$ terms}}
+ = (n-3)(-2)^{n-2}.
 \end{align*}
 Now we can complete the derivation for the determinant:
 \begin{align*}
   \det(B) & = 2 f_{n-1} - 2 h_{n-1} = 2 (n-3) (-2)^{n-2} - 2 (-1)^{n-3} 2^{n-2} \\
   & = 2 (n-3) (-1)^{n-2} 2^{n-2} + 2 (-1)^{n-2} 2^{n-2} = (-1)^n (n-2)2^{n-1}.
 \end{align*}
+\end{problem}
+\begin{problem}
+\subno{1.} To establish linearity let $(p_1,q_1), \, (p_2,q_2) \in \cP_n \times \cP_m$ with $a,\, b \in K$.
+Then 
+\begin{align*}
+  T((p_1,q_1)+(p_2,q_2)) = T((p_1+p_2,q_1+q_2)) & = f(p_1+p_2)+g(q_1+q_2) = f (p_1+p_2) +g (q_1+q_2) \\
+  & = f p_1 + g q_1 + fp_2 + g q_2 = T(p_1,q_1) + T(p_2,q_2). 
+\end{align*} 
+We also have to show that for any scalar $a \in K$
+\begin{align*}
+  T(a(p,q))= T(ap,aq) & = f (ap) + g(aq)= a (fp+gq) = a T(p,q).
+\end{align*}
+These two properties can be combined to show that  
+\[
+T(a(p_1,q_1)+b(p_2,q_2))=aT(p_1,q_1)+bT(p_2,q_2).
+\]
+\subno{2.} $T$ is injective if for $(p,q)\neq(0,0)$, $T(p,q)=0$. This is equivalent to $fp+gq=0$. Since,
+from the definition, $-q \in \cP_m$ and $p \in \cP_n$ then $f, \, g$ have a common nontrivial factor.
+\subno{3.} To avoid horribly large matrix expressions lets consider the case wheere $m=4$ and $n=2$. The general case is a straightforward 
+extension of this derivation. For this specific case the resultant is
+\[
+\det(A)=
+\left|\begin{matrix}a_{0} & a_{1} & a_{2} & a_{3} & a_{4} & 0\\
+  0 & a_{0} & a_{1} & a_{2} & a_{3} & a_{4}\\
+  b_{0} & b_{1} & b_{2} & 0 & 0 & 0\\
+  0 & b_{0} & b_{1} & b_{2} & 0 & 0\\
+  0 & 0 & b_{0} & b_{1} & b_{2} & 0\\
+  0 & 0 & 0 & b_{0} & b_{1} & b_{2}\end{matrix}\right|
+\]
+If $f, \, g$ have a nontrivial common factor then
+\begin{align*}
+  f p & = g q  \\
+  (a_0+a_1x+\cdots+a_mx^m) & (p_0+p_1x+\cdots+p_{n-1}x^{n-1})     \\
+  & = (b_0+b_1x+\cdots+b_nx^n)(q_0+q_1x+\cdots+q_{m-1}x^{m-1})
+\end{align*}
+Equating the coefficients of powers of $x$ we obtain a system of equations with the following form: 
+\begin{align*}
+ \sum_{i+j=r} a_i p_j - \sum_{i+j=r} b_i q_j & = 0, \qquad r=0, \ldots, m+n-1.
+\end{align*} 
+then both matrices have antidiagonals whose indices sum from 0 to $m+n-1$. For $m=4$ and $n=2$, $p$ is a first degree 
+polynomial while $q$ is a third degree polynomial. The system of equations has the following matrix form: 
+\[
+\left[\begin{matrix}a_{0} & 0 & b_{0} & 0 & 0 & 0\\a_{1} & a_{0} & b_{1} & b_{0} & 0 & 0\\a_{2} & a_{1} & b_{2} & b_{1} & b_{0} & 0\\a_{3} & a_{2} & 0 & b_{2} & b_{1} & b_{0}\\a_{4} & a_{3} & 0 & 0 & b_{2} & b_{1}\\0 & a_{4} & 0 & 0 & 0 & b_{2}\end{matrix}\right]
+\left[
+  \begin{matrix}
+  p_0 \\ p_1 \\ -q_0 \\ -q_1 \\ -q_2 \\ -q_3 
+  \end{matrix}
+  \right]
+  =
+    \left[\begin{matrix}
+  0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 
+  \end{matrix}
+  \right].
+\] 
+This is a homogeneous system of equations. It has a nontrivial solution if and only if the determinant of the coefficient matrix is zero. 
+The coefficient matrix is $A^\T$ and since $\det(A)=\det(A^\T)$ it only has a nontrivial solution if the resultant is zero. 
+\subno{4.}
+\par\noindent(a)  
+\[
+\mqty|a & b \\ c & d| = ad-bc.
+\]
+\par\noindent(b)
+Lets look at a specific example for $n=5$. The resultant is  
+\[
+\mqty|
+  a_0 & a_1 & 0   & 0   & 0    & 0  \\ 
+  0   & a_0 & a_1 & 0   & 0    & 0  \\ 
+  0   & 0   & a_0 & a_1 & 0    & 0  \\ 
+  0   & 0   & 0   & a_0 & a_1  & 0  \\ 
+  0   & 0   & 0   & 0   & a_0  & a_1  \\ 
+  b_0 & b_1 & b_2 & b_3 & b_4  & b_5  \\ 
+|.
+\]
+If we use the last column for the Laplace expansion we have 
+\begin{align*}
+  \mqty|
+  a_0 & a_1 & 0   & 0   & 0    & 0  \\ 
+  0   & a_0 & a_1 & 0   & 0    & 0  \\ 
+  0   & 0   & a_0 & a_1 & 0    & 0  \\ 
+  0   & 0   & 0   & a_0 & a_1  & 0  \\ 
+  0   & 0   & 0   & 0   & a_0  & a_1  \\ 
+  b_0 & b_1 & b_2 & b_3 & b_4  & b_5  \\ 
+| & =
+  b_5
+  \mqty|
+  a_0 & a_1 & 0   & 0   & 0    \\ 
+  0   & a_0 & a_1 & 0   & 0    \\ 
+  0   & 0   & a_0 & a_1 & 0    \\ 
+  0   & 0   & 0   & a_0 & a_1  \\ 
+  0   & 0   & 0   & 0   & a_0    \\ 
+| \\
+& \kern3ex - a_1
+  \mqty|
+  a_0 & a_1 & 0   & 0   & 0    \\ 
+  0   & a_0 & a_1 & 0   & 0    \\ 
+  0   & 0   & a_0 & a_1 & 0    \\ 
+  0   & 0   & 0   & a_0 & a_1  \\ 
+  b_0 & b_1 & b_2 & b_3 & b_4    \\ 
+|
+\end{align*}
+The first determinant is for an upper triangular matrix so it is the product of the diagonal elements. The second determinant 
+is a copy of the original resultant but for $n=4$. Using this template, in general we have, 
+\[
+R_n = b_n a_0^n - a_1 R_{n-1}.
+\]
+Since 
+\[
+R_1 =\mqty|a_0 & a_1 \\ b_0 & b_1|= a_0b_1 - a_1 b_0
+\]
+we have 
+\begin{align*}
+  R_n & = b_n a_0^n - a_1 R_{n-1} \\
+    & = b_n a_0^n - a_1 \qty(b_{n-1} a_0^{n-1} - a_1R_{n-2}) \\
+    & \kern15ex \vdots \\ 
+    & = b_n a_0^n - b_{n-1} a_1 a_0^{n-1} + b_{n-2} a_1^2 a_0^{n-2} - \cdots + (-1)^{n-1} b_1 a_1^{n-1} a_0 + (-1)^{n} b_0 a_1^n.
+\end{align*}
+\par\noindent(c)
+\begin{align*}
+  \mqty|
+  c  & b  & a   \\
+  b  & 2a & 0   \\
+  0  & b  & 2a  \\
+  |
+  & =- b 
+  \mqty|
+  c   & a   \\
+  b   & 0   \\
+  | + 
+  2a
+  \mqty|
+  c  & b     \\
+  b  & 2a    \\
+  |  \\
+  & =  b^2 a + 2a (2ac-b^2) =4a^2c- ab^2.
+\end{align*}
+\subno{5.}
+For $f(X)=X^3+pX+q$ and $g(X)=3X^2+p$
+\begin{align*}
+  \mqty|
+  q & p & 0 & 1 & 0 \\
+  0 & q & p & 0 & 1 \\
+  p & 0 & 3 & 0 & 0 \\
+  0 & p & 0 & 3 & 0 \\
+  0 & 0 & p & 0 & 3 \\
+  |
+  & = p
+  \mqty|
+  q & p & 1 & 0 \\
+  0 & q & 0 & 1 \\
+  p & 0 & 0 & 0 \\
+  0 & p & 3 & 0 \\
+  |
+  + 3
+  \mqty|
+  q & p & 0 & 1 \\
+  0 & q & p & 0 \\
+  p & 0 & 3 & 0 \\
+  0 & p & 0 & 3 \\
+  | \\
+ & = p 
+ \qty(
+  p
+    \mqty|
+  q & 1 & 0 \\
+  0 & 0 & 1 \\
+  p & 0 & 0 \\
+  |
+  - 3
+  \mqty|
+  q & p & 0 \\
+  0 & q & 1 \\
+  p & 0 & 0 \\
+  |
+ ) 
+ + 3 \qty(
+  p
+    \mqty|
+  q & 0 & 1 \\
+  0 & p & 0 \\
+  p & 3 & 0 \\
+  |
+  +3 
+    \mqty|
+  q & p & 0  \\
+  0 & q & p  \\
+  p & 0 & 3  \\
+  |
+ )  \\
+ & =
+ p 
+ \qty(
+  p^2
+  - 3
+  p^2
+ ) 
+ + 3 \qty(
+  p
+    (-p^2)
+  +3 
+  (p^3+3q^2)
+ ) \\
+ & = 4p^3 + 27 q^2.
+\end{align*}
+
+For $f(X)=a_0X^2+a_1X+a_2$, $g(X)=b_0X^2+b_1X+b_2$, the expression given uses the discriminants $a_1^2-4a_0a_2$ and $b_1^2-4b_0b_2$
+of each quadratic to express the resultant.  
+\begin{align*}
+\mqty|
+a_2 & a_1 & a_0 & 0   \\
+0   & a_2 & a_1 & a_0 \\
+b_2 & b_1 & b_0 & 0   \\
+0   & b_2 & b_1 & b_0 \\
+| & = 
+a_2^{-1}
+\mqty|
+a_2 & a_1 & a_0 & 0   \\
+0   & a_2 & a_1 & a_0 \\
+0   & a_2b_1-a_1b_2 & a_2b_0-a_0b_2 & 0   \\
+0   & b_2 & b_1 & b_0 \\
+| \\
+& = a_2^{-2}
+\mqty|
+a_2 & a_1 & a_0 & 0   \\
+0   & a_2 & a_1 & a_0 \\
+0   & a_2b_1-a_1b_2 & a_2b_0-a_0b_2 & 0   \\
+0   & 0 & a_2b_1-a_1b_2 & a_2b_0-a_0b_2 \\
+| \\
+&= a_2^{-1}
+\qty(a_2(a_2b_0-a_0b_2)^2-a_1(a_2b_1-a_1b_2)(a_2b_0-a_0b_2)+a_0(a_2b_1-a_1b_2)^2) \\
+&= a_2^{-1}
+\qty(a_2(a_2b_0-a_0b_2)^2 +(a_2b_1-a_1b_2) (a_0(a_2b_1-a_1b_2)-a_1(a_1b_0-a_0b_2))) \\
+&= a_2^{-1}
+\qty(a_2(a_2b_0-a_0b_2)^2 +a_2(a_2b_1-a_1b_2) (a_0b_1-a_1b_0)) \\
+& = (a_2b_0-a_0b_2)^2-(a_1b_2-a_1b_1)(a_0b_1-a_1b_0).
+\end{align*}
+If we expand the expression given (and divide by four) we obtain the same result.
+%The basis vectors have $(m+n+2)\times(m+n+2)-(m+n+2)(m+n+1)/2$ degrees of freedom and we require that they match
+%a total of $(n+2)(n+1)/2$ conditions given (1 condition for 0-antidiagonal, 2 conditions for 1-antidiagonal, $(n+1)$ conditions
+%for the $n$-antidiagonal). Therefore there exists a basis that satisfies these conditions. Then for $i=0,\ldots,n$,
+%$a_i p_j = b_i q_j$.
+\end{problem}
+\begin{problem}
+  \subno{1.}
+  If $A$ is invertible we can write 
+  \[
+  \mqty[A & B \\ C & D ] \mqty[I & - A^{-1}B \\ O & I ]
+  =
+  \mqty[A & O \\ C & D -C A^{-1}B]
+  \]
+  where $D-C A^{-1}B$ is the \emph{Schur complement} for the block matrix. The determinant of 
+  \[
+  \mqty[I & - A^{-1}B \\ O & I ]
+  \]
+  is easy since it is an upper diagonal (its equal to 1). For the matrix in the r.h.s. use the property 
+  \[
+  \mqty[A & O \\ C & D -C A^{-1}B]
+  =
+  \mqty[A & O \\ O & I]
+  \mqty[I & O \\ C & I]
+  \mqty[I & O \\ O & D -C A^{-1}B].
+  \]
+  The determinants for all these matrices are straightforward. Using recursion 
+  \[
+  \mqty|A & O \\ O & I|=\det(A);  
+  \] 
+  using the property of an upper-triangular 
+  \[
+  \mqty|I & O \\ C & I|=1;  
+  \]
+  and using recursion once more 
+  \[
+  \mqty|I & O \\ O & D -C A^{-1}B|=\det(D -C A^{-1}B).  
+  \]
+  Therefore 
+  \[
+  \mqty|A & B \\ C & D | \mqty|I & - A^{-1}B \\ O & I | 
+  = \mqty|A & O \\ O & I| \mqty|I & O \\ C & I| \mqty|I & O \\ O & D -C A^{-1}B|
+  \]
+  or
+  \[
+  \mqty|A & B \\ C & D | = \det(A)\det(D-CA^{-1}B)=\det(AD-ACA^{-1}B).
+  \]
+  Since $AC=CA$, $ACA^{-1}=C$ and the proof is complete.
+  \subno{2.} From the definition of a Hadamard matrix 
+  \[
+  H_n^T H_n = nI_n,
+  \]
+  therefore 
+  \[
+  \det(H_n)^2=\det(nI_n)=n^n
+  \]
+  then take the square root.
+  \subno{3.} Use the block form and the result in the previous exercise:
+\[
+\mqty| H_n & H_n \\ H_n & - H_n| =\det(-H_n^2-H_n^2)
+\]
+($H$ is invertible.)
+Then 
+\[
+\det(-2H_n^2)=(-2)^n\det(H_n)^2 
+\]
+Since for Hadamard matrices $n$ is always even 
+\[
+\mqty| H_n & H_n \\ H_n & - H_n| = (2n)^n.
+\]
+
 \end{problem}
 \bibliographystyle{plainnat} 
 \bibliography{LinOptRefs} 
